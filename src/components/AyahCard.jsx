@@ -4,67 +4,67 @@ import { ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
 // Theme configuration للبطاقة الرئيسية
 const THEME_CONFIG = {
   mercy: {
-    border: 'border-l-4 border-green-500',
-    badge: 'bg-green-100 text-green-800',
+    border: 'border-l-4 border-green-400',
+    badge: 'bg-green-100 text-green-700',
     label: 'رحمة وهداية',
-    headerBg: 'bg-green-500',
-    darkBorder: 'border-green-700',
+    headerBg: 'bg-green-400',
+    darkBorder: 'border-green-600',
   },
   punishment: {
-    border: 'border-l-4 border-orange-500',
-    badge: 'bg-orange-100 text-orange-800',
+    border: 'border-l-4 border-orange-400',
+    badge: 'bg-orange-100 text-orange-700',
     label: 'عذاب وإنذار',
-    headerBg: 'bg-orange-500',
-    darkBorder: 'border-orange-700',
+    headerBg: 'bg-orange-400',
+    darkBorder: 'border-orange-600',
   },
   rulings: {
-    border: 'border-l-4 border-blue-500',
-    badge: 'bg-blue-100 text-blue-800',
+    border: 'border-l-4 border-blue-400',
+    badge: 'bg-blue-100 text-blue-700',
     label: 'أحكام وتشريع',
-    headerBg: 'bg-blue-500',
-    darkBorder: 'border-blue-700',
+    headerBg: 'bg-blue-400',
+    darkBorder: 'border-blue-600',
   },
   general: {
-    border: 'border-l-4 border-teal-500',
-    badge: 'bg-teal-100 text-teal-800',
+    border: 'border-l-4 border-teal-400',
+    badge: 'bg-teal-100 text-teal-700',
     label: 'سياق عام',
-    headerBg: 'bg-teal-500',
-    darkBorder: 'border-teal-700',
+    headerBg: 'bg-teal-400',
+    darkBorder: 'border-teal-600',
   },
 };
 
-// ألوان كل فيض — inline styles مباشرة مضمونة 100%
+// ألوان الفيوض — خفيفة رسمية بـ inline styles مضمونة
 const FUYUD_CONFIG = [
   {
     key: 'context',
     label: 'السياق العام',
     icon: '🌐',
-    bgLight: '#bae6fd',       // sky-200
-    borderLight: '#0ea5e9',   // sky-500
-    titleLight: '#0c4a6e',    // sky-900
-    bgDark: '#0c4a6e',
+    bgLight: '#e0f2fe',       // أزرق سماوي فاتح جداً
+    borderLight: '#7dd3fc',   // sky-300
+    titleLight: '#0369a1',    // sky-700
+    bgDark: '#0c2a3f',
     borderDark: '#38bdf8',
-    titleDark: '#e0f2fe',
+    titleDark: '#bae6fd',
   },
   {
     key: 'bayani',
     label: 'الفيوض البيانية',
     icon: '✒️',
-    bgLight: '#ddd6fe',       // violet-200
-    borderLight: '#8b5cf6',   // violet-500
-    titleLight: '#2e1065',    // violet-900
-    bgDark: '#2e1065',
+    bgLight: '#ede9fe',       // بنفسجي فاتح جداً
+    borderLight: '#c4b5fd',   // violet-300
+    titleLight: '#6d28d9',    // violet-700
+    bgDark: '#1e1040',
     borderDark: '#a78bfa',
-    titleDark: '#ede9fe',
+    titleDark: '#ddd6fe',
   },
   {
     key: 'taweeli',
     label: 'الفيوض التأويلية والتدبرية',
     icon: '📖',
-    bgLight: '#fde68a',       // amber-200
-    borderLight: '#f59e0b',   // amber-500
-    titleLight: '#451a03',    // amber-900
-    bgDark: '#451a03',
+    bgLight: '#fef9c3',       // أصفر ذهبي فاتح جداً
+    borderLight: '#fde047',   // yellow-300
+    titleLight: '#b45309',    // amber-700
+    bgDark: '#2d1f00',
     borderDark: '#fbbf24',
     titleDark: '#fef3c7',
   },
@@ -72,45 +72,45 @@ const FUYUD_CONFIG = [
     key: 'ruhani',
     label: 'الفيوض الروحانية',
     icon: '💫',
-    bgLight: '#a7f3d0',       // emerald-200
-    borderLight: '#10b981',   // emerald-500
-    titleLight: '#064e3b',    // emerald-900
-    bgDark: '#064e3b',
+    bgLight: '#d1fae5',       // أخضر زمردي فاتح جداً
+    borderLight: '#6ee7b7',   // emerald-300
+    titleLight: '#047857',    // emerald-700
+    bgDark: '#012a1a',
     borderDark: '#34d399',
-    titleDark: '#d1fae5',
+    titleDark: '#a7f3d0',
   },
   {
     key: 'nafsi',
     label: 'الفيوض النفسية',
     icon: '🧠',
-    bgLight: '#fecdd3',       // rose-200
-    borderLight: '#f43f5e',   // rose-500
-    titleLight: '#4c0519',    // rose-900
-    bgDark: '#4c0519',
+    bgLight: '#ffe4e6',       // وردي فاتح جداً
+    borderLight: '#fda4af',   // rose-300
+    titleLight: '#be123c',    // rose-700
+    bgDark: '#2d0a12',
     borderDark: '#fb7185',
-    titleDark: '#ffe4e6',
+    titleDark: '#fecdd3',
   },
   {
     key: 'tarbawi',
     label: 'الفيوض التربوية',
     icon: '🌱',
-    bgLight: '#fed7aa',       // orange-200
-    borderLight: '#f97316',   // orange-500
-    titleLight: '#431407',    // orange-900
-    bgDark: '#431407',
+    bgLight: '#ffedd5',       // برتقالي فاتح جداً
+    borderLight: '#fdba74',   // orange-300
+    titleLight: '#c2410c',    // orange-700
+    bgDark: '#2d1000',
     borderDark: '#fb923c',
-    titleDark: '#ffedd5',
+    titleDark: '#fed7aa',
   },
   {
     key: 'muasir',
     label: 'الفيوض المعاصرة',
     icon: '🌍',
-    bgLight: '#a5f3fc',       // cyan-200
-    borderLight: '#06b6d4',   // cyan-500
-    titleLight: '#083344',    // cyan-900
-    bgDark: '#083344',
+    bgLight: '#cffafe',       // فيروزي فاتح جداً
+    borderLight: '#67e8f9',   // cyan-300
+    titleLight: '#0e7490',    // cyan-700
+    bgDark: '#012030',
     borderDark: '#22d3ee',
-    titleDark: '#cffafe',
+    titleDark: '#a5f3fc',
   },
 ];
 
@@ -151,14 +151,21 @@ function FaydBox({ config, text, darkMode }) {
         marginBottom: '1rem',
       }}
     >
-      {/* رأس: أيقونة + عنوان + نسخ */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-        <CopyButton text={text} />
+      {/* رأس المستطيل — العنوان من اليمين */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '0.75rem',
+        direction: 'rtl',
+      }}>
+        {/* يمين: أيقونة + عنوان */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ fontSize: '1.4rem' }}>{config.icon}</span>
           <h4
             style={{
               fontFamily: 'Noto Naskh Arabic, serif',
-              fontSize: '1.25rem',
+              fontSize: '1.2rem',
               fontWeight: '800',
               color: title,
               margin: 0,
@@ -166,9 +173,13 @@ function FaydBox({ config, text, darkMode }) {
           >
             {config.label}
           </h4>
-          <span style={{ fontSize: '1.5rem' }}>{config.icon}</span>
         </div>
+        {/* يسار: زر نسخ */}
+        <CopyButton text={text} />
       </div>
+
+      {/* خط فاصل */}
+      <div style={{ borderTop: `1px solid ${border}`, marginBottom: '0.75rem', opacity: 0.5 }} />
 
       {/* نص التفسير */}
       <p
