@@ -3,8 +3,6 @@ import Header from './components/Header';
 import Introduction from './components/Introduction';
 import AyahCard from './components/AyahCard';
 import SearchBar from './components/SearchBar';
-import StatusBar from './components/StatusBar';
-import { useQuranAPI } from './hooks/useQuranAPI';
 import tafsirData from './data/tafsirData.json';
 
 export default function App() {
@@ -13,9 +11,6 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const { ayahs, introduction, surah } = tafsirData;
-
-  // Fetch API texts for all ayahs
-  const { apiTexts, loading, error } = useQuranAPI(ayahs);
 
   // Apply direction based on language
   useEffect(() => {
@@ -39,13 +34,11 @@ export default function App() {
     if (!searchQuery.trim()) return ayahs;
     const q = searchQuery.toLowerCase();
     return ayahs.filter((ayah) => {
-      const text = (apiTexts[ayah.id] || ayah.ayah_text || '').toLowerCase();
+      const text = (ayah.ayah_text || '').toLowerCase();
       const fuyudText = Object.values(ayah.fuyud || {}).join(' ').toLowerCase();
       return text.includes(q) || fuyudText.includes(q);
     });
-  }, [ayahs, apiTexts, searchQuery]);
-
-  const apiCount = Object.keys(apiTexts).length;
+  }, [ayahs, searchQuery]);
 
   return (
     <div
@@ -99,15 +92,6 @@ export default function App() {
           darkMode={darkMode}
         />
 
-        {/* API Status Bar */}
-        <StatusBar
-          loading={loading}
-          error={error}
-          apiCount={apiCount}
-          totalCount={ayahs.length}
-          darkMode={darkMode}
-        />
-
         {/* Results count if searching */}
         {searchQuery && (
           <p
@@ -127,7 +111,6 @@ export default function App() {
             <AyahCard
               key={ayah.id}
               ayah={ayah}
-              apiText={apiTexts[ayah.id]}
               language={language}
               darkMode={darkMode}
             />

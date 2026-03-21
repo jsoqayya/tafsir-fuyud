@@ -201,10 +201,10 @@ function FaydBox({ config, text, darkMode }) {
   );
 }
 
-export default function AyahCard({ ayah, apiText, language, darkMode }) {
+export default function AyahCard({ ayah, language, darkMode }) {
   const [isOpen, setIsOpen] = useState(false);
   const theme = THEME_CONFIG[ayah.theme] || THEME_CONFIG.general;
-  const displayText = apiText || ayah.ayah_text;
+  const displayText = ayah.ayah_text;
 
   return (
     <div
@@ -236,9 +236,7 @@ export default function AyahCard({ ayah, apiText, language, darkMode }) {
           >
             {displayText}
           </p>
-          {apiText && (
-            <span className="text-[10px] text-emerald-500 font-medium">✓ نص موثّق من API</span>
-          )}
+
         </div>
 
         <div className={`shrink-0 mt-1 p-1.5 rounded-full transition-all ${isOpen ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>
