@@ -1,154 +1,191 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import tafsirData from './data/tafsirData.json';
+import AyahCard from './components/AyahCard';
 import Header from './components/Header';
 import Introduction from './components/Introduction';
-import AyahCard from './components/AyahCard';
 import SearchBar from './components/SearchBar';
-import StatusBar from './components/StatusBar';
-import { useQuranAPI } from './hooks/useQuranAPI';
-import tafsirData from './data/tafsirData.json';
+import './index.css';
 
-export default function App() {
-  const [language, setLanguage] = useState('ar');
-  const [darkMode, setDarkMode] = useState(false);
+// Theme color map by ayah ranges
+const getAyahTheme = (id) => {
+  if (id <= 5) return 'emerald';        // Opening / general guidance
+  if (id <= 20) return 'orange';        // Disbelievers / Hypocrites
+  if (id <= 29) return 'blue';          // Rulings / Worship
+  if (id <= 39) return 'purple';        // Adam / Creation story
+  if (id <= 60) return 'green';         // Bani Israel / Mercy
+  if (id <= 74) return 'yellow';        // Cow story
+  if (id <= 86) return 'orange';        // Jewish transgressions
+  if (id <= 101) return 'blue';         // Jibril / Scriptures
+  return 'emerald';
+};
+
+function App() {
+  const [expandedId, setExpandedId] = useState(null);
+  const [activeSection, setActiveSection] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [darkMode, setDarkMode] = useState(false);
+  const [showIntro, setShowIntro] = useState(false);
+  const [filterTheme, setFilterTheme] = useState('all');
 
-  const { ayahs, introduction, surah } = tafsirData;
+  const ayahs = tafsirData.ayahs;
+  const surahInfo = tafsirData.surah;
 
-  // Fetch API texts for all ayahs
-  const { apiTexts, loading, error } = useQuranAPI(ayahs);
+  // Filter ayahs based on search and theme
+  const filteredAyahs = useMemo(() => {
+    let result = ayahs;
 
-  // Apply direction based on language
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(a => {
+        const headerMatch = a.header.toLowerCase().includes(q);
+        const sectionMatch = Object.values(a.sections).some(v =>
+          v.toLowerCase().includes(q)
+        );
+        return headerMatch || sectionMatch;
+      });
+    }
+
+    if (filterTheme !== 'all') {
+      result = result.filter(a => getAyahTheme(a.id) === filterTheme);
+    }
+
+    return result;
+  }, [ayahs, searchQuery, filterTheme]);
+
+  const handleCardClick = useCallback((id) => {
+    setExpandedId(prev => {
+      if (prev === id) {
+        setActiveSection(null);
+        return null;
+      }
+      setActiveSection('context');
+      return id;
+    });
+  }, []);
+
+  const handleSectionClick = useCallback((section) => {
+    setActiveSection(section);
+  }, []);
+
+  // Auto-expand first result when searching
   useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-  }, [language]);
+    if (searchQuery && filteredAyahs.length > 0) {
+      setExpandedId(filteredAyahs[0].id);
+      setActiveSection('context');
+    }
+  }, [searchQuery, filteredAyahs]);
 
   // Dark mode body class
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-      document.body.style.backgroundColor = '#111827';
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.body.style.backgroundColor = '#f8f9fa';
-    }
+    document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
-  // Filter ayahs by search query
-  const filteredAyahs = useMemo(() => {
-    if (!searchQuery.trim()) return ayahs;
-    const q = searchQuery.toLowerCase();
-    return ayahs.filter((ayah) => {
-      const text = (apiTexts[ayah.id] || ayah.ayah_text || '').toLowerCase();
-      const fuyudText = Object.values(ayah.fuyud || {}).join(' ').toLowerCase();
-      return text.includes(q) || fuyudText.includes(q);
-    });
-  }, [ayahs, apiTexts, searchQuery]);
-
-  const apiCount = Object.keys(apiTexts).length;
+  const themes = ['all', 'emerald', 'green', 'blue', 'orange', 'purple', 'yellow'];
+  const themeLabels = {
+    all: 'الكل',
+    emerald: 'عام',
+    green: 'رحمة',
+    blue: 'أحكام',
+    orange: 'تحذير',
+    purple: 'قصص',
+    yellow: 'تشريع',
+  };
 
   return (
-    <div
-      className={`min-h-screen transition-colors duration-300 ${
-        darkMode ? 'bg-gray-900' : 'bg-[#f8f9fa]'
-      }`}
-    >
-      {/* Sticky Header */}
+    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+      {/* Header */}
       <Header
-        language={language}
-        onLanguageChange={setLanguage}
+        surahInfo={surahInfo}
         darkMode={darkMode}
-        onToggleDark={() => setDarkMode(!darkMode)}
+        setDarkMode={setDarkMode}
+        showIntro={showIntro}
+        setShowIntro={setShowIntro}
+        totalAyahs={ayahs.length}
       />
 
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-4xl mx-auto px-4 py-6">
+        {/* Introduction Panel */}
+        {showIntro && (
+          <Introduction
+            intro={surahInfo.intro}
+            darkMode={darkMode}
+            onClose={() => setShowIntro(false)}
+          />
+        )}
 
-        {/* Surah Info Banner */}
-        <div
-          className="text-center mb-8 py-6"
-          dir="rtl"
-        >
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md mb-3">
-            <span>سورة</span>
-            <span className="text-lg font-bold" style={{ fontFamily: 'Amiri, serif' }}>البقرة</span>
-            <span className="opacity-70">•</span>
-            <span>{surah.total_ayahs} آية</span>
+        {/* Search + Filters */}
+        <div className="mb-6 space-y-3">
+          <SearchBar
+            query={searchQuery}
+            setQuery={setSearchQuery}
+            darkMode={darkMode}
+            resultCount={filteredAyahs.length}
+          />
+
+          {/* Theme filter chips */}
+          <div className="flex flex-wrap gap-2 justify-end">
+            {themes.map(t => (
+              <button
+                key={t}
+                onClick={() => setFilterTheme(t)}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-200 ${
+                  filterTheme === t
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : darkMode
+                    ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                }`}
+              >
+                {themeLabels[t]}
+              </button>
+            ))}
           </div>
-          <h2
-            className={`text-2xl font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-800'}`}
-            style={{ fontFamily: 'Amiri, serif' }}
-          >
-            ﴿ بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴾
-          </h2>
-          <p
-            className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
-            style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
-          >
-            {surah.mushaf_name} — تفسير الآيات {ayahs[0]?.id}–{ayahs[ayahs.length - 1]?.id}
-          </p>
         </div>
 
-        {/* Introduction Section */}
-        <Introduction text={introduction} darkMode={darkMode} />
-
-        {/* Search Bar */}
-        <SearchBar
-          value={searchQuery}
-          onChange={setSearchQuery}
-          darkMode={darkMode}
-        />
-
-        {/* API Status Bar */}
-        <StatusBar
-          loading={loading}
-          error={error}
-          apiCount={apiCount}
-          totalCount={ayahs.length}
-          darkMode={darkMode}
-        />
-
-        {/* Results count if searching */}
+        {/* Results count */}
         {searchQuery && (
-          <p
-            className={`text-sm mb-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
-            style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
-            dir="rtl"
-          >
-            {filteredAyahs.length === 0
-              ? 'لا نتائج مطابقة'
-              : `${filteredAyahs.length} آية مطابقة`}
+          <p className={`text-sm mb-4 text-right ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            {filteredAyahs.length > 0
+              ? `وُجد ${filteredAyahs.length} آية تطابق البحث`
+              : 'لم يُعثر على نتائج'}
           </p>
         )}
 
         {/* Ayah Cards */}
-        <div>
-          {filteredAyahs.map((ayah) => (
+        <div className="space-y-4">
+          {filteredAyahs.map(ayah => (
             <AyahCard
               key={ayah.id}
               ayah={ayah}
-              apiText={apiTexts[ayah.id]}
-              language={language}
+              theme={getAyahTheme(ayah.id)}
+              isExpanded={expandedId === ayah.id}
+              activeSection={expandedId === ayah.id ? activeSection : null}
+              onCardClick={handleCardClick}
+              onSectionClick={handleSectionClick}
               darkMode={darkMode}
+              searchQuery={searchQuery}
             />
           ))}
         </div>
 
+        {filteredAyahs.length === 0 && (
+          <div className={`text-center py-20 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+            <div className="text-5xl mb-4">🔍</div>
+            <p className="text-lg">لا توجد نتائج للبحث</p>
+            <p className="text-sm mt-2">جرّب كلمات أخرى</p>
+          </div>
+        )}
+
         {/* Footer */}
-        <footer
-          className={`text-center py-8 mt-8 border-t ${
-            darkMode ? 'border-gray-700 text-gray-500' : 'border-gray-200 text-gray-400'
-          }`}
-          dir="rtl"
-        >
-          <p
-            className="text-sm"
-            style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
-          >
-            مصحف فيوض التأويل المعاصر • جميع الحقوق محفوظة
-          </p>
+        <footer className={`mt-12 py-6 text-center text-sm border-t ${
+          darkMode ? 'border-gray-800 text-gray-500' : 'border-gray-200 text-gray-400'
+        }`}>
+          <p className="font-amiri text-base mb-1">مصحف فيوض التأويل المعاصر</p>
+          <p>تفسير حديث ومعاصر لسورة البقرة الكريمة</p>
         </footer>
       </main>
     </div>
   );
 }
+
+export default App;

@@ -1,254 +1,271 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 // Theme configuration
 const THEME_CONFIG = {
-  mercy: {
-    border: 'border-l-4 border-green-500',
-    bg: 'bg-green-50',
+  emerald: {
+    card: 'border-emerald-200',
+    cardDark: 'border-emerald-800',
+    badge: 'bg-emerald-100 text-emerald-800',
+    badgeDark: 'bg-emerald-900 text-emerald-200',
+    header: 'bg-emerald-50 hover:bg-emerald-100',
+    headerDark: 'bg-emerald-950 hover:bg-emerald-900',
+    dot: 'bg-emerald-500',
+    activeTab: 'bg-emerald-600 text-white',
+    tab: 'hover:bg-emerald-50 text-emerald-700',
+    tabDark: 'hover:bg-emerald-900 text-emerald-400',
+    label: 'عام',
+  },
+  green: {
+    card: 'border-green-200',
+    cardDark: 'border-green-800',
     badge: 'bg-green-100 text-green-800',
-    label: 'رحمة وهداية',
+    badgeDark: 'bg-green-900 text-green-200',
+    header: 'bg-green-50 hover:bg-green-100',
+    headerDark: 'bg-green-950 hover:bg-green-900',
     dot: 'bg-green-500',
-    headerBg: 'bg-green-500',
-    darkBg: 'bg-green-950/30',
-    darkBorder: 'border-green-700',
+    activeTab: 'bg-green-600 text-white',
+    tab: 'hover:bg-green-50 text-green-700',
+    tabDark: 'hover:bg-green-900 text-green-400',
+    label: 'رحمة',
   },
-  punishment: {
-    border: 'border-l-4 border-orange-500',
-    bg: 'bg-orange-50',
-    badge: 'bg-orange-100 text-orange-800',
-    label: 'عذاب وإنذار',
-    dot: 'bg-orange-500',
-    headerBg: 'bg-orange-500',
-    darkBg: 'bg-orange-950/30',
-    darkBorder: 'border-orange-700',
-  },
-  rulings: {
-    border: 'border-l-4 border-blue-500',
-    bg: 'bg-blue-50',
+  blue: {
+    card: 'border-blue-200',
+    cardDark: 'border-blue-800',
     badge: 'bg-blue-100 text-blue-800',
-    label: 'أحكام وتشريع',
+    badgeDark: 'bg-blue-900 text-blue-200',
+    header: 'bg-blue-50 hover:bg-blue-100',
+    headerDark: 'bg-blue-950 hover:bg-blue-900',
     dot: 'bg-blue-500',
-    headerBg: 'bg-blue-500',
-    darkBg: 'bg-blue-950/30',
-    darkBorder: 'border-blue-700',
+    activeTab: 'bg-blue-600 text-white',
+    tab: 'hover:bg-blue-50 text-blue-700',
+    tabDark: 'hover:bg-blue-900 text-blue-400',
+    label: 'أحكام',
   },
-  general: {
-    border: 'border-l-4 border-teal-500',
-    bg: 'bg-teal-50',
-    badge: 'bg-teal-100 text-teal-800',
-    label: 'سياق عام',
-    dot: 'bg-teal-500',
-    headerBg: 'bg-teal-500',
-    darkBg: 'bg-teal-950/30',
-    darkBorder: 'border-teal-700',
+  orange: {
+    card: 'border-orange-200',
+    cardDark: 'border-orange-800',
+    badge: 'bg-orange-100 text-orange-800',
+    badgeDark: 'bg-orange-900 text-orange-200',
+    header: 'bg-orange-50 hover:bg-orange-100',
+    headerDark: 'bg-orange-950 hover:bg-orange-900',
+    dot: 'bg-orange-500',
+    activeTab: 'bg-orange-600 text-white',
+    tab: 'hover:bg-orange-50 text-orange-700',
+    tabDark: 'hover:bg-orange-900 text-orange-400',
+    label: 'تحذير',
+  },
+  purple: {
+    card: 'border-purple-200',
+    cardDark: 'border-purple-800',
+    badge: 'bg-purple-100 text-purple-800',
+    badgeDark: 'bg-purple-900 text-purple-200',
+    header: 'bg-purple-50 hover:bg-purple-100',
+    headerDark: 'bg-purple-950 hover:bg-purple-900',
+    dot: 'bg-purple-500',
+    activeTab: 'bg-purple-600 text-white',
+    tab: 'hover:bg-purple-50 text-purple-700',
+    tabDark: 'hover:bg-purple-900 text-purple-400',
+    label: 'قصص',
+  },
+  yellow: {
+    card: 'border-yellow-200',
+    cardDark: 'border-yellow-800',
+    badge: 'bg-yellow-100 text-yellow-800',
+    badgeDark: 'bg-yellow-900 text-yellow-200',
+    header: 'bg-yellow-50 hover:bg-yellow-100',
+    headerDark: 'bg-yellow-950 hover:bg-yellow-900',
+    dot: 'bg-yellow-500',
+    activeTab: 'bg-yellow-600 text-white',
+    tab: 'hover:bg-yellow-50 text-yellow-700',
+    tabDark: 'hover:bg-yellow-900 text-yellow-400',
+    label: 'تشريع',
   },
 };
 
-// Fuyud sections config
-const FUYUD_CONFIG = [
-  {
-    key: 'context',
-    label: 'السياق العام',
-    labelEn: 'General Context',
-    color: 'bg-sky-50 border-sky-200',
-    darkColor: 'bg-sky-950/30 border-sky-800',
-    titleColor: 'text-sky-700',
-    icon: '🌐',
-  },
-  {
-    key: 'bayani',
-    label: 'الفيوض البيانية',
-    labelEn: 'Linguistic Analysis',
-    color: 'bg-violet-50 border-violet-200',
-    darkColor: 'bg-violet-950/30 border-violet-800',
-    titleColor: 'text-violet-700',
-    icon: '✒️',
-  },
-  {
-    key: 'taweeli',
-    label: 'الفيوض التأويلية والتدبرية',
-    labelEn: 'Interpretive & Contemplative',
-    color: 'bg-amber-50 border-amber-200',
-    darkColor: 'bg-amber-950/30 border-amber-800',
-    titleColor: 'text-amber-700',
-    icon: '📖',
-  },
-  {
-    key: 'ruhani',
-    label: 'الفيوض الروحانية',
-    labelEn: 'Spiritual Insights',
-    color: 'bg-emerald-50 border-emerald-200',
-    darkColor: 'bg-emerald-950/30 border-emerald-800',
-    titleColor: 'text-emerald-700',
-    icon: '💫',
-  },
-  {
-    key: 'nafsi',
-    label: 'الفيوض النفسية',
-    labelEn: 'Psychological Dimensions',
-    color: 'bg-rose-50 border-rose-200',
-    darkColor: 'bg-rose-950/30 border-rose-800',
-    titleColor: 'text-rose-700',
-    icon: '🧠',
-  },
-  {
-    key: 'tarbawi',
-    label: 'الفيوض التربوية',
-    labelEn: 'Educational Values',
-    color: 'bg-orange-50 border-orange-200',
-    darkColor: 'bg-orange-950/30 border-orange-800',
-    titleColor: 'text-orange-700',
-    icon: '🌱',
-  },
-  {
-    key: 'muasir',
-    label: 'الفيوض المعاصرة',
-    labelEn: 'Contemporary Relevance',
-    color: 'bg-cyan-50 border-cyan-200',
-    darkColor: 'bg-cyan-950/30 border-cyan-800',
-    titleColor: 'text-cyan-700',
-    icon: '🌍',
-  },
-];
+// Section labels
+const SECTION_LABELS = {
+  context: 'السياق العام',
+  bayani: 'الفيوض البيانية',
+  taweeli: 'الفيوض التأويلية',
+  ruhani: 'الفيوض الروحانية',
+  nafsi: 'الفيوض النفسية',
+  tarbawi: 'الفيوض التربوية',
+  muasir: 'الفيوض المعاصرة',
+};
 
-function CopyButton({ text }) {
-  const [copied, setCopied] = useState(false);
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {}
-  };
-  return (
-    <button
-      onClick={handleCopy}
-      className="p-1.5 rounded-lg hover:bg-white/60 transition-colors text-gray-400 hover:text-gray-600"
-      title="نسخ"
-    >
-      {copied ? <Check size={13} className="text-green-600" /> : <Copy size={13} />}
-    </button>
+const SECTION_ICONS = {
+  context: '📖',
+  bayani: '🔤',
+  taweeli: '💡',
+  ruhani: '✨',
+  nafsi: '🧠',
+  tarbawi: '🌱',
+  muasir: '🌍',
+};
+
+// Highlight search terms in text
+const highlightText = (text, query) => {
+  if (!query || !query.trim()) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const parts = text.split(new RegExp(`(${escaped})`, 'gi'));
+  return parts.map((part, i) =>
+    part.toLowerCase() === query.toLowerCase()
+      ? <mark key={i}>{part}</mark>
+      : part
   );
-}
+};
 
-function FaydBox({ config, text, darkMode }) {
-  if (!text) return null;
+// Parse header to extract ayah number(s) and Arabic text
+const parseHeader = (header) => {
+  const match = header.match(/^(\d+(?:[-–]\d+)?)\.\s*(﴿[\s\S]*﴾)/);
+  if (match) {
+    return { num: match[1], ayahText: match[2] };
+  }
+  return { num: '', ayahText: header };
+};
+
+const AyahCard = ({
+  ayah,
+  theme = 'emerald',
+  isExpanded,
+  activeSection,
+  onCardClick,
+  onSectionClick,
+  darkMode,
+  searchQuery,
+}) => {
+  const tc = THEME_CONFIG[theme] || THEME_CONFIG.emerald;
+  const { num, ayahText } = parseHeader(ayah.header);
+  const sections = ayah.sections;
+  const sectionKeys = Object.keys(sections);
+  const contentRef = useRef(null);
+
+  // Scroll into view when expanded
+  useEffect(() => {
+    if (isExpanded && contentRef.current) {
+      setTimeout(() => {
+        contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  }, [isExpanded]);
+
+  const currentSectionKey = activeSection && sections[activeSection] ? activeSection : sectionKeys[0];
+  const currentContent = sections[currentSectionKey] || '';
+
   return (
     <div
-      className={`rounded-xl border p-4 mb-3 transition-all ${
-        darkMode ? config.darkColor : config.color
+      ref={contentRef}
+      className={`rounded-2xl border-2 overflow-hidden shadow-sm transition-all duration-300 ${
+        isExpanded ? 'shadow-md' : ''
+      } ${
+        darkMode ? `${tc.cardDark} bg-gray-900` : `${tc.card} bg-white`
       }`}
     >
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">{config.icon}</span>
-          <h4
-            className={`font-bold text-sm ${config.titleColor}`}
-            style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
-          >
-            {config.label}
-          </h4>
-        </div>
-        <CopyButton text={text} />
-      </div>
-      <p
-        className="text-gray-700 leading-[2.1rem] text-base whitespace-pre-line"
-        style={{ fontFamily: 'Noto Naskh Arabic, serif', direction: 'rtl', textAlign: 'right' }}
-      >
-        {text}
-      </p>
-    </div>
-  );
-}
-
-export default function AyahCard({ ayah, apiText, language, darkMode }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const theme = THEME_CONFIG[ayah.theme] || THEME_CONFIG.general;
-
-  // Use API text if available, fallback to local ayah_text
-  const displayText = apiText || ayah.ayah_text;
-
-  return (
-    <div
-      className={`rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden mb-4 
-        ${darkMode ? `bg-gray-800 ${theme.darkBorder}` : `bg-white ${theme.border}`}
-        border border-transparent hover:-translate-y-0.5`}
-    >
-      {/* Ayah Header — clickable */}
+      {/* Card Header - Clickable */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-right p-5 flex items-start justify-between gap-4 group"
+        onClick={() => onCardClick(ayah.id)}
+        className={`w-full px-4 py-4 flex items-start gap-3 transition-colors duration-200 text-right ${
+          darkMode ? tc.headerDark : tc.header
+        }`}
       >
-        {/* Ayah number badge + theme */}
-        <div className="flex flex-col items-center gap-2 shrink-0">
-          <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm ${theme.headerBg}`}
-          >
-            {ayah.id}
-          </div>
-          <span
-            className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${theme.badge}`}
-            style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
-          >
-            {theme.label}
-          </span>
+        {/* Toggle icon */}
+        <div className={`mt-1 flex-shrink-0 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+          {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </div>
 
         {/* Ayah text */}
-        <div className="flex-1 text-right" dir="rtl">
+        <div className="flex-1 min-w-0">
           <p
-            className={`leading-[2.8rem] text-xl font-medium ${
+            className={`text-right leading-loose text-base md:text-lg ${
               darkMode ? 'text-gray-100' : 'text-gray-800'
             }`}
-            style={{ fontFamily: 'Amiri, serif' }}
+            style={{ fontFamily: "'Amiri', serif", fontSize: '1.15rem' }}
           >
-            {displayText}
+            {searchQuery ? highlightText(ayahText, searchQuery) : ayahText}
           </p>
-          {apiText && (
-            <span className="text-[10px] text-emerald-500 font-medium">
-              ✓ نص موثّق من API
-            </span>
-          )}
         </div>
 
-        {/* Toggle icon */}
-        <div
-          className={`shrink-0 mt-1 p-1.5 rounded-full transition-all ${
-            isOpen ? 'bg-emerald-100 text-emerald-600 rotate-0' : 'bg-gray-100 text-gray-400'
-          }`}
-        >
-          {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+        {/* Ayah number badge */}
+        <div className={`flex-shrink-0 flex flex-col items-center gap-1`}>
+          <span
+            className={`ayah-badge text-sm font-bold ${
+              darkMode ? tc.badgeDark : tc.badge
+            }`}
+            style={{ fontFamily: "'Amiri', serif", minWidth: '2.5rem', padding: '0.25rem 0.5rem', borderRadius: '9999px' }}
+          >
+            {num}
+          </span>
+          <span className={`text-xs ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+            {tc.label}
+          </span>
         </div>
       </button>
 
-      {/* Dropdown — Tafsir Content */}
-      {isOpen && (
-        <div
-          className={`border-t px-5 pb-5 pt-4 ${
-            darkMode ? 'border-gray-700 bg-gray-800/80' : 'border-gray-100 bg-gray-50/60'
-          }`}
-          dir="rtl"
-        >
-          <h3
-            className={`text-sm font-bold mb-4 text-center ${
-              darkMode ? 'text-gray-300' : 'text-gray-500'
-            }`}
-            style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
-          >
-            ✦ فيوض التفسير ✦
-          </h3>
+      {/* Expandable Content */}
+      {isExpanded && (
+        <div className={`border-t ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+          {/* Section Tabs */}
+          {sectionKeys.length > 1 && (
+            <div className={`px-4 py-2 flex flex-wrap gap-1.5 justify-end border-b ${
+              darkMode ? 'border-gray-800 bg-gray-900' : 'border-gray-100 bg-gray-50'
+            }`}>
+              {sectionKeys.map(key => (
+                <button
+                  key={key}
+                  onClick={() => onSectionClick(key)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+                    currentSectionKey === key
+                      ? tc.activeTab
+                      : darkMode
+                      ? `bg-gray-800 ${tc.tabDark}`
+                      : `bg-white ${tc.tab} border border-gray-200`
+                  }`}
+                >
+                  <span>{SECTION_ICONS[key]}</span>
+                  <span>{SECTION_LABELS[key] || key}</span>
+                </button>
+              ))}
+            </div>
+          )}
 
-          {FUYUD_CONFIG.map((config) => (
-            <FaydBox
-              key={config.key}
-              config={config}
-              text={ayah.fuyud?.[config.key]}
-              darkMode={darkMode}
-            />
-          ))}
+          {/* Section Content */}
+          <div className={`px-5 py-5 ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
+            {/* Section Title */}
+            <div className="flex items-center gap-2 mb-4 justify-end">
+              <h3 className={`text-sm font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}
+                style={{ fontFamily: "'Noto Naskh Arabic', serif" }}>
+                {SECTION_LABELS[currentSectionKey] || currentSectionKey}
+              </h3>
+              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${tc.dot}`}></span>
+            </div>
+
+            {/* Content Text - FULL, no truncation */}
+            <div
+              className={`tafsir-text text-right text-base leading-loose ${
+                darkMode ? 'text-gray-200' : 'text-gray-700'
+              }`}
+              style={{ fontFamily: "'Noto Naskh Arabic', serif" }}
+            >
+              {searchQuery
+                ? highlightText(currentContent, searchQuery)
+                : currentContent
+              }
+            </div>
+
+            {/* Section count indicator */}
+            {sectionKeys.length > 1 && (
+              <div className={`mt-4 pt-3 border-t text-xs text-right ${
+                darkMode ? 'border-gray-800 text-gray-600' : 'border-gray-100 text-gray-400'
+              }`}>
+                {sectionKeys.indexOf(currentSectionKey) + 1} / {sectionKeys.length} أقسام
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
   );
-}
+};
+
+export default AyahCard;
