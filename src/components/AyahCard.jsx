@@ -45,69 +45,83 @@ const THEME_CONFIG = {
   },
 };
 
-// Fuyud sections config
+// Fuyud sections config — ألوان مستطيلات واضحة وعريضة
 const FUYUD_CONFIG = [
   {
     key: 'context',
     label: 'السياق العام',
     labelEn: 'General Context',
-    color: 'bg-sky-50 border-sky-200',
-    darkColor: 'bg-sky-950/30 border-sky-800',
-    titleColor: 'text-sky-700',
+    color: 'bg-sky-100 border-r-4 border-sky-500',
+    darkColor: 'bg-sky-900/50 border-r-4 border-sky-400',
+    titleColor: 'text-sky-800',
+    titleDarkColor: 'text-sky-300',
+    headerBg: 'bg-sky-500',
     icon: '🌐',
   },
   {
     key: 'bayani',
     label: 'الفيوض البيانية',
     labelEn: 'Linguistic Analysis',
-    color: 'bg-violet-50 border-violet-200',
-    darkColor: 'bg-violet-950/30 border-violet-800',
-    titleColor: 'text-violet-700',
+    color: 'bg-violet-100 border-r-4 border-violet-500',
+    darkColor: 'bg-violet-900/50 border-r-4 border-violet-400',
+    titleColor: 'text-violet-800',
+    titleDarkColor: 'text-violet-300',
+    headerBg: 'bg-violet-500',
     icon: '✒️',
   },
   {
     key: 'taweeli',
     label: 'الفيوض التأويلية والتدبرية',
     labelEn: 'Interpretive & Contemplative',
-    color: 'bg-amber-50 border-amber-200',
-    darkColor: 'bg-amber-950/30 border-amber-800',
-    titleColor: 'text-amber-700',
+    color: 'bg-amber-100 border-r-4 border-amber-500',
+    darkColor: 'bg-amber-900/50 border-r-4 border-amber-400',
+    titleColor: 'text-amber-800',
+    titleDarkColor: 'text-amber-300',
+    headerBg: 'bg-amber-500',
     icon: '📖',
   },
   {
     key: 'ruhani',
     label: 'الفيوض الروحانية',
     labelEn: 'Spiritual Insights',
-    color: 'bg-emerald-50 border-emerald-200',
-    darkColor: 'bg-emerald-950/30 border-emerald-800',
-    titleColor: 'text-emerald-700',
+    color: 'bg-emerald-100 border-r-4 border-emerald-500',
+    darkColor: 'bg-emerald-900/50 border-r-4 border-emerald-400',
+    titleColor: 'text-emerald-800',
+    titleDarkColor: 'text-emerald-300',
+    headerBg: 'bg-emerald-500',
     icon: '💫',
   },
   {
     key: 'nafsi',
     label: 'الفيوض النفسية',
     labelEn: 'Psychological Dimensions',
-    color: 'bg-rose-50 border-rose-200',
-    darkColor: 'bg-rose-950/30 border-rose-800',
-    titleColor: 'text-rose-700',
+    color: 'bg-rose-100 border-r-4 border-rose-500',
+    darkColor: 'bg-rose-900/50 border-r-4 border-rose-400',
+    titleColor: 'text-rose-800',
+    titleDarkColor: 'text-rose-300',
+    headerBg: 'bg-rose-500',
     icon: '🧠',
   },
   {
     key: 'tarbawi',
     label: 'الفيوض التربوية',
     labelEn: 'Educational Values',
-    color: 'bg-orange-50 border-orange-200',
-    darkColor: 'bg-orange-950/30 border-orange-800',
-    titleColor: 'text-orange-700',
+    color: 'bg-orange-100 border-r-4 border-orange-500',
+    darkColor: 'bg-orange-900/50 border-r-4 border-orange-400',
+    titleColor: 'text-orange-800',
+    titleDarkColor: 'text-orange-300',
+    headerBg: 'bg-orange-500',
     icon: '🌱',
   },
   {
     key: 'muasir',
     label: 'الفيوض المعاصرة',
     labelEn: 'Contemporary Relevance',
-    color: 'bg-cyan-50 border-cyan-200',
-    darkColor: 'bg-cyan-950/30 border-cyan-800',
-    titleColor: 'text-cyan-700',
+    color: 'bg-cyan-100 border-r-4 border-cyan-500',
+    darkColor: 'bg-cyan-900/50 border-r-4 border-cyan-400',
+    titleColor: 'text-cyan-800',
+    titleDarkColor: 'text-cyan-300',
+    headerBg: 'bg-cyan-500',
     icon: '🌍',
   },
 ];
@@ -136,24 +150,34 @@ function FaydBox({ config, text, darkMode }) {
   if (!text) return null;
   return (
     <div
-      className={`rounded-xl border p-4 mb-3 transition-all ${
+      className={`rounded-xl border p-5 mb-4 transition-all ${
         darkMode ? config.darkColor : config.color
       }`}
     >
-      <div className="flex items-center justify-between mb-2">
+      {/* عنوان الفيض — شريط ملوّن كامل العرض */}
+      <div
+        className={`flex items-center justify-between mb-3 pb-2 border-b ${
+          darkMode ? 'border-white/10' : 'border-black/10'
+        }`}
+      >
+        <CopyButton text={text} />
         <div className="flex items-center gap-2">
-          <span className="text-lg">{config.icon}</span>
           <h4
-            className={`font-bold text-sm ${config.titleColor}`}
+            className={`font-bold text-xl ${
+              darkMode ? config.titleDarkColor : config.titleColor
+            }`}
             style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
           >
             {config.label}
           </h4>
+          <span className="text-2xl">{config.icon}</span>
         </div>
-        <CopyButton text={text} />
       </div>
+      {/* نص الفيض — bold كامل */}
       <p
-        className="text-gray-700 leading-[2.1rem] text-base whitespace-pre-line"
+        className={`leading-[2.2rem] text-base font-bold whitespace-pre-line ${
+          darkMode ? 'text-gray-100' : 'text-gray-800'
+        }`}
         style={{ fontFamily: 'Noto Naskh Arabic, serif', direction: 'rtl', textAlign: 'right' }}
       >
         {text}
@@ -198,7 +222,7 @@ export default function AyahCard({ ayah, apiText, language, darkMode }) {
         {/* Ayah text */}
         <div className="flex-1 text-right" dir="rtl">
           <p
-            className={`leading-[2.8rem] text-xl font-medium ${
+            className={`leading-[2.8rem] text-xl font-bold ${
               darkMode ? 'text-gray-100' : 'text-gray-800'
             }`}
             style={{ fontFamily: 'Amiri, serif' }}
