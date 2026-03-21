@@ -1,121 +1,116 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
 
-// Theme configuration
+// Theme configuration للبطاقة الرئيسية
 const THEME_CONFIG = {
   mercy: {
     border: 'border-l-4 border-green-500',
-    bg: 'bg-green-50',
     badge: 'bg-green-100 text-green-800',
     label: 'رحمة وهداية',
-    dot: 'bg-green-500',
     headerBg: 'bg-green-500',
-    darkBg: 'bg-green-950/30',
     darkBorder: 'border-green-700',
   },
   punishment: {
     border: 'border-l-4 border-orange-500',
-    bg: 'bg-orange-50',
     badge: 'bg-orange-100 text-orange-800',
     label: 'عذاب وإنذار',
-    dot: 'bg-orange-500',
     headerBg: 'bg-orange-500',
-    darkBg: 'bg-orange-950/30',
     darkBorder: 'border-orange-700',
   },
   rulings: {
     border: 'border-l-4 border-blue-500',
-    bg: 'bg-blue-50',
     badge: 'bg-blue-100 text-blue-800',
     label: 'أحكام وتشريع',
-    dot: 'bg-blue-500',
     headerBg: 'bg-blue-500',
-    darkBg: 'bg-blue-950/30',
     darkBorder: 'border-blue-700',
   },
   general: {
     border: 'border-l-4 border-teal-500',
-    bg: 'bg-teal-50',
     badge: 'bg-teal-100 text-teal-800',
     label: 'سياق عام',
-    dot: 'bg-teal-500',
     headerBg: 'bg-teal-500',
-    darkBg: 'bg-teal-950/30',
     darkBorder: 'border-teal-700',
   },
 };
 
-// Fuyud sections config — ألوان مستطيلات واضحة وعريضة
+// ألوان كل فيض — inline styles مباشرة مضمونة 100%
 const FUYUD_CONFIG = [
   {
     key: 'context',
     label: 'السياق العام',
-    labelEn: 'General Context',
-    color: 'bg-sky-200 border-2 border-sky-500',
-    darkColor: 'bg-sky-900/60 border-2 border-sky-400',
-    titleColor: 'text-sky-900',
-    titleDarkColor: 'text-sky-200',
     icon: '🌐',
+    bgLight: '#bae6fd',       // sky-200
+    borderLight: '#0ea5e9',   // sky-500
+    titleLight: '#0c4a6e',    // sky-900
+    bgDark: '#0c4a6e',
+    borderDark: '#38bdf8',
+    titleDark: '#e0f2fe',
   },
   {
     key: 'bayani',
     label: 'الفيوض البيانية',
-    labelEn: 'Linguistic Analysis',
-    color: 'bg-violet-200 border-2 border-violet-500',
-    darkColor: 'bg-violet-900/60 border-2 border-violet-400',
-    titleColor: 'text-violet-900',
-    titleDarkColor: 'text-violet-200',
     icon: '✒️',
+    bgLight: '#ddd6fe',       // violet-200
+    borderLight: '#8b5cf6',   // violet-500
+    titleLight: '#2e1065',    // violet-900
+    bgDark: '#2e1065',
+    borderDark: '#a78bfa',
+    titleDark: '#ede9fe',
   },
   {
     key: 'taweeli',
     label: 'الفيوض التأويلية والتدبرية',
-    labelEn: 'Interpretive & Contemplative',
-    color: 'bg-amber-200 border-2 border-amber-500',
-    darkColor: 'bg-amber-900/60 border-2 border-amber-400',
-    titleColor: 'text-amber-900',
-    titleDarkColor: 'text-amber-200',
     icon: '📖',
+    bgLight: '#fde68a',       // amber-200
+    borderLight: '#f59e0b',   // amber-500
+    titleLight: '#451a03',    // amber-900
+    bgDark: '#451a03',
+    borderDark: '#fbbf24',
+    titleDark: '#fef3c7',
   },
   {
     key: 'ruhani',
     label: 'الفيوض الروحانية',
-    labelEn: 'Spiritual Insights',
-    color: 'bg-emerald-200 border-2 border-emerald-500',
-    darkColor: 'bg-emerald-900/60 border-2 border-emerald-400',
-    titleColor: 'text-emerald-900',
-    titleDarkColor: 'text-emerald-200',
     icon: '💫',
+    bgLight: '#a7f3d0',       // emerald-200
+    borderLight: '#10b981',   // emerald-500
+    titleLight: '#064e3b',    // emerald-900
+    bgDark: '#064e3b',
+    borderDark: '#34d399',
+    titleDark: '#d1fae5',
   },
   {
     key: 'nafsi',
     label: 'الفيوض النفسية',
-    labelEn: 'Psychological Dimensions',
-    color: 'bg-rose-200 border-2 border-rose-500',
-    darkColor: 'bg-rose-900/60 border-2 border-rose-400',
-    titleColor: 'text-rose-900',
-    titleDarkColor: 'text-rose-200',
     icon: '🧠',
+    bgLight: '#fecdd3',       // rose-200
+    borderLight: '#f43f5e',   // rose-500
+    titleLight: '#4c0519',    // rose-900
+    bgDark: '#4c0519',
+    borderDark: '#fb7185',
+    titleDark: '#ffe4e6',
   },
   {
     key: 'tarbawi',
     label: 'الفيوض التربوية',
-    labelEn: 'Educational Values',
-    color: 'bg-orange-200 border-2 border-orange-500',
-    darkColor: 'bg-orange-900/60 border-2 border-orange-400',
-    titleColor: 'text-orange-900',
-    titleDarkColor: 'text-orange-200',
     icon: '🌱',
+    bgLight: '#fed7aa',       // orange-200
+    borderLight: '#f97316',   // orange-500
+    titleLight: '#431407',    // orange-900
+    bgDark: '#431407',
+    borderDark: '#fb923c',
+    titleDark: '#ffedd5',
   },
   {
     key: 'muasir',
     label: 'الفيوض المعاصرة',
-    labelEn: 'Contemporary Relevance',
-    color: 'bg-cyan-200 border-2 border-cyan-500',
-    darkColor: 'bg-cyan-900/60 border-2 border-cyan-400',
-    titleColor: 'text-cyan-900',
-    titleDarkColor: 'text-cyan-200',
     icon: '🌍',
+    bgLight: '#a5f3fc',       // cyan-200
+    borderLight: '#06b6d4',   // cyan-500
+    titleLight: '#083344',    // cyan-900
+    bgDark: '#083344',
+    borderDark: '#22d3ee',
+    titleDark: '#cffafe',
   },
 ];
 
@@ -141,33 +136,53 @@ function CopyButton({ text }) {
 
 function FaydBox({ config, text, darkMode }) {
   if (!text) return null;
+
+  const bg     = darkMode ? config.bgDark     : config.bgLight;
+  const border = darkMode ? config.borderDark : config.borderLight;
+  const title  = darkMode ? config.titleDark  : config.titleLight;
+
   return (
     <div
-      className={`rounded-xl p-5 mb-4 transition-all ${
-        darkMode ? config.darkColor : config.color
-      }`}
+      style={{
+        backgroundColor: bg,
+        border: `2px solid ${border}`,
+        borderRadius: '0.75rem',
+        padding: '1.25rem',
+        marginBottom: '1rem',
+      }}
     >
-      {/* رأس المستطيل: أيقونة + عنوان كبير + زر نسخ */}
-      <div className="flex items-center justify-between mb-3">
+      {/* رأس: أيقونة + عنوان + نسخ */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
         <CopyButton text={text} />
-        <div className="flex items-center gap-2">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <h4
-            className={`font-extrabold text-xl ${
-              darkMode ? config.titleDarkColor : config.titleColor
-            }`}
-            style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
+            style={{
+              fontFamily: 'Noto Naskh Arabic, serif',
+              fontSize: '1.25rem',
+              fontWeight: '800',
+              color: title,
+              margin: 0,
+            }}
           >
             {config.label}
           </h4>
-          <span className="text-2xl">{config.icon}</span>
+          <span style={{ fontSize: '1.5rem' }}>{config.icon}</span>
         </div>
       </div>
-      {/* نص التفسير — bold كامل */}
+
+      {/* نص التفسير */}
       <p
-        className={`leading-[2.3rem] text-base font-bold whitespace-pre-line ${
-          darkMode ? 'text-gray-100' : 'text-gray-800'
-        }`}
-        style={{ fontFamily: 'Noto Naskh Arabic, serif', direction: 'rtl', textAlign: 'right' }}
+        style={{
+          fontFamily: 'Noto Naskh Arabic, serif',
+          fontSize: '1rem',
+          fontWeight: '700',
+          lineHeight: '2.3rem',
+          direction: 'rtl',
+          textAlign: 'right',
+          color: darkMode ? '#f1f5f9' : '#1e293b',
+          whiteSpace: 'pre-line',
+          margin: 0,
+        }}
       >
         {text}
       </p>
@@ -178,8 +193,6 @@ function FaydBox({ config, text, darkMode }) {
 export default function AyahCard({ ayah, apiText, language, darkMode }) {
   const [isOpen, setIsOpen] = useState(false);
   const theme = THEME_CONFIG[ayah.theme] || THEME_CONFIG.general;
-
-  // Use API text if available, fallback to local ayah_text
   const displayText = apiText || ayah.ayah_text;
 
   return (
@@ -188,16 +201,13 @@ export default function AyahCard({ ayah, apiText, language, darkMode }) {
         ${darkMode ? `bg-gray-800 ${theme.darkBorder}` : `bg-white ${theme.border}`}
         border border-transparent hover:-translate-y-0.5`}
     >
-      {/* Ayah Header — clickable */}
+      {/* رأس البطاقة */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full text-right p-5 flex items-start justify-between gap-4 group"
       >
-        {/* Ayah number badge + theme */}
         <div className="flex flex-col items-center gap-2 shrink-0">
-          <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm ${theme.headerBg}`}
-          >
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm ${theme.headerBg}`}>
             {ayah.id}
           </div>
           <span
@@ -208,45 +218,31 @@ export default function AyahCard({ ayah, apiText, language, darkMode }) {
           </span>
         </div>
 
-        {/* Ayah text */}
         <div className="flex-1 text-right" dir="rtl">
           <p
-            className={`leading-[2.8rem] text-xl font-bold ${
-              darkMode ? 'text-gray-100' : 'text-gray-800'
-            }`}
+            className={`leading-[2.8rem] text-xl font-bold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}
             style={{ fontFamily: 'Amiri, serif' }}
           >
             {displayText}
           </p>
           {apiText && (
-            <span className="text-[10px] text-emerald-500 font-medium">
-              ✓ نص موثّق من API
-            </span>
+            <span className="text-[10px] text-emerald-500 font-medium">✓ نص موثّق من API</span>
           )}
         </div>
 
-        {/* Toggle icon */}
-        <div
-          className={`shrink-0 mt-1 p-1.5 rounded-full transition-all ${
-            isOpen ? 'bg-emerald-100 text-emerald-600 rotate-0' : 'bg-gray-100 text-gray-400'
-          }`}
-        >
+        <div className={`shrink-0 mt-1 p-1.5 rounded-full transition-all ${isOpen ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>
           {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </div>
       </button>
 
-      {/* Dropdown — Tafsir Content */}
+      {/* محتوى الفيوض */}
       {isOpen && (
         <div
-          className={`border-t px-5 pb-5 pt-4 ${
-            darkMode ? 'border-gray-700 bg-gray-800/80' : 'border-gray-100 bg-gray-50/60'
-          }`}
+          className={`border-t px-5 pb-5 pt-4 ${darkMode ? 'border-gray-700 bg-gray-800/80' : 'border-gray-100 bg-gray-50/60'}`}
           dir="rtl"
         >
           <h3
-            className={`text-sm font-bold mb-4 text-center ${
-              darkMode ? 'text-gray-300' : 'text-gray-500'
-            }`}
+            className={`text-sm font-bold mb-4 text-center ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}
             style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
           >
             ✦ فيوض التفسير ✦
