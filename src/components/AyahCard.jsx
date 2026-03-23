@@ -134,6 +134,16 @@ function CopyButton({ text }) {
   );
 }
 
+// استخراج النص حسب اللغة
+function extractText(value, language) {
+  if (!value) return null;
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object') {
+    return value[language] || value['ar'] || Object.values(value)[0] || null;
+  }
+  return null;
+}
+
 function FaydBox({ config, text, darkMode }) {
   if (!text) return null;
 
@@ -205,6 +215,7 @@ export default function AyahCard({ ayah, language, darkMode }) {
   const [isOpen, setIsOpen] = useState(false);
   const theme = THEME_CONFIG[ayah.theme] || THEME_CONFIG.general;
   const displayText = ayah.ayah_text;
+  const lang = language || 'ar';
 
   return (
     <div
@@ -261,7 +272,7 @@ export default function AyahCard({ ayah, language, darkMode }) {
             <FaydBox
               key={config.key}
               config={config}
-              text={ayah.fuyud?.[config.key]}
+              text={extractText(ayah.fuyud?.[config.key], lang)}
               darkMode={darkMode}
             />
           ))}
