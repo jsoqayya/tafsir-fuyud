@@ -219,15 +219,16 @@ function Header({ lang, onLangChange }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer' }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div style={{
-              width: 48, height: 48,
-              borderRadius: 12,
-              border: `2px solid ${COLORS.GOLD}50`,
+              width: 72, height: 72,
+              borderRadius: 14,
+              border: `2px solid ${COLORS.GOLD}70`,
               overflow: 'hidden',
               flexShrink: 0,
-              background: COLORS.BG3,
+              background: '#1a1200',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: `0 0 18px ${COLORS.GOLD}25, 0 0 0 4px ${COLORS.GOLD}10`,
             }}>
-              <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
             </div>
             <div dir="rtl">
               <div style={{
@@ -353,7 +354,34 @@ function HeroSection({ onNavigate }) {
       }} />
 
       {/* Content */}
-      <div style={{ textAlign: 'center', maxWidth: 780, padding: '60px 24px', position: 'relative', zIndex: 1 }} dir="rtl">
+      <div style={{ textAlign: 'center', maxWidth: 820, padding: '60px 24px', position: 'relative', zIndex: 1 }} dir="rtl">
+
+        {/* Hero Logo */}
+        <div style={{
+          display: 'flex', justifyContent: 'center', marginBottom: 28,
+        }}>
+          <div style={{
+            width: 180, height: 180,
+            borderRadius: 24,
+            border: `2.5px solid ${COLORS.GOLD}80`,
+            overflow: 'hidden',
+            background: '#120e00',
+            boxShadow: `0 0 60px ${COLORS.GOLD}30, 0 0 0 6px ${COLORS.GOLD}10, 0 8px 40px rgba(0,0,0,0.5)`,
+            position: 'relative',
+          }}>
+            <img
+              src="/logo.png"
+              alt="فيوض التأويل المعاصر"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                display: 'block',
+                padding: 8,
+              }}
+            />
+          </div>
+        </div>
 
         {/* Basmala */}
         <div style={{
@@ -1594,20 +1622,21 @@ function Footer() {
         }} dir="rtl">
           {/* Brand column */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12, marginBottom: 16 }}>
               <div style={{
-                width: 44, height: 44, borderRadius: 10,
-                border: `1.5px solid ${COLORS.BORDER2}`,
-                overflow: 'hidden', background: COLORS.CARD,
+                width: 110, height: 110, borderRadius: 16,
+                border: `2px solid ${COLORS.GOLD}60`,
+                overflow: 'hidden', background: '#120e00',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0,
+                boxShadow: `0 0 24px ${COLORS.GOLD}20`,
               }}>
-                <img src="/logo.png" alt="Logo" style={{ width: '100%', objectFit: 'contain' }} />
+                <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', padding: 4 }} />
               </div>
               <div>
                 <div style={{
-                  fontFamily: 'Amiri, serif', fontSize: '1rem',
-                  color: COLORS.GOLD2, fontWeight: 700, lineHeight: 1.3,
+                  fontFamily: 'Amiri, serif', fontSize: '1.1rem',
+                  color: COLORS.GOLD2, fontWeight: 700, lineHeight: 1.4,
                 }}>
                   فيوض التأويل المعاصر
                 </div>
