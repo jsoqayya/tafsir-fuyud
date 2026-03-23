@@ -165,41 +165,34 @@ export default function HomePage() {
         {/* ── الهيرو ── */}
         <div style={{ textAlign:'center', paddingTop:52, paddingBottom:8 }}>
 
-          {/* الشعار */}
+          {/* الشعار – يظهر كاملاً بلا قطع */}
           <div style={{
-            width: 170,
-            height: 170,
+            width: 220,
             margin: '0 auto 28px',
-            borderRadius: '50%',
-            overflow: 'hidden',
-            background: `linear-gradient(135deg, ${BG_MID}, ${BG_ACCENT})`,
-            border: `2.5px solid ${GOLD}55`,
-            boxShadow: `0 0 0 6px ${GOLD}18, 0 12px 40px rgba(0,0,0,0.45)`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             position: 'relative',
+            display: 'inline-block',
           }}>
+            {/* إطار ذهبي خلفي */}
+            <div style={{
+              position: 'absolute',
+              inset: -8,
+              borderRadius: 18,
+              border: `1px solid ${GOLD}30`,
+              boxShadow: `0 0 0 1px ${GOLD}10, 0 12px 40px rgba(0,0,0,0.45)`,
+              pointerEvents: 'none',
+            }} />
             <img
               src="/logo.png"
               alt="فيوض التأويل المعاصر"
               style={{
                 width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center',
+                height: 'auto',
                 display: 'block',
+                borderRadius: 12,
+                boxShadow: `0 4px 32px rgba(0,0,0,0.5), 0 0 0 2px ${GOLD}40`,
               }}
               onError={e => { e.target.style.display = 'none'; }}
             />
-            {/* هالة ذهبية حول الشعار */}
-            <div style={{
-              position: 'absolute',
-              inset: -10,
-              borderRadius: '50%',
-              border: `1px solid ${GOLD}20`,
-              pointerEvents: 'none',
-            }} />
           </div>
 
           {/* العنوان */}
