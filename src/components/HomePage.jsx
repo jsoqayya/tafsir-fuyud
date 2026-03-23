@@ -158,11 +158,11 @@ function Header({ lang, onLangChange }) {
       {/* ── Language Switcher Bar (Top) ── */}
       <div style={{
         background: `linear-gradient(to right, ${COLORS.BG}, ${COLORS.BG3}, ${COLORS.BG})`,
-        borderBottom: `1px solid ${COLORS.BORDER}`,
-        padding: '6px 20px',
+        borderBottom: `1px solid ${COLORS.BORDER2}`,
+        padding: '9px 20px',
         display: 'flex',
         justifyContent: 'center',
-        gap: 4,
+        gap: 8,
         flexWrap: 'wrap',
       }}>
         {LANGUAGES.map(l => (
@@ -172,22 +172,37 @@ function Header({ lang, onLangChange }) {
             style={{
               background: lang === l.code
                 ? `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`
-                : 'transparent',
-              color: lang === l.code ? COLORS.BG : COLORS.TXT2,
-              border: `1px solid ${lang === l.code ? COLORS.GOLD : COLORS.BORDER}`,
-              borderRadius: 20,
-              padding: '3px 12px',
-              fontSize: '0.75rem',
+                : `rgba(255,255,255,0.04)`,
+              color: lang === l.code ? COLORS.BG : COLORS.TXT,
+              border: `1.5px solid ${lang === l.code ? COLORS.GOLD : COLORS.BORDER2}`,
+              borderRadius: 24,
+              padding: '6px 18px',
+              fontSize: '0.92rem',
               fontWeight: 700,
               cursor: 'pointer',
               transition: 'all 0.2s',
               fontFamily: l.code === 'ar' || l.code === 'ur' ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
               display: 'flex',
               alignItems: 'center',
-              gap: 5,
+              gap: 7,
+              boxShadow: lang === l.code ? `0 2px 12px ${COLORS.GOLD}35` : 'none',
+            }}
+            onMouseEnter={e => {
+              if (lang !== l.code) {
+                e.currentTarget.style.background = `rgba(201,164,60,0.12)`;
+                e.currentTarget.style.borderColor = COLORS.GOLD;
+                e.currentTarget.style.color = COLORS.GOLD2;
+              }
+            }}
+            onMouseLeave={e => {
+              if (lang !== l.code) {
+                e.currentTarget.style.background = `rgba(255,255,255,0.04)`;
+                e.currentTarget.style.borderColor = COLORS.BORDER2;
+                e.currentTarget.style.color = COLORS.TXT;
+              }
             }}
           >
-            <span>{l.flag}</span>
+            <span style={{ fontSize: '1.1rem' }}>{l.flag}</span>
             <span>{l.label}</span>
           </button>
         ))}
@@ -233,17 +248,22 @@ function Header({ lang, onLangChange }) {
             <div dir="rtl">
               <div style={{
                 fontFamily: 'Amiri, serif',
-                fontSize: '1.1rem',
+                fontSize: '1.55rem',
                 fontWeight: 700,
                 color: COLORS.GOLD2,
-                lineHeight: 1.2,
+                lineHeight: 1.25,
+                letterSpacing: '0.02em',
+                textShadow: `0 0 20px ${COLORS.GOLD}40`,
               }}>
                 فيوض التأويل المعاصر
               </div>
               <div style={{
-                fontSize: '0.7rem',
-                color: COLORS.TXT3,
+                fontSize: '0.88rem',
+                color: COLORS.TXT2,
                 fontFamily: 'Noto Naskh Arabic, serif',
+                fontWeight: 500,
+                marginTop: 3,
+                letterSpacing: '0.01em',
               }}>
                 تفسير سورة البقرة • قراءة معاصرة
               </div>
@@ -257,9 +277,10 @@ function Header({ lang, onLangChange }) {
               <a key={link.href} href={link.href} style={{
                 color: COLORS.TXT2,
                 textDecoration: 'none',
-                fontSize: '0.88rem',
+                fontSize: '0.95rem',
                 fontFamily: 'Noto Naskh Arabic, serif',
-                padding: '6px 14px',
+                fontWeight: 600,
+                padding: '7px 16px',
                 borderRadius: 8,
                 transition: 'all 0.2s',
                 border: '1px solid transparent',
@@ -286,23 +307,24 @@ function Header({ lang, onLangChange }) {
               background: `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`,
               color: COLORS.BG,
               border: 'none',
-              borderRadius: 10,
-              padding: '9px 20px',
-              fontSize: '0.85rem',
+              borderRadius: 12,
+              padding: '12px 26px',
+              fontSize: '1rem',
               fontWeight: 800,
               fontFamily: 'Noto Naskh Arabic, serif',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
-              boxShadow: `0 4px 12px ${COLORS.GOLD}30`,
+              boxShadow: `0 4px 16px ${COLORS.GOLD}40`,
               transition: 'all 0.2s',
+              letterSpacing: '0.01em',
             }}
             onMouseEnter={e => {
-              e.target.style.transform = 'translateY(-1px)';
-              e.target.style.boxShadow = `0 6px 20px ${COLORS.GOLD}50`;
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = `0 8px 24px ${COLORS.GOLD}55`;
             }}
             onMouseLeave={e => {
               e.target.style.transform = 'none';
-              e.target.style.boxShadow = `0 4px 12px ${COLORS.GOLD}30`;
+              e.target.style.boxShadow = `0 4px 16px ${COLORS.GOLD}40`;
             }}
           >
             ابدأ التفسير ←
