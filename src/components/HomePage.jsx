@@ -1,827 +1,676 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Search, BookOpen, Globe, ChevronLeft, ChevronDown,
+  Star, Sparkles, BookMarked, Heart, Brain, Lightbulb,
+  Shield, Award, Users, Layers, Map, Volume2,
+  Bell, Mail, ArrowLeft, Menu, X, CheckCircle,
+  Compass, Feather, Flame, Eye, Zap, BarChart2, MessageSquare
+} from 'lucide-react';
 
-/* ══════════════════════════════════════════════════════
-   COLORS & TOKENS
-══════════════════════════════════════════════════════ */
-const C = {
-  emerald:     '#1a4731',
-  emeraldMid:  '#1e5c3a',
-  emeraldLight:'#2a7a50',
-  teal:        '#0d3d2e',
-  gold:        '#b8973a',
-  goldLight:   '#d4af5a',
-  goldPale:    '#e8d08a',
-  ivory:       '#faf7f0',
-  parchment:   '#f4efe4',
-  cream:       '#ede8dc',
-  textDark:    '#1a1a1a',
-  textMid:     '#3a3a3a',
-  textLight:   '#6b6b6b',
-  border:      '#ddd5c0',
-  borderLight: '#ece7da',
-  white:       '#ffffff',
-  navy:        '#0f1e35',
+/* ══════════════════════════════════════════════════════════
+   CONSTANTS & CONFIG
+══════════════════════════════════════════════════════════ */
+const COLORS = {
+  // Deep emerald greens
+  BG:        '#0b1f14',
+  BG2:       '#0f2d1c',
+  BG3:       '#133523',
+  BG4:       '#1a4230',
+  CARD:      '#122b1d',
+  CARD2:     '#163520',
+  BORDER:    'rgba(180,148,60,0.18)',
+  BORDER2:   'rgba(180,148,60,0.35)',
+  // Gold palette
+  GOLD:      '#c9a43c',
+  GOLD2:     '#e2bc5a',
+  GOLD3:     '#f0d07a',
+  GOLD_DIM:  'rgba(201,164,60,0.12)',
+  GOLD_MID:  'rgba(201,164,60,0.25)',
+  GOLD_TXT:  'rgba(240,208,122,0.9)',
+  // Text
+  TXT:       '#f0ead8',
+  TXT2:      'rgba(240,234,216,0.75)',
+  TXT3:      'rgba(240,234,216,0.5)',
+  // Accent
+  TEAL:      '#2d7a62',
+  TEAL2:     '#3a9478',
 };
 
-/* ══════════════════════════════════════════════════════
-   LANGUAGE DATA
-══════════════════════════════════════════════════════ */
 const LANGUAGES = [
-  { code:'ar', label:'العربية',         flag:'🇸🇦', dir:'rtl', greeting:'بِسْمِ اللَّهِ' },
-  { code:'en', label:'English',         flag:'🇬🇧', dir:'ltr', greeting:'In the Name of Allah' },
-  { code:'ur', label:'اردو',            flag:'🇵🇰', dir:'rtl', greeting:'بِسْمِ اللَّهِ' },
-  { code:'id', label:'Bahasa Indonesia',flag:'🇮🇩', dir:'ltr', greeting:'Bismillah' },
-  { code:'tr', label:'Türkçe',          flag:'🇹🇷', dir:'ltr', greeting:'Bismillah' },
+  { code: 'ar', label: 'العربية',   flag: '🇸🇦', native: 'Arabic',    dir: 'rtl' },
+  { code: 'en', label: 'English',   flag: '🇬🇧', native: 'English',   dir: 'ltr' },
+  { code: 'ur', label: 'اردو',      flag: '🇵🇰', native: 'Urdu',      dir: 'rtl' },
+  { code: 'id', label: 'Bahasa',    flag: '🇮🇩', native: 'Indonesia', dir: 'ltr' },
+  { code: 'tr', label: 'Türkçe',    flag: '🇹🇷', native: 'Turkish',   dir: 'ltr' },
 ];
 
-/* ══════════════════════════════════════════════════════
-   SVG DECORATIVE ELEMENTS
-══════════════════════════════════════════════════════ */
-function GeomPattern({ opacity = 0.06, size = 400 }) {
+const NAV_LINKS = [
+  { href: '#about',    label: 'عن المشروع' },
+  { href: '#surahs',   label: 'تصفح السور' },
+  { href: '#paths',    label: 'مسارات التأويل' },
+  { href: '#features', label: 'الخصائص' },
+];
+
+/* ══════════════════════════════════════════════════════════
+   UTILITY COMPONENTS
+══════════════════════════════════════════════════════════ */
+
+// 8-point Islamic star SVG
+function IslamicStar({ size = 40, color = COLORS.GOLD, opacity = 0.6, rotate = 0 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 400 400" fill="none"
-      style={{ opacity, display:'block', pointerEvents:'none' }}>
-      {/* outer frame */}
-      <rect x="10" y="10" width="380" height="380" fill="none"
-        stroke={C.gold} strokeWidth="1" />
-      <rect x="20" y="20" width="360" height="360" fill="none"
-        stroke={C.gold} strokeWidth="0.5" />
-      {/* 8-point star */}
-      {[0,45,90,135,180,225,270,315].map((a,i)=>(
-        <g key={i} transform={`translate(200,200) rotate(${a})`}>
-          <polygon points="0,-160 18,-100 0,-80 -18,-100" fill={C.gold}/>
-        </g>
-      ))}
-      <circle cx="200" cy="200" r="78" fill="none" stroke={C.gold} strokeWidth="1.2"/>
-      <circle cx="200" cy="200" r="56" fill="none" stroke={C.gold} strokeWidth="0.7"/>
-      <polygon points="200,122 256,156 256,224 200,258 144,224 144,156"
-        fill="none" stroke={C.gold} strokeWidth="1"/>
-      {/* corner ornaments */}
-      {[[30,30],[370,30],[30,370],[370,370]].map(([x,y],i)=>(
-        <g key={i} transform={`translate(${x},${y})`}>
-          <circle r="8" fill="none" stroke={C.gold} strokeWidth="1"/>
-          <circle r="3" fill={C.gold} opacity="0.6"/>
-        </g>
-      ))}
-      {/* side ornaments */}
-      {[[200,30],[370,200],[200,370],[30,200]].map(([x,y],i)=>(
-        <g key={i} transform={`translate(${x},${y})`}>
-          <polygon points="0,-12 8,-4 12,0 8,4 0,12 -8,4 -12,0 -8,-4"
-            fill="none" stroke={C.gold} strokeWidth="0.8"/>
-        </g>
-      ))}
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{ transform: `rotate(${rotate}deg)`, opacity }}>
+      <polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" 
+        fill="none" stroke={color} strokeWidth="1.5"/>
+      <polygon points="50,18 58,40 82,40 63,54 71,78 50,64 29,78 37,54 18,40 42,40"
+        fill={color} fillOpacity="0.15"/>
     </svg>
   );
 }
 
-function GoldDivider({ width = '100%', margin = '0' }) {
+// Decorative divider
+function GoldDivider({ my = 0 }) {
   return (
-    <div style={{ display:'flex', alignItems:'center', gap:12, margin, width }}>
-      <div style={{ flex:1, height:'1px',
-        background:`linear-gradient(to right, transparent, ${C.gold}60, transparent)` }}/>
-      <svg width="20" height="20" viewBox="0 0 20 20">
-        <polygon points="10,1 12.4,7.6 19,10 12.4,12.4 10,19 7.6,12.4 1,10 7.6,7.6"
-          fill={C.gold} opacity="0.7"/>
-      </svg>
-      <div style={{ flex:1, height:'1px',
-        background:`linear-gradient(to left, transparent, ${C.gold}60, transparent)` }}/>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: `${my}px 0` }}>
+      <div style={{ flex: 1, height: 1, background: `linear-gradient(to left, ${COLORS.GOLD}40, transparent)` }} />
+      <IslamicStar size={20} color={COLORS.GOLD2} opacity={0.8} />
+      <div style={{ flex: 1, height: 1, background: `linear-gradient(to right, ${COLORS.GOLD}40, transparent)` }} />
     </div>
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   0. LANGUAGE SELECTION SPLASH (first screen)
-══════════════════════════════════════════════════════ */
-function LanguageSplash({ onSelect }) {
-  const [hovered, setHovered] = useState(null);
-
+// Section title
+function SectionTitle({ title, subtitle, light = false, center = true }) {
   return (
-    <div style={{
-      minHeight:'100vh', display:'flex', flexDirection:'column',
-      alignItems:'center', justifyContent:'center',
-      background:`linear-gradient(160deg, ${C.teal} 0%, ${C.emerald} 40%, ${C.emeraldMid} 100%)`,
-      position:'relative', overflow:'hidden', padding:'40px 20px',
-    }}>
-      {/* bg pattern */}
-      <div style={{ position:'absolute', top:-100, right:-100, opacity:0.07 }}>
-        <GeomPattern size={500}/>
-      </div>
-      <div style={{ position:'absolute', bottom:-100, left:-100, opacity:0.05 }}>
-        <GeomPattern size={400}/>
-      </div>
-
-      {/* gold top line */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:3,
-        background:`linear-gradient(90deg, transparent, ${C.gold}, ${C.goldPale}, ${C.gold}, transparent)` }}/>
-
-      {/* logo */}
-      <div style={{ marginBottom:36, textAlign:'center' }}>
-        <img src="/logo.png" alt="فيوض التأويل المعاصر"
-          style={{ width:160, height:'auto', display:'block', margin:'0 auto 20px',
-            filter:'drop-shadow(0 4px 20px rgba(0,0,0,0.5))' }}
-          onError={e=>{e.target.style.display='none'}}/>
-        <div style={{ height:1, width:200, margin:'0 auto 16px',
-          background:`linear-gradient(90deg, transparent, ${C.gold}80, transparent)` }}/>
-        <p style={{ color:`${C.goldPale}90`, fontSize:'0.8rem',
-          fontFamily:'Noto Naskh Arabic, serif', letterSpacing:2 }}>
-          اختر لغتك • Choose Your Language
-        </p>
-      </div>
-
-      {/* language cards */}
-      <div style={{
-        display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))',
-        gap:14, width:'100%', maxWidth:780,
+    <div style={{ textAlign: center ? 'center' : 'right', marginBottom: 40 }} dir="rtl">
+      <GoldDivider my={0} />
+      <h2 style={{
+        fontFamily: 'Amiri, serif',
+        fontSize: 'clamp(1.6rem, 3vw, 2.4rem)',
+        color: light ? COLORS.GOLD3 : COLORS.GOLD2,
+        margin: '16px 0 10px',
+        fontWeight: 700,
+        letterSpacing: '0.02em',
       }}>
-        {LANGUAGES.map(lang => (
-          <button key={lang.code}
-            onClick={() => onSelect(lang.code)}
-            onMouseEnter={() => setHovered(lang.code)}
-            onMouseLeave={() => setHovered(null)}
-            style={{
-              background: hovered===lang.code
-                ? `linear-gradient(135deg, ${C.gold}25, ${C.gold}10)`
-                : `linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))`,
-              border: `1px solid ${hovered===lang.code ? C.gold+'90' : C.gold+'28'}`,
-              borderRadius:14, padding:'22px 18px',
-              cursor:'pointer', textAlign:'center',
-              transform: hovered===lang.code ? 'translateY(-4px)' : 'none',
-              boxShadow: hovered===lang.code ? `0 12px 32px rgba(0,0,0,0.3), 0 0 0 1px ${C.gold}30` : 'none',
-              transition:'all 0.25s ease',
-            }}>
-            <div style={{ fontSize:'2.2rem', marginBottom:10, lineHeight:1 }}>{lang.flag}</div>
-            <div style={{
-              fontFamily: lang.dir==='rtl' ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-              fontSize: lang.code==='id' ? '0.82rem' : '1.05rem',
-              fontWeight:700, color: C.goldPale, marginBottom:6,
-            }}>{lang.label}</div>
-            <div style={{
-              fontFamily:'Amiri, serif', fontSize:'0.78rem',
-              color:`${C.goldPale}60`, fontStyle:'italic',
-            }}>{lang.greeting}</div>
-          </button>
-        ))}
-      </div>
-
-      <div style={{ marginTop:32, color:`${C.goldPale}40`, fontSize:'0.72rem',
-        fontFamily:'Inter, sans-serif', letterSpacing:1 }}>
-        يمكن تغيير اللغة في أي وقت • Language can be changed anytime
-      </div>
-
-      {/* gold bottom line */}
-      <div style={{ position:'absolute', bottom:0, left:0, right:0, height:2,
-        background:`linear-gradient(90deg, transparent, ${C.gold}, ${C.goldPale}, ${C.gold}, transparent)` }}/>
+        {title}
+      </h2>
+      {subtitle && (
+        <p style={{
+          fontFamily: 'Noto Naskh Arabic, serif',
+          fontSize: '1.05rem',
+          color: COLORS.TXT2,
+          maxWidth: 560,
+          margin: center ? '0 auto' : '0',
+          lineHeight: 1.9,
+        }}>
+          {subtitle}
+        </p>
+      )}
+      <GoldDivider my={8} />
     </div>
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   1. HEADER
-══════════════════════════════════════════════════════ */
-function Header({ lang, setLang, scrolled }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const isRTL = ['ar','ur'].includes(lang);
+/* ══════════════════════════════════════════════════════════
+   GEOMETRIC BACKGROUND PATTERN
+══════════════════════════════════════════════════════════ */
+function GeometricPattern({ opacity = 0.04 }) {
+  return (
+    <svg
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <pattern id="geo" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          <path d="M40 0 L80 40 L40 80 L0 40 Z" fill="none" stroke={COLORS.GOLD} strokeWidth="0.5" opacity={opacity * 10}/>
+          <circle cx="40" cy="40" r="20" fill="none" stroke={COLORS.GOLD} strokeWidth="0.3" opacity={opacity * 8}/>
+          <path d="M40 20 L60 40 L40 60 L20 40 Z" fill="none" stroke={COLORS.GOLD} strokeWidth="0.3" opacity={opacity * 6}/>
+        </pattern>
+        <pattern id="arabesq" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+          <circle cx="60" cy="60" r="50" fill="none" stroke={COLORS.GOLD} strokeWidth="0.4" opacity={opacity * 5}/>
+          <path d="M60 10 L110 60 L60 110 L10 60 Z" fill="none" stroke={COLORS.GOLD} strokeWidth="0.5" opacity={opacity * 7}/>
+          <path d="M60 25 L95 60 L60 95 L25 60 Z" fill="none" stroke={COLORS.GOLD} strokeWidth="0.3" opacity={opacity * 4}/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#geo)"/>
+    </svg>
+  );
+}
 
-  const navItems = {
-    ar: ['الرئيسية','السور','البحث','المسارات','عن المشروع'],
-    en: ['Home','Surahs','Search','Pathways','About'],
-    ur: ['ہوم','سورتیں','تلاش','راستے','منصوبے کے بارے میں'],
-    id: ['Beranda','Surah','Cari','Jalur','Tentang'],
-    tr: ['Ana Sayfa','Sureler','Ara','Yollar','Hakkında'],
-  };
+/* ══════════════════════════════════════════════════════════
+   HEADER COMPONENT
+══════════════════════════════════════════════════════════ */
+function Header({ lang, onLangChange }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const currentLang = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
 
   return (
-    <header style={{
-      position:'fixed', top:0, left:0, right:0, zIndex:1000,
-      background: scrolled
-        ? `${C.emerald}f8`
-        : `linear-gradient(180deg, ${C.teal}ee 0%, ${C.teal}aa 100%)`,
-      backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      borderBottom: scrolled ? `1px solid ${C.gold}30` : '1px solid transparent',
-      boxShadow: scrolled ? `0 4px 24px rgba(0,0,0,0.25)` : 'none',
-      transition:'all 0.3s ease',
-    }}>
-      {/* top language bar */}
+    <>
+      {/* ── Language Switcher Bar (Top) ── */}
       <div style={{
-        borderBottom:`1px solid ${C.gold}18`,
-        padding:'6px 32px', display:'flex', justifyContent:'flex-end',
-        alignItems:'center', gap:6, direction:'ltr',
+        background: `linear-gradient(to right, ${COLORS.BG}, ${COLORS.BG3}, ${COLORS.BG})`,
+        borderBottom: `1px solid ${COLORS.BORDER}`,
+        padding: '6px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: 4,
+        flexWrap: 'wrap',
       }}>
         {LANGUAGES.map(l => (
-          <button key={l.code} onClick={() => setLang(l.code)}
+          <button
+            key={l.code}
+            onClick={() => onLangChange(l.code)}
             style={{
-              background: lang===l.code ? `${C.gold}25` : 'transparent',
-              border: `1px solid ${lang===l.code ? C.gold+'60' : 'transparent'}`,
-              color: lang===l.code ? C.goldPale : `${C.goldPale}60`,
-              padding:'2px 10px', borderRadius:20, fontSize:'0.7rem',
-              fontFamily: l.dir==='rtl' ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-              cursor:'pointer', transition:'all 0.2s',
-              fontWeight: lang===l.code ? 700 : 400,
-            }}>
-            {l.flag} {l.label}
+              background: lang === l.code
+                ? `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`
+                : 'transparent',
+              color: lang === l.code ? COLORS.BG : COLORS.TXT2,
+              border: `1px solid ${lang === l.code ? COLORS.GOLD : COLORS.BORDER}`,
+              borderRadius: 20,
+              padding: '3px 12px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              fontFamily: l.code === 'ar' || l.code === 'ur' ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+            }}
+          >
+            <span>{l.flag}</span>
+            <span>{l.label}</span>
           </button>
         ))}
       </div>
 
-      {/* main header */}
-      <div style={{
-        maxWidth:1280, margin:'0 auto', padding:'12px 32px',
-        display:'flex', alignItems:'center', justifyContent:'space-between',
-        direction: isRTL ? 'rtl' : 'ltr',
+      {/* ── Main Sticky Header ── */}
+      <header style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        background: scrolled
+          ? `rgba(11,31,20,0.97)`
+          : `linear-gradient(to bottom, ${COLORS.BG2}f0, ${COLORS.BG2}d0)`,
+        backdropFilter: 'blur(16px)',
+        borderBottom: `1px solid ${scrolled ? COLORS.BORDER2 : COLORS.BORDER}`,
+        transition: 'all 0.3s',
+        boxShadow: scrolled ? '0 4px 24px rgba(0,0,0,0.4)' : 'none',
       }}>
-        {/* logo + title */}
-        <div style={{ display:'flex', alignItems:'center', gap:14, cursor:'pointer' }}
-          onClick={() => window.scrollTo({top:0,behavior:'smooth'})}>
-          <img src="/logo.png" alt="logo"
-            style={{ width:52, height:'auto', filter:'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}
-            onError={e=>{e.target.style.display='none'}}/>
-          <div>
-            <div style={{
-              fontFamily:'Amiri, serif', fontSize:'1.2rem', color:C.goldPale,
-              lineHeight:1.2, fontWeight:700,
-            }}>فيوض التأويل المعاصر</div>
-            <div style={{
-              fontFamily:'Inter, sans-serif', fontSize:'0.65rem',
-              color:`${C.goldPale}60`, letterSpacing:1, marginTop:2,
-            }}>FUYUD AL-TAWEEL AL-MU'ASIR</div>
-          </div>
-        </div>
-
-        {/* nav */}
-        <nav style={{ display:'flex', gap:28, alignItems:'center' }}>
-          {(navItems[lang]||navItems.ar).map((item,i) => (
-            <span key={i} style={{
-              color:`${C.goldPale}85`, fontSize:'0.82rem',
-              fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-              cursor:'pointer', transition:'color 0.2s',
-              fontWeight:500,
-            }}
-            onMouseEnter={e => e.target.style.color=C.goldPale}
-            onMouseLeave={e => e.target.style.color=`${C.goldPale}85`}
-            >{item}</span>
-          ))}
-          {/* CTA */}
-          <button onClick={() => navigate('/ar/baqarah/1')}
-            style={{
-              background:`linear-gradient(135deg, ${C.gold}, ${C.goldLight})`,
-              color:C.teal, border:'none', borderRadius:24,
-              padding:'8px 20px', fontSize:'0.8rem', fontWeight:700,
-              fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-              cursor:'pointer', boxShadow:`0 4px 14px ${C.gold}40`,
-              whiteSpace:'nowrap',
-            }}>
-            {lang==='ar'?'ابدأ التفسير': lang==='en'?'Start Reading': lang==='ur'?'پڑھنا شروع کریں': lang==='id'?'Mulai Membaca':'Okumaya Başla'}
-          </button>
-        </nav>
-      </div>
-    </header>
-  );
-}
-
-/* ══════════════════════════════════════════════════════
-   2. HERO SECTION
-══════════════════════════════════════════════════════ */
-function HeroSection({ lang, navigate }) {
-  const isRTL = ['ar','ur'].includes(lang);
-
-  const heroText = {
-    ar: {
-      title:'فيوض التأويل المعاصر',
-      sub:'منصة تفسيرية معرفية تجمع بين أصالة التفسير ووعي الإنسان المعاصر',
-      desc:'قراءة تفسيرية رصينة بلغة تصل إلى الروح والعقل والحياة، تجمع بين البيان القرآني والتدبر التربوي والبصيرة النفسية',
-      btn1:'ابدأ التصفح', btn2:'تصفح السور', btn3:'عن المشروع',
-      tagline:'أصالة التفسير... ووعي الإنسان المعاصر',
-    },
-    en: {
-      title:'Fuyud Al-Taweel Al-Muasir',
-      sub:'A scholarly tafsir platform combining classical authenticity with contemporary insight',
-      desc:'A refined Quranic reading that reaches the soul, mind, and life — uniting linguistic excellence, pedagogical reflection, and spiritual depth',
-      btn1:'Start Reading', btn2:'Browse Surahs', btn3:'About',
-      tagline:'Rooted scholarship for the contemporary mind',
-    },
-    ur: {
-      title:'فيوض التأويل المعاصر',
-      sub:'ایک علمی تفسیری پلیٹ فارم جو کلاسیکی اصالت اور عصری بصیرت کو یکجا کرتا ہے',
-      desc:'قرآنی تفسیر کی ایک باوقار قرائت جو روح، عقل اور زندگی تک پہنچتی ہے',
-      btn1:'پڑھنا شروع کریں', btn2:'سورتیں دیکھیں', btn3:'منصوبے کے بارے میں',
-      tagline:'تفسیر کی اصالت اور معاصر انسان کا شعور',
-    },
-    id: {
-      title:'Fuyud Al-Taweel Al-Muasir',
-      sub:'Platform tafsir ilmiah yang memadukan keaslian klasik dengan wawasan kontemporer',
-      desc:'Bacaan tafsir yang halus menjangkau jiwa, akal, dan kehidupan',
-      btn1:'Mulai Membaca', btn2:'Jelajahi Surah', btn3:'Tentang',
-      tagline:'Keaslian tafsir untuk pikiran kontemporer',
-    },
-    tr: {
-      title:'Fuyud Al-Taweel Al-Muasir',
-      sub:'Klasik özgünlüğü çağdaş içgörüyle birleştiren ilmi tefsir platformu',
-      desc:'Ruha, akla ve hayata ulaşan rafine bir Kuran okuması',
-      btn1:'Okumaya Başla', btn2:'Sureleri Gözat', btn3:'Hakkında',
-      tagline:'Çağdaş zihin için köklü ilim',
-    },
-  };
-  const t = heroText[lang] || heroText.ar;
-
-  return (
-    <section style={{
-      minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center',
-      background:`linear-gradient(160deg, ${C.teal} 0%, ${C.emerald} 50%, ${C.emeraldMid} 100%)`,
-      position:'relative', overflow:'hidden', paddingTop:120,
-    }}>
-      {/* bg ornaments */}
-      <div style={{ position:'absolute', top:-80, right:-80, opacity:0.07 }}>
-        <GeomPattern size={480}/>
-      </div>
-      <div style={{ position:'absolute', bottom:-60, left:-60, opacity:0.05 }}>
-        <GeomPattern size={360}/>
-      </div>
-      {/* soft radial glow */}
-      <div style={{
-        position:'absolute', top:'50%', left:'50%',
-        transform:'translate(-50%,-50%)',
-        width:600, height:600, borderRadius:'50%',
-        background:`radial-gradient(circle, ${C.gold}10 0%, transparent 70%)`,
-        pointerEvents:'none',
-      }}/>
-
-      <div style={{
-        maxWidth:900, margin:'0 auto', padding:'60px 32px',
-        textAlign:'center', position:'relative', zIndex:1,
-        direction: isRTL ? 'rtl' : 'ltr',
-      }}>
-        {/* bismillah */}
         <div style={{
-          fontFamily:'Amiri, serif', fontSize:'1.4rem',
-          color:`${C.goldPale}70`, marginBottom:24, lineHeight:1.6,
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '12px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 16,
         }}>
-          ﴿ بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴾
-        </div>
+          {/* Logo + Title */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer' }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <div style={{
+              width: 48, height: 48,
+              borderRadius: 12,
+              border: `2px solid ${COLORS.GOLD}50`,
+              overflow: 'hidden',
+              flexShrink: 0,
+              background: COLORS.BG3,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+            <div dir="rtl">
+              <div style={{
+                fontFamily: 'Amiri, serif',
+                fontSize: '1.1rem',
+                fontWeight: 700,
+                color: COLORS.GOLD2,
+                lineHeight: 1.2,
+              }}>
+                فيوض التأويل المعاصر
+              </div>
+              <div style={{
+                fontSize: '0.7rem',
+                color: COLORS.TXT3,
+                fontFamily: 'Noto Naskh Arabic, serif',
+              }}>
+                تفسير سورة البقرة • قراءة معاصرة
+              </div>
+            </div>
+          </div>
 
-        <GoldDivider margin="0 auto 32px" width="300px"/>
-
-        {/* main title */}
-        <h1 style={{
-          fontFamily:'Amiri, serif',
-          fontSize:'clamp(2.6rem, 6vw, 4.2rem)',
-          color:C.goldPale,
-          margin:'0 0 20px',
-          lineHeight:1.2,
-          textShadow:`0 4px 40px ${C.gold}40`,
-          fontWeight:700,
-        }}>{t.title}</h1>
-
-        {/* subtitle */}
-        <p style={{
-          fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-          fontSize:'clamp(1rem, 2.5vw, 1.25rem)',
-          color:`${C.goldPale}90`,
-          maxWidth:700, margin:'0 auto 16px',
-          lineHeight:1.9, fontWeight:500,
-        }}>{t.sub}</p>
-
-        <p style={{
-          fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-          fontSize:'clamp(0.88rem, 2vw, 1rem)',
-          color:`${C.goldPale}65`,
-          maxWidth:580, margin:'0 auto 36px', lineHeight:1.9,
-        }}>{t.desc}</p>
-
-        <GoldDivider margin="0 auto 36px" width="200px"/>
-
-        {/* tagline */}
-        <div style={{
-          fontFamily:'Amiri, serif', fontSize:'1.1rem',
-          color:`${C.gold}`, marginBottom:44,
-          fontStyle:'italic',
-        }}>"{t.tagline}"</div>
-
-        {/* CTA buttons */}
-        <div style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap' }}>
-          {[
-            { label:t.btn1, primary:true, path:'/ar/baqarah/1' },
-            { label:t.btn2, primary:false },
-            { label:t.btn3, primary:false },
-          ].map((btn,i) => (
-            <button key={i}
-              onClick={() => btn.path && navigate(btn.path)}
-              style={{
-                background: btn.primary
-                  ? `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`
-                  : 'transparent',
-                color: btn.primary ? C.teal : C.goldPale,
-                border: btn.primary
-                  ? 'none'
-                  : `1.5px solid ${C.gold}55`,
-                borderRadius:32, padding:'13px 30px',
-                fontSize:'0.9rem', fontWeight:700,
-                fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-                cursor:'pointer',
-                boxShadow: btn.primary ? `0 6px 24px ${C.gold}40` : 'none',
-                transition:'all 0.25s',
+          {/* Desktop Nav */}
+          <nav style={{ display: 'flex', gap: 4, alignItems: 'center' }}
+            className="hidden-mobile" dir="rtl">
+            {NAV_LINKS.map(link => (
+              <a key={link.href} href={link.href} style={{
+                color: COLORS.TXT2,
+                textDecoration: 'none',
+                fontSize: '0.88rem',
+                fontFamily: 'Noto Naskh Arabic, serif',
+                padding: '6px 14px',
+                borderRadius: 8,
+                transition: 'all 0.2s',
+                border: '1px solid transparent',
               }}
               onMouseEnter={e => {
-                if(!btn.primary){ e.currentTarget.style.background=`${C.gold}15`; e.currentTarget.style.borderColor=C.gold; }
-                else e.currentTarget.style.transform='translateY(-2px)';
+                e.target.style.color = COLORS.GOLD2;
+                e.target.style.borderColor = COLORS.BORDER;
+                e.target.style.background = COLORS.GOLD_DIM;
               }}
               onMouseLeave={e => {
-                if(!btn.primary){ e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor=`${C.gold}55`; }
-                else e.currentTarget.style.transform='translateY(0)';
-              }}
-            >{btn.label}</button>
-          ))}
-        </div>
+                e.target.style.color = COLORS.TXT2;
+                e.target.style.borderColor = 'transparent';
+                e.target.style.background = 'transparent';
+              }}>
+                {link.label}
+              </a>
+            ))}
+          </nav>
 
-        {/* scroll indicator */}
-        <div style={{ marginTop:60, animation:'bounce 2s infinite' }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-            style={{ margin:'0 auto', display:'block', opacity:0.4 }}>
-            <path d="M7 10l5 5 5-5" stroke={C.goldPale} strokeWidth="2"
-              strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ══════════════════════════════════════════════════════
-   3. SEARCH SECTION
-══════════════════════════════════════════════════════ */
-function SearchSection({ lang }) {
-  const [query, setQuery] = useState('');
-  const [filter, setFilter] = useState('الآية');
-  const isRTL = ['ar','ur'].includes(lang);
-
-  const filters = {
-    ar:['الآية','السورة','الموضوع','الكلمة','الجذر'],
-    en:['Verse','Surah','Topic','Word','Root'],
-    ur:['آیت','سورت','موضوع','لفظ','جذر'],
-    id:['Ayat','Surah','Topik','Kata','Akar'],
-    tr:['Ayet','Sure','Konu','Kelime','Kök'],
-  };
-
-  const quickCards = {
-    ar:[
-      { icon:'📖', title:'السياق التفسيري',   color:'#1a5c38' },
-      { icon:'✨', title:'الفيوض البيانية',    color:'#1a4a5c' },
-      { icon:'🌿', title:'الفيوض التدبرية',   color:'#2a5c1a' },
-      { icon:'💫', title:'الفيوض الروحانية',  color:'#4a2a5c' },
-      { icon:'🔬', title:'الفيوض الإعجازية',  color:'#5c3a1a' },
-      { icon:'🌐', title:'الفيوض المعاصرة',   color:'#1a3a5c' },
-    ],
-    en:[
-      { icon:'📖', title:'Tafsir Context',     color:'#1a5c38' },
-      { icon:'✨', title:'Linguistic Gems',    color:'#1a4a5c' },
-      { icon:'🌿', title:'Contemplative Flow', color:'#2a5c1a' },
-      { icon:'💫', title:'Spiritual Insights', color:'#4a2a5c' },
-      { icon:'🔬', title:'Scientific Miracles',color:'#5c3a1a' },
-      { icon:'🌐', title:'Contemporary Gems',  color:'#1a3a5c' },
-    ],
-  };
-  const cards = quickCards[lang] || quickCards.ar;
-  const filterList = filters[lang] || filters.ar;
-
-  return (
-    <section style={{
-      background:C.ivory, padding:'64px 32px',
-      direction: isRTL ? 'rtl' : 'ltr',
-    }}>
-      <div style={{ maxWidth:1000, margin:'0 auto' }}>
-        {/* title */}
-        <div style={{ textAlign:'center', marginBottom:40 }}>
-          <h2 style={{
-            fontFamily: isRTL ? 'Amiri, serif' : 'Playfair Display, serif',
-            fontSize:'clamp(1.6rem, 4vw, 2.2rem)',
-            color:C.emerald, marginBottom:10,
-          }}>
-            {lang==='ar'?'البحث في التفسير': lang==='en'?'Search the Tafsir': lang==='ur'?'تفسیر میں تلاش': lang==='id'?'Cari di Tafsir':'Tefsirde Ara'}
-          </h2>
-          <GoldDivider margin="0 auto 0" width="160px"/>
-        </div>
-
-        {/* search filters */}
-        <div style={{
-          display:'flex', gap:8, justifyContent:'center',
-          flexWrap:'wrap', marginBottom:16,
-        }}>
-          {filterList.map((f,i) => (
-            <button key={i} onClick={() => setFilter(f)}
-              style={{
-                background: filter===f ? C.emerald : 'transparent',
-                color: filter===f ? C.white : C.emerald,
-                border:`1.5px solid ${filter===f ? C.emerald : C.border}`,
-                borderRadius:24, padding:'6px 18px', fontSize:'0.82rem',
-                fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-                cursor:'pointer', transition:'all 0.2s', fontWeight:500,
-              }}>{f}</button>
-          ))}
-        </div>
-
-        {/* search bar */}
-        <div style={{
-          display:'flex', gap:0, marginBottom:48,
-          boxShadow:`0 4px 24px rgba(0,0,0,0.12)`,
-          borderRadius:14, overflow:'hidden',
-          border:`1.5px solid ${C.border}`,
-        }}>
-          <input
-            value={query} onChange={e => setQuery(e.target.value)}
-            placeholder={lang==='ar'?'ابحث في فيوض التأويل المعاصر...':
-              lang==='en'?'Search in Fuyud Al-Taweel...':
-              lang==='ur'?'فیوض التأویل میں تلاش کریں...':
-              lang==='id'?'Cari di Fuyud Al-Taweel...':'Fuyud Al-Taweel\'de Ara...'}
+          {/* CTA Button */}
+          <button
+            onClick={() => navigate('/part1')}
             style={{
-              flex:1, padding:'18px 24px', border:'none', outline:'none',
-              fontSize:'1rem', background:C.white, color:C.textDark,
-              fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-              direction: isRTL ? 'rtl' : 'ltr',
+              background: `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`,
+              color: COLORS.BG,
+              border: 'none',
+              borderRadius: 10,
+              padding: '9px 20px',
+              fontSize: '0.85rem',
+              fontWeight: 800,
+              fontFamily: 'Noto Naskh Arabic, serif',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              boxShadow: `0 4px 12px ${COLORS.GOLD}30`,
+              transition: 'all 0.2s',
             }}
-          />
-          <button style={{
-            background:`linear-gradient(135deg, ${C.emerald}, ${C.emeraldLight})`,
-            color:C.white, border:'none', padding:'0 32px',
-            fontSize:'0.9rem', fontWeight:700, cursor:'pointer',
-            fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-          }}>
-            {lang==='ar'?'بحث': lang==='en'?'Search': lang==='ur'?'تلاش': lang==='id'?'Cari':'Ara'}
+            onMouseEnter={e => {
+              e.target.style.transform = 'translateY(-1px)';
+              e.target.style.boxShadow = `0 6px 20px ${COLORS.GOLD}50`;
+            }}
+            onMouseLeave={e => {
+              e.target.style.transform = 'none';
+              e.target.style.boxShadow = `0 4px 12px ${COLORS.GOLD}30`;
+            }}
+          >
+            ابدأ التفسير ←
           </button>
         </div>
+      </header>
+    </>
+  );
+}
 
-        {/* quick access cards */}
+/* ══════════════════════════════════════════════════════════
+   HERO SECTION
+══════════════════════════════════════════════════════════ */
+function HeroSection({ onNavigate }) {
+  const navigate = useNavigate();
+
+  return (
+    <section style={{
+      position: 'relative',
+      minHeight: '92vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      background: `radial-gradient(ellipse at 50% 0%, ${COLORS.BG4}80 0%, ${COLORS.BG} 70%)`,
+    }}>
+      <GeometricPattern opacity={0.06} />
+
+      {/* Corner ornaments */}
+      <div style={{ position: 'absolute', top: 24, right: 24 }}>
+        <IslamicStar size={60} color={COLORS.GOLD} opacity={0.2} rotate={22} />
+      </div>
+      <div style={{ position: 'absolute', top: 24, left: 24 }}>
+        <IslamicStar size={60} color={COLORS.GOLD} opacity={0.2} rotate={-22} />
+      </div>
+      <div style={{ position: 'absolute', bottom: 24, right: 24 }}>
+        <IslamicStar size={44} color={COLORS.GOLD2} opacity={0.15} rotate={45} />
+      </div>
+      <div style={{ position: 'absolute', bottom: 24, left: 24 }}>
+        <IslamicStar size={44} color={COLORS.GOLD2} opacity={0.15} rotate={-45} />
+      </div>
+
+      {/* Glowing orb top */}
+      <div style={{
+        position: 'absolute', top: -80, left: '50%', transform: 'translateX(-50%)',
+        width: 400, height: 400, borderRadius: '50%',
+        background: `radial-gradient(circle, ${COLORS.TEAL}15 0%, transparent 70%)`,
+        pointerEvents: 'none',
+      }} />
+
+      {/* Content */}
+      <div style={{ textAlign: 'center', maxWidth: 780, padding: '60px 24px', position: 'relative', zIndex: 1 }} dir="rtl">
+
+        {/* Basmala */}
         <div style={{
-          display:'grid',
-          gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',
-          gap:14,
+          display: 'inline-block',
+          background: `linear-gradient(135deg, ${COLORS.GOLD_DIM}, ${COLORS.GOLD_MID})`,
+          border: `1px solid ${COLORS.BORDER2}`,
+          borderRadius: 16,
+          padding: '12px 32px',
+          marginBottom: 32,
+          boxShadow: `0 0 40px ${COLORS.GOLD}08, inset 0 1px 0 ${COLORS.GOLD}30`,
         }}>
-          {cards.map((card,i) => (
-            <button key={i} style={{
-              background:`linear-gradient(135deg, ${card.color}18, ${card.color}08)`,
-              border:`1px solid ${card.color}30`,
-              borderRadius:12, padding:'20px 14px',
-              cursor:'pointer', textAlign:'center',
-              transition:'all 0.25s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background=`linear-gradient(135deg, ${card.color}28, ${card.color}14)`;
-              e.currentTarget.style.transform='translateY(-3px)';
-              e.currentTarget.style.boxShadow=`0 8px 20px ${card.color}20`;
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background=`linear-gradient(135deg, ${card.color}18, ${card.color}08)`;
-              e.currentTarget.style.transform='none';
-              e.currentTarget.style.boxShadow='none';
-            }}>
-              <div style={{ fontSize:'1.8rem', marginBottom:10 }}>{card.icon}</div>
+          <p style={{
+            fontFamily: 'Amiri, serif',
+            fontSize: 'clamp(1.4rem, 3vw, 2rem)',
+            color: COLORS.GOLD3,
+            margin: 0,
+            letterSpacing: '0.08em',
+          }}>
+            ﴿ بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴾
+          </p>
+        </div>
+
+        {/* Site Title */}
+        <h1 style={{
+          fontFamily: 'Amiri, serif',
+          fontSize: 'clamp(2.4rem, 6vw, 4.2rem)',
+          color: COLORS.GOLD2,
+          margin: '0 0 8px',
+          fontWeight: 700,
+          lineHeight: 1.2,
+          textShadow: `0 0 60px ${COLORS.GOLD}25`,
+          letterSpacing: '0.03em',
+        }}>
+          فيوض التأويل المعاصر
+        </h1>
+
+        <div style={{ margin: '0 0 20px' }}>
+          <span style={{
+            display: 'inline-block',
+            background: `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD3})`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            fontFamily: 'Amiri, serif',
+            fontSize: 'clamp(1.1rem, 2.5vw, 1.6rem)',
+            fontWeight: 600,
+          }}>
+            تفسير سورة البقرة
+          </span>
+        </div>
+
+        {/* Subtitle */}
+        <p style={{
+          fontFamily: 'Noto Naskh Arabic, serif',
+          fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+          color: COLORS.TXT2,
+          lineHeight: 2,
+          maxWidth: 600,
+          margin: '0 auto 36px',
+        }}>
+          قراءة تفسيرية معاصرة تجمع بين البيان القرآني والتدبر التربوي والبصيرة النفسية،
+          بلغة قريبة من الإنسان المعاصر
+        </p>
+
+        {/* CTA Buttons */}
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 48 }}>
+          <CTAButton primary onClick={() => navigate('/part1')} icon={<BookOpen size={17} />}>
+            ابدأ التصفح
+          </CTAButton>
+          <CTAButton onClick={() => document.getElementById('surahs')?.scrollIntoView({ behavior: 'smooth' })} icon={<BookMarked size={17} />}>
+            تصفح السور
+          </CTAButton>
+          <CTAButton onClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })} icon={<Search size={17} />}>
+            البحث في التفسير
+          </CTAButton>
+          <CTAButton onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} icon={<Compass size={17} />}>
+            عن المشروع
+          </CTAButton>
+        </div>
+
+        {/* Stats row */}
+        <div style={{
+          display: 'flex', gap: 32, justifyContent: 'center', flexWrap: 'wrap',
+          padding: '24px 32px',
+          background: COLORS.GOLD_DIM,
+          borderRadius: 16,
+          border: `1px solid ${COLORS.BORDER}`,
+          backdropFilter: 'blur(8px)',
+        }}>
+          {[
+            { num: '٢٨٦', label: 'آية مفسَّرة' },
+            { num: '٧', label: 'أبعاد تفسيرية' },
+            { num: '٥', label: 'لغات' },
+            { num: '١٠٠٪', label: 'مصادر موثَّقة' },
+          ].map(s => (
+            <div key={s.label} style={{ textAlign: 'center' }}>
               <div style={{
-                fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-                fontSize:'0.82rem', fontWeight:700, color:C.textDark, lineHeight:1.4,
-              }}>{card.title}</div>
+                fontFamily: 'Amiri, serif',
+                fontSize: '1.8rem',
+                fontWeight: 700,
+                color: COLORS.GOLD2,
+                lineHeight: 1,
+              }}>{s.num}</div>
+              <div style={{
+                fontFamily: 'Noto Naskh Arabic, serif',
+                fontSize: '0.8rem',
+                color: COLORS.TXT3,
+                marginTop: 4,
+              }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div style={{
+        position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, opacity: 0.5,
+        animation: 'bounce 2s infinite',
+      }}>
+        <span style={{ fontSize: '0.7rem', color: COLORS.GOLD, fontFamily: 'Noto Naskh Arabic' }}>تمرير</span>
+        <ChevronDown size={18} color={COLORS.GOLD} />
+      </div>
+    </section>
+  );
+}
+
+function CTAButton({ children, primary, onClick, icon }) {
+  const [hov, setHov] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 8,
+        background: primary
+          ? `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`
+          : hov ? COLORS.GOLD_DIM : 'transparent',
+        color: primary ? COLORS.BG : COLORS.GOLD2,
+        border: `1.5px solid ${primary ? COLORS.GOLD : COLORS.BORDER2}`,
+        borderRadius: 12,
+        padding: '11px 22px',
+        fontSize: '0.95rem',
+        fontWeight: 700,
+        fontFamily: 'Noto Naskh Arabic, serif',
+        cursor: 'pointer',
+        transition: 'all 0.2s',
+        transform: hov ? 'translateY(-2px)' : 'none',
+        boxShadow: primary
+          ? `0 6px 20px ${COLORS.GOLD}35`
+          : hov ? `0 4px 12px ${COLORS.GOLD}15` : 'none',
+      }}
+      dir="rtl"
+    >
+      {icon}
+      {children}
+    </button>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   SEARCH SECTION
+══════════════════════════════════════════════════════════ */
+function SearchSection() {
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState('all');
+  const navigate = useNavigate();
+
+  const filters = [
+    { id: 'all',   label: 'الكل' },
+    { id: 'ayah',  label: 'آية' },
+    { id: 'surah', label: 'سورة' },
+    { id: 'topic', label: 'موضوع' },
+    { id: 'word',  label: 'كلمة' },
+    { id: 'root',  label: 'جذر' },
+  ];
+
+  const quickCards = [
+    { icon: <Flame size={20} />, label: 'آية اليوم', color: '#b45309', sub: 'البقرة: ٢٨٦' },
+    { icon: <Heart size={20} />, label: 'آيات الرحمة', color: '#be123c', sub: '٤٢ آية' },
+    { icon: <Shield size={20} />, label: 'آيات التوجيه', color: '#1d4ed8', sub: '٣٨ آية' },
+    { icon: <Star size={20} />, label: 'الآيات المكية', color: '#b45309', sub: 'المقدمة' },
+    { icon: <Brain size={20} />, label: 'الأبعاد النفسية', color: '#7c3aed', sub: 'علم النفس' },
+    { icon: <Lightbulb size={20} />, label: 'المواضيع التربوية', color: '#047857', sub: 'التدبر' },
+  ];
+
+  return (
+    <section id="search-section" style={{
+      background: `linear-gradient(180deg, ${COLORS.BG} 0%, ${COLORS.BG2} 100%)`,
+      padding: '80px 24px',
+    }}>
+      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+        <SectionTitle
+          title="البحث في التفسير"
+          subtitle="ابحث في آيات سورة البقرة بأساليب متعددة: بالآية، بالموضوع، بالكلمة، بالجذر اللغوي"
+        />
+
+        {/* Search Bar */}
+        <div style={{
+          background: COLORS.CARD,
+          border: `1.5px solid ${COLORS.BORDER2}`,
+          borderRadius: 18,
+          padding: 20,
+          boxShadow: `0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px ${COLORS.GOLD}08`,
+          marginBottom: 32,
+        }}>
+          {/* Filter Tabs */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }} dir="rtl">
+            {filters.map(f => (
+              <button
+                key={f.id}
+                onClick={() => setFilter(f.id)}
+                style={{
+                  background: filter === f.id
+                    ? `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`
+                    : COLORS.GOLD_DIM,
+                  color: filter === f.id ? COLORS.BG : COLORS.TXT2,
+                  border: `1px solid ${filter === f.id ? COLORS.GOLD : COLORS.BORDER}`,
+                  borderRadius: 8,
+                  padding: '5px 14px',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  fontFamily: 'Noto Naskh Arabic, serif',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Input */}
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <Search size={20} color={COLORS.GOLD} style={{ flexShrink: 0 }} />
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && navigate('/part1')}
+              placeholder="ابحث في التفسير... (مثال: الصبر، التوبة، الرزق)"
+              dir="rtl"
+              style={{
+                flex: 1,
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                color: COLORS.TXT,
+                fontSize: '1rem',
+                fontFamily: 'Noto Naskh Arabic, serif',
+              }}
+            />
+            <button
+              onClick={() => navigate('/part1')}
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`,
+                color: COLORS.BG,
+                border: 'none',
+                borderRadius: 10,
+                padding: '8px 20px',
+                fontSize: '0.9rem',
+                fontWeight: 800,
+                fontFamily: 'Noto Naskh Arabic, serif',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+            >
+              بحث
             </button>
-          ))}
+          </div>
         </div>
-      </div>
-    </section>
-  );
-}
 
-/* ══════════════════════════════════════════════════════
-   4. PROJECT INTRO SECTION
-══════════════════════════════════════════════════════ */
-function ProjectIntroSection({ lang }) {
-  const isRTL = ['ar','ur'].includes(lang);
-
-  const pillars = [
-    { icon:'🏛️', ar:'الأصالة',      en:'Authenticity',  desc_ar:'مرتبط بالمصادر التفسيرية الكبرى', desc_en:'Grounded in classical tafsir sources' },
-    { icon:'🔍', ar:'العمق',        en:'Depth',         desc_ar:'يغوص في أغوار المعاني القرآنية',    desc_en:'Diving deep into Quranic meanings' },
-    { icon:'🌿', ar:'التدبر',       en:'Contemplation', desc_ar:'يستنطق الآيات لبناء الإنسان',        desc_en:'Inviting reflection and spiritual growth' },
-    { icon:'🌐', ar:'المعاصرة',     en:'Contemporaneity',desc_ar:'لغة تصل إلى الإنسان المعاصر',       desc_en:'Language that reaches the modern person' },
-    { icon:'🧠', ar:'البناء النفسي',en:'Psychological',  desc_ar:'يعالج أعماق النفس البشرية',         desc_en:'Addressing the depths of the human psyche' },
-    { icon:'🌟', ar:'الهداية العملية',en:'Practical Guidance', desc_ar:'تفسير يُترجم إلى حياة',      desc_en:'Tafsir that translates into living' },
-  ];
-
-  return (
-    <section style={{
-      background:C.parchment, padding:'80px 32px',
-      direction: isRTL ? 'rtl' : 'ltr',
-    }}>
-      <div style={{ maxWidth:1100, margin:'0 auto' }}>
-        <div style={{ textAlign:'center', marginBottom:56 }}>
+        {/* Quick Access */}
+        <div style={{ marginTop: 8 }} dir="rtl">
           <p style={{
-            fontFamily:'Amiri, serif', fontSize:'1rem',
-            color:C.gold, marginBottom:12, letterSpacing:2,
-          }}>✦ تعرّف على المشروع ✦</p>
-          <h2 style={{
-            fontFamily: isRTL ? 'Amiri, serif' : 'Playfair Display, serif',
-            fontSize:'clamp(1.7rem, 4vw, 2.4rem)',
-            color:C.emerald, marginBottom:14,
+            color: COLORS.TXT3, fontSize: '0.85rem',
+            fontFamily: 'Noto Naskh Arabic, serif', marginBottom: 14,
           }}>
-            {lang==='ar'?'ما هو فيوض التأويل المعاصر؟':
-             lang==='en'?'What is Fuyud Al-Taweel?':
-             lang==='ur'?'فیوض التأویل المعاصر کیا ہے؟':
-             lang==='id'?'Apa itu Fuyud Al-Taweel?':'Fuyud Al-Taweel Nedir?'}
-          </h2>
-          <GoldDivider margin="0 auto 24px" width="120px"/>
-          <p style={{
-            fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-            fontSize:'clamp(0.95rem, 2vw, 1.1rem)',
-            color:C.textMid, maxWidth:720, margin:'0 auto',
-            lineHeight:2,
-          }}>
-            {lang==='ar'
-              ? 'مشروع تفسيري معاصر يسعى إلى إعادة تقديم معاني القرآن الكريم بلغة تلامس واقع الإنسان اليوم، دون إخلال بأصالة العلم ورصانة المنهج. يجمع بين البيان اللغوي، والتدبر التربوي، والبصيرة النفسية، والوعي الحضاري.'
-              : lang==='en'
-              ? 'A contemporary tafsir project seeking to present the meanings of the Holy Quran in language that touches today\'s human reality, without compromising scholarly authenticity. It combines linguistic brilliance, pedagogical reflection, psychological insight, and civilizational awareness.'
-              : 'مشروع تفسیری معاصر جو قرآن کریم کے معانی کو آج کے انسان کی حقیقت سے ہم آہنگ زبان میں پیش کرنے کی کوشش کرتا ہے۔'
-            }
+            وصول سريع:
           </p>
-        </div>
-
-        <div style={{
-          display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(250px, 1fr))',
-          gap:20,
-        }}>
-          {pillars.map((p,i) => (
-            <div key={i} style={{
-              background:C.white, borderRadius:16, padding:'28px 24px',
-              border:`1px solid ${C.borderLight}`,
-              boxShadow:'0 2px 16px rgba(0,0,0,0.06)',
-              transition:'all 0.25s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform='translateY(-4px)';
-              e.currentTarget.style.boxShadow=`0 12px 32px rgba(0,0,0,0.12), 0 0 0 1px ${C.gold}30`;
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform='none';
-              e.currentTarget.style.boxShadow='0 2px 16px rgba(0,0,0,0.06)';
-            }}>
-              <div style={{ fontSize:'2rem', marginBottom:14 }}>{p.icon}</div>
-              <h3 style={{
-                fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-                fontSize:'1.05rem', fontWeight:700, color:C.emerald, marginBottom:8,
-              }}>{isRTL ? p.ar : p.en}</h3>
-              <p style={{
-                fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-                fontSize:'0.85rem', color:C.textLight, lineHeight:1.8, margin:0,
-              }}>{isRTL ? p.desc_ar : p.desc_en}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ══════════════════════════════════════════════════════
-   5. BROWSE QURAN SECTION
-══════════════════════════════════════════════════════ */
-function BrowseSection({ lang, navigate }) {
-  const isRTL = ['ar','ur'].includes(lang);
-
-  const surahs = [
-    { num:1,  name:'الفاتحة',   en:'Al-Fatiha',  ayahs:7,   type:'مكية', available:false },
-    { num:2,  name:'البقرة',    en:'Al-Baqarah', ayahs:286, type:'مدنية', available:true  },
-  ];
-
-  return (
-    <section style={{
-      background:C.ivory, padding:'80px 32px',
-      direction: isRTL ? 'rtl' : 'ltr',
-    }}>
-      <div style={{ maxWidth:1100, margin:'0 auto' }}>
-        <div style={{ textAlign:'center', marginBottom:52 }}>
-          <p style={{ fontFamily:'Amiri, serif', fontSize:'0.95rem', color:C.gold, marginBottom:10, letterSpacing:2 }}>
-            ✦ استكشف القرآن ✦
-          </p>
-          <h2 style={{
-            fontFamily: isRTL ? 'Amiri, serif' : 'Playfair Display, serif',
-            fontSize:'clamp(1.7rem, 4vw, 2.3rem)', color:C.emerald, marginBottom:12,
-          }}>
-            {lang==='ar'?'تصفح السور': lang==='en'?'Browse the Surahs': lang==='ur'?'سورتیں دیکھیں': lang==='id'?'Jelajahi Surah':'Sureleri Gözat'}
-          </h2>
-          <GoldDivider margin="0 auto 0" width="120px"/>
-        </div>
-
-        {/* filter tabs */}
-        <div style={{
-          display:'flex', gap:8, justifyContent:'center',
-          flexWrap:'wrap', marginBottom:36,
-        }}>
-          {(isRTL
-            ? ['اسم السورة','رقم السورة','مكية / مدنية','عدد الآيات']
-            : ['Surah Name','Surah Number','Makki / Madani','Verse Count']
-          ).map((f,i) => (
-            <button key={i} style={{
-              background: i===0 ? C.emerald : 'transparent',
-              color: i===0 ? C.white : C.emerald,
-              border:`1.5px solid ${i===0 ? C.emerald : C.border}`,
-              borderRadius:24, padding:'6px 18px', fontSize:'0.8rem',
-              fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
-              cursor:'pointer', fontWeight:500,
-            }}>{f}</button>
-          ))}
-        </div>
-
-        {/* surah cards */}
-        <div style={{
-          display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))',
-          gap:20, marginBottom:32,
-        }}>
-          {surahs.map(s => (
-            <div key={s.num} style={{
-              background:C.white, borderRadius:16,
-              border:`1px solid ${s.available ? C.gold+'40' : C.borderLight}`,
-              overflow:'hidden', boxShadow:'0 2px 12px rgba(0,0,0,0.07)',
-              opacity: s.available ? 1 : 0.65,
-              transition:'all 0.25s', cursor: s.available ? 'pointer' : 'default',
-            }}
-            onClick={() => s.available && navigate('/ar/baqarah/1')}
-            onMouseEnter={e => s.available && (e.currentTarget.style.boxShadow=`0 10px 28px rgba(0,0,0,0.14), 0 0 0 1.5px ${C.gold}50`)}
-            onMouseLeave={e => s.available && (e.currentTarget.style.boxShadow='0 2px 12px rgba(0,0,0,0.07)')}>
-
-              {/* header strip */}
-              <div style={{
-                background: s.available
-                  ? `linear-gradient(135deg, ${C.emerald}, ${C.emeraldLight})`
-                  : `linear-gradient(135deg, #666, #888)`,
-                padding:'14px 20px', display:'flex',
-                justifyContent:'space-between', alignItems:'center',
-              }}>
-                <div style={{
-                  fontFamily:'Amiri, serif', fontSize:'1.3rem',
-                  color:C.goldPale, fontWeight:700,
-                }}>{s.name}</div>
-                <div style={{
-                  width:36, height:36, borderRadius:'50%',
-                  background:'rgba(255,255,255,0.15)',
-                  display:'flex', alignItems:'center', justifyContent:'center',
-                  color:C.goldPale, fontWeight:700, fontSize:'0.9rem',
-                  border:`1px solid rgba(255,255,255,0.2)`,
-                }}>{s.num}</div>
-              </div>
-
-              <div style={{ padding:'16px 20px' }}>
-                <div style={{ display:'flex', justifyContent:'space-between', marginBottom:14 }}>
-                  <span style={{ fontSize:'0.78rem', color:C.textLight,
-                    fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif' }}>
-                    {s.ayahs} {isRTL?'آية':'verses'}
-                  </span>
-                  <span style={{
-                    background: s.type==='مدنية' ? '#1a4a2c20' : '#2a1a5c20',
-                    color: s.type==='مدنية' ? C.emerald : '#4a2a8c',
-                    fontSize:'0.72rem', padding:'2px 10px', borderRadius:12, fontWeight:600,
-                    fontFamily:'Noto Naskh Arabic, serif',
-                  }}>{s.type}</span>
-                </div>
-
-                {s.available ? (
-                  <div style={{ display:'flex', gap:8 }}>
-                    {[
-                      { label: isRTL?'الجزء الأول':'Part 1', path:'/ar/baqarah/1' },
-                      { label: isRTL?'الجزء الثاني':'Part 2', path:'/ar/baqarah/2' },
-                    ].map((btn,i) => (
-                      <button key={i}
-                        onClick={e => { e.stopPropagation(); navigate(btn.path); }}
-                        style={{
-                          flex:1, background: i===0
-                            ? `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`
-                            : 'transparent',
-                          color: i===0 ? C.teal : C.emerald,
-                          border: i===0 ? 'none' : `1.5px solid ${C.gold}50`,
-                          borderRadius:10, padding:'9px 8px',
-                          fontSize:'0.78rem', fontWeight:700,
-                          fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                          cursor:'pointer', transition:'all 0.2s',
-                        }}>{btn.label}</button>
-                    ))}
-                  </div>
-                ) : (
-                  <div style={{
-                    textAlign:'center', padding:'8px',
-                    fontSize:'0.78rem', color:C.textLight,
-                    fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                  }}>{isRTL?'قريباً إن شاء الله':'Coming soon'}</div>
-                )}
-              </div>
-            </div>
-          ))}
-
-          {/* coming soon card */}
           <div style={{
-            background:C.parchment, borderRadius:16,
-            border:`1.5px dashed ${C.border}`,
-            display:'flex', flexDirection:'column',
-            alignItems:'center', justifyContent:'center',
-            padding:'40px 20px', textAlign:'center', minHeight:180,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+            gap: 10,
           }}>
-            <div style={{ fontSize:'2rem', marginBottom:12, opacity:0.4 }}>📚</div>
-            <p style={{
-              fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-              fontSize:'0.85rem', color:C.textLight,
-            }}>{isRTL?'سور أخرى قريباً إن شاء الله':'More surahs coming soon'}</p>
+            {quickCards.map(card => (
+              <button key={card.label} onClick={() => navigate('/part1')} style={{
+                background: COLORS.CARD,
+                border: `1px solid ${COLORS.BORDER}`,
+                borderRadius: 12,
+                padding: '14px 12px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                textAlign: 'center',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = COLORS.GOLD;
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.background = COLORS.GOLD_DIM;
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = COLORS.BORDER;
+                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.background = COLORS.CARD;
+              }}>
+                <div style={{ color: card.color, marginBottom: 6 }}>{card.icon}</div>
+                <div style={{
+                  color: COLORS.TXT, fontSize: '0.85rem',
+                  fontWeight: 700, fontFamily: 'Noto Naskh Arabic, serif',
+                }}>{card.label}</div>
+                <div style={{
+                  color: COLORS.TXT3, fontSize: '0.7rem',
+                  fontFamily: 'Noto Naskh Arabic, serif', marginTop: 3,
+                }}>{card.sub}</div>
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -829,100 +678,145 @@ function BrowseSection({ lang, navigate }) {
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   6. THEMATIC PATHWAYS SECTION
-══════════════════════════════════════════════════════ */
-function PathwaysSection({ lang }) {
-  const isRTL = ['ar','ur'].includes(lang);
-
-  const pathways = [
-    { icon:'🏔️', color:'#1a4a5c',
-      ar:'مسار الإيمان والعقيدة',      en:'Faith & Creed',
-      ar_d:'آيات تبني صرح الإيمان في القلب',  en_d:'Verses that build the edifice of faith' },
-    { icon:'⚖️', color:'#2a4a1a',
-      ar:'مسار الأخلاق والسلوك',        en:'Ethics & Conduct',
-      ar_d:'القيم الإنسانية في ضوء التأويل',  en_d:'Human values through the lens of tafsir' },
-    { icon:'🌍', color:'#4a2a1a',
-      ar:'مسار القضايا المعاصرة',       en:'Contemporary Issues',
-      ar_d:'معالجة قرآنية لإشكاليات عصرنا',  en_d:'Quranic treatment of modern challenges' },
-    { icon:'💎', color:'#1a1a4a',
-      ar:'مسار الإعجاز البياني',        en:'Linguistic Miracle',
-      ar_d:'روائع البيان القرآني وأسراره',    en_d:'The wonders of Quranic rhetoric' },
-    { icon:'🌱', color:'#1a3a2a',
-      ar:'مسار التربية والتزكية',       en:'Pedagogy & Purification',
-      ar_d:'تأويل يبني الإنسان من الداخل',   en_d:'Tafsir that builds from within' },
-    { icon:'🧘', color:'#3a1a3a',
-      ar:'مسار الطمأنينة النفسية',      en:'Psychological Serenity',
-      ar_d:'الآيات التي تشفي الجراح الروحية', en_d:'Verses that heal spiritual wounds' },
+/* ══════════════════════════════════════════════════════════
+   ABOUT / PROJECT INTRO SECTION
+══════════════════════════════════════════════════════════ */
+function AboutSection() {
+  const cards = [
+    {
+      icon: <Shield size={28} />, color: '#3a9478',
+      title: 'الأصالة العلمية',
+      text: 'مصادر موثَّقة من أمهات كتب التفسير والعلوم الإسلامية',
+    },
+    {
+      icon: <Layers size={28} />, color: '#b45309',
+      title: 'العمق التأويلي',
+      text: 'سبعة أبعاد تفسيرية: بياني، تأويلي، روحاني، نفسي، تربوي، معاصر، استشهادي',
+    },
+    {
+      icon: <Eye size={28} />, color: '#7c3aed',
+      title: 'التدبر والتأمل',
+      text: 'قراءة في أعماق المعنى تدعو القلب إلى التدبر والتأمل في كلام الله',
+    },
+    {
+      icon: <Zap size={28} />, color: '#1d4ed8',
+      title: 'المعاصرة والحياة',
+      text: 'ربط الآيات بواقع الإنسان المعاصر وتحدياته الروحية والنفسية',
+    },
+    {
+      icon: <Brain size={28} />, color: '#be123c',
+      title: 'البعد النفسي',
+      text: 'استلهام الدروس النفسية والعلاجية من آيات القرآن الكريم',
+    },
+    {
+      icon: <Feather size={28} />, color: '#0f766e',
+      title: 'الإرشاد والهداية',
+      text: 'مناهج تربوية وروحية مستخرجة من نور القرآن للارتقاء بالنفس',
+    },
   ];
 
   return (
-    <section style={{
-      background:`linear-gradient(160deg, ${C.teal} 0%, ${C.emerald} 100%)`,
-      padding:'80px 32px', direction: isRTL?'rtl':'ltr',
+    <section id="about" style={{
+      background: `linear-gradient(180deg, ${COLORS.BG2} 0%, ${COLORS.BG3} 100%)`,
+      padding: '80px 24px',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
-      <div style={{ maxWidth:1100, margin:'0 auto' }}>
-        <div style={{ textAlign:'center', marginBottom:52 }}>
-          <p style={{ fontFamily:'Amiri, serif', color:C.gold, fontSize:'0.95rem', marginBottom:10, letterSpacing:2 }}>
-            ✦ {isRTL?'مداخل موضوعية':'Thematic Gateways'} ✦
-          </p>
-          <h2 style={{
-            fontFamily: isRTL?'Amiri, serif':'Playfair Display, serif',
-            fontSize:'clamp(1.7rem, 4vw, 2.3rem)', color:C.goldPale, marginBottom:14,
+      <GeometricPattern opacity={0.03} />
+      <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <SectionTitle
+          title="رؤية المشروع ومنهجيته"
+          subtitle="مشروع علمي متكامل يسعى إلى تقديم تفسير قرآني متعدد الأبعاد، يخاطب العقل والروح معاً"
+        />
+
+        {/* Vision Box */}
+        <div style={{
+          background: COLORS.CARD,
+          border: `1px solid ${COLORS.BORDER2}`,
+          borderRadius: 20,
+          padding: '32px 40px',
+          marginBottom: 40,
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: `0 8px 32px rgba(0,0,0,0.25)`,
+        }} dir="rtl">
+          <div style={{
+            position: 'absolute', top: -20, right: -20, opacity: 0.06,
           }}>
-            {lang==='ar'?'مسارات التأويل': lang==='en'?'Interpretation Pathways':
-             lang==='ur'?'تأویل کے راستے': lang==='id'?'Jalur Penafsiran':'Tefsir Yolları'}
-          </h2>
-          <GoldDivider margin="0 auto 16px" width="120px"/>
+            <IslamicStar size={180} color={COLORS.GOLD} opacity={1} />
+          </div>
+          <h3 style={{
+            fontFamily: 'Amiri, serif',
+            fontSize: '1.5rem',
+            color: COLORS.GOLD2,
+            marginBottom: 16,
+          }}>
+            العنوان: فيوض التأويل المعاصر
+          </h3>
           <p style={{
-            fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-            fontSize:'0.95rem', color:`${C.goldPale}70`, maxWidth:600, margin:'0 auto',
+            fontFamily: 'Noto Naskh Arabic, serif',
+            fontSize: '1.08rem',
+            color: COLORS.TXT2,
+            lineHeight: 2.1,
+            borderRight: `3px solid ${COLORS.GOLD}`,
+            paddingRight: 20,
           }}>
-            {isRTL
-              ? 'مداخل موضوعية تأخذك في رحلة عبر القرآن الكريم'
-              : 'Thematic gateways that take you on a journey through the Holy Quran'}
+            قراءة تفسيرية معاصرة تجمع بين البيان القرآني، والتدبر التربوي، والبصيرة النفسية،
+            بلغة قريبة من الإنسان المعاصر — مشروع يقف عند نهر المعنى ليغترف منه، لا ليختصره.
           </p>
         </div>
 
+        {/* Feature Cards */}
         <div style={{
-          display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(280px, 1fr))',
-          gap:18,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+          gap: 18,
         }}>
-          {pathways.map((p,i) => (
-            <div key={i} style={{
-              background:`linear-gradient(135deg, ${p.color}cc, ${p.color}88)`,
-              border:`1px solid ${C.gold}20`,
-              borderRadius:18, padding:'28px 24px',
-              cursor:'pointer', transition:'all 0.25s',
-              backdropFilter:'blur(8px)',
+          {cards.map(c => (
+            <div key={c.title} style={{
+              background: COLORS.CARD,
+              border: `1px solid ${COLORS.BORDER}`,
+              borderRadius: 16,
+              padding: '24px 20px',
+              transition: 'all 0.25s',
+              cursor: 'default',
             }}
+            dir="rtl"
             onMouseEnter={e => {
-              e.currentTarget.style.transform='translateY(-5px)';
-              e.currentTarget.style.borderColor=`${C.gold}50`;
-              e.currentTarget.style.boxShadow=`0 16px 40px rgba(0,0,0,0.3)`;
+              e.currentTarget.style.borderColor = c.color + '60';
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = `0 8px 24px rgba(0,0,0,0.2), 0 0 0 1px ${c.color}20`;
             }}
             onMouseLeave={e => {
-              e.currentTarget.style.transform='none';
-              e.currentTarget.style.borderColor=`${C.gold}20`;
-              e.currentTarget.style.boxShadow='none';
+              e.currentTarget.style.borderColor = COLORS.BORDER;
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.boxShadow = 'none';
             }}>
-              <div style={{ fontSize:'2.2rem', marginBottom:14 }}>{p.icon}</div>
-              <h3 style={{
-                fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                fontSize:'1.02rem', fontWeight:700, color:C.goldPale, marginBottom:8,
-              }}>{isRTL?p.ar:p.en}</h3>
-              <p style={{
-                fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                fontSize:'0.82rem', color:`${C.goldPale}70`, lineHeight:1.7, margin:0,
-              }}>{isRTL?p.ar_d:p.en_d}</p>
               <div style={{
-                marginTop:16, display:'inline-flex', alignItems:'center', gap:6,
-                fontSize:'0.76rem', color:C.gold, fontWeight:600,
-                fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
+                width: 48, height: 48,
+                borderRadius: 12,
+                background: c.color + '18',
+                border: `1px solid ${c.color}30`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: c.color,
+                marginBottom: 14,
               }}>
-                {isRTL?'استكشف المسار':'Explore Pathway'}
-                <span style={{ transform: isRTL?'rotate(180deg)':'none', display:'inline-block' }}>→</span>
+                {c.icon}
               </div>
+              <h4 style={{
+                fontFamily: 'Noto Naskh Arabic, serif',
+                color: COLORS.TXT,
+                fontWeight: 700,
+                fontSize: '1rem',
+                marginBottom: 8,
+              }}>{c.title}</h4>
+              <p style={{
+                fontFamily: 'Noto Naskh Arabic, serif',
+                color: COLORS.TXT2,
+                fontSize: '0.88rem',
+                lineHeight: 1.9,
+                margin: 0,
+              }}>{c.text}</p>
             </div>
           ))}
         </div>
@@ -931,125 +825,166 @@ function PathwaysSection({ lang }) {
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   7. FEATURED TAFSIR EXCERPTS
-══════════════════════════════════════════════════════ */
-function FeaturedExcerptsSection({ lang, navigate }) {
-  const isRTL = ['ar','ur'].includes(lang);
+/* ══════════════════════════════════════════════════════════
+   SURAHS SECTION
+══════════════════════════════════════════════════════════ */
+function SurahsSection() {
+  const navigate = useNavigate();
 
-  const excerpts = [
+  const parts = [
     {
-      tag_ar:'آية اليوم', tag_en:'Verse of the Day',
-      verse:'﴿ وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ ﴾',
-      ref_ar:'البقرة: 186', ref_en:'Al-Baqarah: 186',
-      excerpt_ar:'تكشف هذه الآية عن سرّ من أعظم أسرار العلاقة بين العبد وربه؛ فالله يُجيب بنفسه دون واسطة، ويُقرِّر القرب الإلهي قبل الإجابة، لأن القرب هو الأصل.',
-      excerpt_en:'This verse reveals one of the greatest secrets of the relationship between the servant and his Lord; Allah answers Himself without intermediary.',
-      type:'ruhani',
+      part: 'الجزء الأول',
+      range: 'الآيات ١ – ١٠١',
+      count: 101,
+      themes: ['إيمان', 'خلق آدم', 'المنافقون', 'بنو إسرائيل', 'القبلة'],
+      path: '/part1',
+      badge: 'متاح',
+      gradient: `linear-gradient(135deg, ${COLORS.TEAL} 0%, ${COLORS.BG4} 100%)`,
     },
     {
-      tag_ar:'فيض بياني', tag_en:'Linguistic Gem',
-      verse:'﴿ وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ ﴾',
-      ref_ar:'البقرة: 216', ref_en:'Al-Baqarah: 216',
-      excerpt_ar:'جاءت "عسى" هنا للتوقع الراجح، وهي من الله للتحقيق. فالله يقول: ربما تكرهون أمراً وهو خير — لا على سبيل الاحتمال بل على سبيل الحقيقة.',
-      excerpt_en:'The word "perhaps" here from Allah is not probability but near-certainty. What you dislike may be exactly what\'s best for you.',
-      type:'bayani',
+      part: 'الجزء الثاني',
+      range: 'الآيات ١٠٢ – ٢٠٠',
+      count: 99,
+      themes: ['السحر', 'الحج', 'الجهاد', 'الإنفاق', 'الإسلام'],
+      path: '/part2',
+      badge: 'متاح',
+      gradient: `linear-gradient(135deg, ${COLORS.BG4} 0%, #1e3a1a 100%)`,
     },
     {
-      tag_ar:'وقفة تدبرية', tag_en:'Contemplative Pause',
-      verse:'﴿ يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ﴾',
-      ref_ar:'البقرة: 153', ref_en:'Al-Baqarah: 153',
-      excerpt_ar:'العجيب أن الله لم يقل استعينوا بالتخطيط والحكمة وحدهما، بل قدَّم الصبر والصلاة. لأن من لا صبر له لا يُحسن التخطيط، ومن لا صلاة له لا يُحسن الحكمة.',
-      excerpt_en:'Remarkably, Allah did not say: seek help through planning alone, but through patience and prayer — because without patience, no plan holds.',
-      type:'tarbawi',
+      part: 'الجزء الثالث',
+      range: 'الآيات ٢٠١ – ٢٨٦',
+      count: 86,
+      themes: ['الذكر', 'الخوف', 'الوحدة', 'الطلاق', 'الدَّين', 'آية الكرسي'],
+      path: null,
+      badge: 'قريباً',
+      gradient: `linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)`,
     },
   ];
 
-  const typeColors = { ruhani:'#4a2a5c', bayani:'#1a4a5c', tarbawi:'#2a4a1a' };
-
   return (
-    <section style={{
-      background:C.parchment, padding:'80px 32px',
-      direction: isRTL?'rtl':'ltr',
+    <section id="surahs" style={{
+      background: COLORS.BG,
+      padding: '80px 24px',
     }}>
-      <div style={{ maxWidth:1100, margin:'0 auto' }}>
-        <div style={{ textAlign:'center', marginBottom:52 }}>
-          <p style={{ fontFamily:'Amiri, serif', color:C.gold, fontSize:'0.95rem', marginBottom:10, letterSpacing:2 }}>
-            ✦ {isRTL?'من فيوض التأويل':'From the Tafsir'} ✦
-          </p>
-          <h2 style={{
-            fontFamily: isRTL?'Amiri, serif':'Playfair Display, serif',
-            fontSize:'clamp(1.7rem, 4vw, 2.3rem)', color:C.emerald, marginBottom:12,
-          }}>
-            {lang==='ar'?'مختارات تفسيرية': lang==='en'?'Featured Tafsir Excerpts':
-             lang==='ur'?'منتخب تفسیری اقتباسات':'Seçilmiş Tefsir Alıntıları'}
-          </h2>
-          <GoldDivider margin="0 auto 0" width="120px"/>
-        </div>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <SectionTitle
+          title="تصفح سورة البقرة"
+          subtitle="سورة البقرة — ٢٨٦ آية مفسَّرة بأسلوب معاصر متعدد الأبعاد"
+        />
 
         <div style={{
-          display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(300px, 1fr))',
-          gap:24,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gap: 20,
         }}>
-          {excerpts.map((ex,i) => (
-            <div key={i} style={{
-              background:C.white, borderRadius:18,
-              border:`1px solid ${C.borderLight}`,
-              overflow:'hidden', boxShadow:'0 4px 20px rgba(0,0,0,0.07)',
-              transition:'all 0.25s',
+          {parts.map(p => (
+            <div key={p.part} style={{
+              background: COLORS.CARD,
+              border: `1px solid ${COLORS.BORDER}`,
+              borderRadius: 20,
+              overflow: 'hidden',
+              transition: 'all 0.25s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.boxShadow=`0 14px 36px rgba(0,0,0,0.14)`; e.currentTarget.style.transform='translateY(-4px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.boxShadow='0 4px 20px rgba(0,0,0,0.07)'; e.currentTarget.style.transform='none'; }}>
-
-              {/* colored top bar */}
-              <div style={{ height:4, background:`linear-gradient(90deg, ${typeColors[ex.type]}, ${C.gold})` }}/>
-
-              <div style={{ padding:'24px' }}>
-                {/* tag */}
-                <span style={{
-                  background:`${typeColors[ex.type]}15`,
-                  color:typeColors[ex.type],
-                  fontSize:'0.72rem', fontWeight:700, padding:'3px 12px',
-                  borderRadius:20, fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                }}>{isRTL?ex.tag_ar:ex.tag_en}</span>
-
-                {/* verse */}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = COLORS.GOLD + '50';
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = `0 12px 32px rgba(0,0,0,0.3)`;
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = COLORS.BORDER;
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.boxShadow = 'none';
+            }}>
+              {/* Card header */}
+              <div style={{
+                background: p.gradient,
+                padding: '28px 24px 20px',
+                position: 'relative',
+                overflow: 'hidden',
+              }} dir="rtl">
+                <div style={{ position: 'absolute', top: -10, left: -10, opacity: 0.1 }}>
+                  <IslamicStar size={100} color={COLORS.GOLD} opacity={1} />
+                </div>
+                <div style={{ position: 'absolute', top: 12, left: 16 }}>
+                  <span style={{
+                    background: p.badge === 'متاح'
+                      ? `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`
+                      : 'rgba(100,100,120,0.5)',
+                    color: p.badge === 'متاح' ? COLORS.BG : COLORS.TXT2,
+                    fontSize: '0.7rem',
+                    fontWeight: 800,
+                    padding: '3px 10px',
+                    borderRadius: 20,
+                    fontFamily: 'Noto Naskh Arabic, serif',
+                  }}>
+                    {p.badge}
+                  </span>
+                </div>
                 <div style={{
-                  fontFamily:'Amiri, serif', fontSize:'1.1rem', lineHeight:2,
-                  color:C.emerald, margin:'16px 0 8px',
-                  direction:'rtl', textAlign: isRTL?'right':'right',
-                  padding:'12px 16px',
-                  background:`${C.emerald}08`,
-                  borderRadius:8,
-                  borderRight: isRTL?`3px solid ${C.gold}`:'none',
-                  borderLeft: isRTL?'none':`3px solid ${C.gold}`,
-                }}>{ex.verse}</div>
+                  fontFamily: 'Amiri, serif',
+                  fontSize: '1.5rem',
+                  color: COLORS.GOLD3,
+                  marginBottom: 4,
+                }}>{p.part}</div>
+                <div style={{
+                  fontFamily: 'Noto Naskh Arabic, serif',
+                  fontSize: '0.9rem',
+                  color: COLORS.TXT2,
+                }}>{p.range}</div>
+                <div style={{
+                  marginTop: 8,
+                  fontFamily: 'Amiri, serif',
+                  fontSize: '2rem',
+                  color: COLORS.GOLD2,
+                  fontWeight: 700,
+                }}>{p.count}</div>
+                <div style={{ fontSize: '0.75rem', color: COLORS.TXT3, fontFamily: 'Noto Naskh Arabic, serif' }}>آية</div>
+              </div>
 
-                <p style={{
-                  fontSize:'0.74rem', color:C.gold, fontWeight:600,
-                  fontFamily:'Amiri, serif', marginBottom:14,
-                  textAlign: isRTL?'right':'left',
-                }}>{isRTL?ex.ref_ar:ex.ref_en}</p>
-
-                <p style={{
-                  fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                  fontSize:'0.88rem', color:C.textMid,
-                  lineHeight:1.85, margin:'0 0 20px',
-                }}>{isRTL?ex.excerpt_ar:ex.excerpt_en}</p>
+              {/* Card body */}
+              <div style={{ padding: '20px 24px' }} dir="rtl">
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{
+                    fontSize: '0.78rem', color: COLORS.TXT3,
+                    fontFamily: 'Noto Naskh Arabic, serif', marginBottom: 8,
+                  }}>
+                    أبرز المواضيع:
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {p.themes.map(t => (
+                      <span key={t} style={{
+                        background: COLORS.GOLD_DIM,
+                        border: `1px solid ${COLORS.BORDER}`,
+                        borderRadius: 6,
+                        padding: '2px 8px',
+                        fontSize: '0.75rem',
+                        color: COLORS.GOLD_TXT,
+                        fontFamily: 'Noto Naskh Arabic, serif',
+                      }}>{t}</span>
+                    ))}
+                  </div>
+                </div>
 
                 <button
-                  onClick={() => navigate('/ar/baqarah/1')}
+                  onClick={() => p.path && navigate(p.path)}
+                  disabled={!p.path}
                   style={{
-                    background:'transparent',
-                    color:C.emerald,
-                    border:`1.5px solid ${C.emerald}50`,
-                    borderRadius:24, padding:'7px 20px',
-                    fontSize:'0.78rem', fontWeight:700,
-                    fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                    cursor:'pointer', transition:'all 0.2s',
+                    width: '100%',
+                    background: p.path
+                      ? `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`
+                      : 'rgba(100,100,120,0.2)',
+                    color: p.path ? COLORS.BG : COLORS.TXT3,
+                    border: 'none',
+                    borderRadius: 10,
+                    padding: '11px',
+                    fontSize: '0.9rem',
+                    fontWeight: 800,
+                    fontFamily: 'Noto Naskh Arabic, serif',
+                    cursor: p.path ? 'pointer' : 'not-allowed',
+                    transition: 'all 0.2s',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.background=C.emerald; e.currentTarget.style.color=C.white; }}
-                  onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color=C.emerald; }}>
-                  {isRTL?'أكمل القراءة':'Continue Reading'}
+                >
+                  {p.path ? `اقرأ ${p.part} ←` : 'قريباً...'}
                 </button>
               </div>
             </div>
@@ -1060,296 +995,394 @@ function FeaturedExcerptsSection({ lang, navigate }) {
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   8. MULTILINGUAL SECTION
-══════════════════════════════════════════════════════ */
-function MultilingualSection({ lang, setLang }) {
-  const isRTL = ['ar','ur'].includes(lang);
+/* ══════════════════════════════════════════════════════════
+   THEMATIC PATHS SECTION
+══════════════════════════════════════════════════════════ */
+function PathsSection() {
+  const paths = [
+    { icon: <BookOpen size={24}/>, color: '#3a9478', title: 'المسار البياني', sub: 'جمال الأسلوب القرآني وفصاحته' },
+    { icon: <Compass size={24}/>, color: '#b45309', title: 'المسار التأويلي', sub: 'عمق المعنى والدلالة' },
+    { icon: <Heart size={24}/>, color: '#be123c', title: 'المسار الروحاني', sub: 'الصلة بالله والتزكية' },
+    { icon: <Brain size={24}/>, color: '#7c3aed', title: 'المسار النفسي', sub: 'الأثر النفسي والعلاجي' },
+    { icon: <Feather size={24}/>, color: '#1d4ed8', title: 'المسار التربوي', sub: 'الدروس والقيم التربوية' },
+    { icon: <Zap size={24}/>, color: '#0f766e', title: 'المسار المعاصر', sub: 'ربط الآيات بالحياة اليوم' },
+  ];
+
+  return (
+    <section id="paths" style={{
+      background: `linear-gradient(180deg, ${COLORS.BG3} 0%, ${COLORS.BG2} 100%)`,
+      padding: '80px 24px',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <GeometricPattern opacity={0.04} />
+      <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <SectionTitle
+          title="مسارات التأويل"
+          subtitle="اختر مسارك في التدبر — كل مسار يفتح لك أفقاً معرفياً جديداً في فهم القرآن الكريم"
+          light
+        />
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: 16,
+        }}>
+          {paths.map(p => (
+            <div key={p.title} style={{
+              background: COLORS.CARD2,
+              border: `1px solid ${COLORS.BORDER}`,
+              borderRadius: 16,
+              padding: '24px 20px',
+              cursor: 'pointer',
+              transition: 'all 0.25s',
+              display: 'flex', alignItems: 'flex-start', gap: 16,
+            }}
+            dir="rtl"
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = p.color + '70';
+              e.currentTarget.style.background = p.color + '10';
+              e.currentTarget.style.transform = 'translateY(-3px)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = COLORS.BORDER;
+              e.currentTarget.style.background = COLORS.CARD2;
+              e.currentTarget.style.transform = 'none';
+            }}>
+              <div style={{
+                width: 52, height: 52, borderRadius: 14,
+                background: p.color + '18',
+                border: `1.5px solid ${p.color}40`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: p.color, flexShrink: 0,
+              }}>{p.icon}</div>
+              <div>
+                <div style={{
+                  fontFamily: 'Noto Naskh Arabic, serif',
+                  fontWeight: 700, color: COLORS.TXT,
+                  fontSize: '1rem', marginBottom: 6,
+                }}>{p.title}</div>
+                <div style={{
+                  fontFamily: 'Noto Naskh Arabic, serif',
+                  fontSize: '0.83rem', color: COLORS.TXT2,
+                  lineHeight: 1.8,
+                }}>{p.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   FEATURED TAFSIR SECTION
+══════════════════════════════════════════════════════════ */
+function FeaturedSection() {
+  const navigate = useNavigate();
+  const items = [
+    {
+      label: 'آية اليوم',
+      ayah: '﴿ لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ﴾',
+      ref: 'البقرة: ٢٨٦',
+      excerpt: 'هذه الآية الخاتمة لسورة البقرة تُجسِّد قانوناً إلهياً ثابتاً في سنن الله مع الإنسان — فلا تكليف يتجاوز الطاقة، ولا ابتلاء يعجز عن الاحتمال.',
+      color: COLORS.GOLD,
+      icon: <Flame size={18} />,
+    },
+    {
+      label: 'وقفة تدبرية',
+      ayah: '﴿ وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ﴾',
+      ref: 'البقرة: ١٨٦',
+      excerpt: 'لم يقل: "فقل لهم إني قريب" — بل أجاب الله مباشرةً دون واسطة، وفي هذا إيماء عميق إلى أن الدعاء هو اللقاء الحقيقي بلا حجاب.',
+      color: COLORS.TEAL2,
+      icon: <Heart size={18} />,
+    },
+    {
+      label: 'فيض تربوي',
+      ayah: '﴿ وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ﴾',
+      ref: 'البقرة: ٤٥',
+      excerpt: 'الصلاة وحدها لا تكفي، والصبر وحده لا يكفي — لكن اجتماعهما يصنع في النفس قدرةً على مواجهة الحياة بكل ثقلها.',
+      color: '#7c3aed',
+      icon: <Sparkles size={18} />,
+    },
+  ];
 
   return (
     <section style={{
-      background:C.navy, padding:'80px 32px',
-      direction: isRTL?'rtl':'ltr',
+      background: COLORS.BG,
+      padding: '80px 24px',
     }}>
-      <div style={{ maxWidth:1000, margin:'0 auto', textAlign:'center' }}>
-        <p style={{ fontFamily:'Amiri, serif', color:C.gold, fontSize:'0.95rem', marginBottom:10, letterSpacing:2 }}>
-          ✦ {isRTL?'للإنسانية جمعاء':'For All of Humanity'} ✦
-        </p>
-        <h2 style={{
-          fontFamily: isRTL?'Amiri, serif':'Playfair Display, serif',
-          fontSize:'clamp(1.7rem, 4vw, 2.3rem)', color:C.white, marginBottom:14,
-        }}>
-          {isRTL?'التجربة متعددة اللغات':'Multilingual Experience'}
-        </h2>
-        <GoldDivider margin="0 auto 20px" width="120px"/>
-        <p style={{
-          fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-          fontSize:'0.95rem', color:`${C.white}70`, maxWidth:600, margin:'0 auto 48px', lineHeight:2,
-        }}>
-          {isRTL
-            ? 'العربية هي لغة القرآن الأصيلة ومصدر التفسير. وقد حرصنا على إتاحة هذا المشروع بلغات عالمية متعددة ليصل إلى قلوب البشر في كل مكان.'
-            : 'Arabic is the original language of the Quran and the source of all tafsir. We have made this project available in multiple world languages to reach hearts everywhere.'
-          }
-        </p>
-
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <SectionTitle
+          title="مختارات التفسير"
+          subtitle="لمحات من فيوض البيان — آيات تخاطب العقل والروح"
+        />
         <div style={{
-          display:'flex', flexWrap:'wrap', justifyContent:'center', gap:16,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gap: 20,
         }}>
-          {LANGUAGES.map(l => (
-            <button key={l.code}
-              onClick={() => setLang(l.code)}
-              style={{
-                background: lang===l.code
-                  ? `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`
-                  : `rgba(255,255,255,0.06)`,
-                border:`1.5px solid ${lang===l.code ? C.gold : 'rgba(255,255,255,0.12)'}`,
-                color: lang===l.code ? C.teal : C.white,
-                borderRadius:16, padding:'20px 28px',
-                cursor:'pointer', textAlign:'center',
-                transition:'all 0.25s', minWidth:140,
-              }}
-              onMouseEnter={e => { if(lang!==l.code){ e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.25)'; }}}
-              onMouseLeave={e => { if(lang!==l.code){ e.currentTarget.style.background='rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.12)'; }}}>
-              <div style={{ fontSize:'2rem', marginBottom:8 }}>{l.flag}</div>
+          {items.map(item => (
+            <div key={item.label} style={{
+              background: COLORS.CARD,
+              border: `1px solid ${COLORS.BORDER}`,
+              borderRadius: 20,
+              padding: '28px 24px',
+              transition: 'all 0.25s',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+            dir="rtl"
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = item.color + '50';
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = `0 12px 32px rgba(0,0,0,0.25), 0 0 0 1px ${item.color}15`;
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = COLORS.BORDER;
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.boxShadow = 'none';
+            }}>
+              <div style={{ position: 'absolute', top: -20, left: -20, opacity: 0.05 }}>
+                <IslamicStar size={120} color={item.color} opacity={1} />
+              </div>
+
               <div style={{
-                fontFamily: l.dir==='rtl'?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                fontSize:'0.9rem', fontWeight:700,
-              }}>{l.label}</div>
-              {lang===l.code && (
-                <div style={{ fontSize:'0.65rem', marginTop:4, opacity:0.7,
-                  fontFamily:'Inter, sans-serif' }}>✓ Active</div>
-              )}
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                background: item.color + '15',
+                border: `1px solid ${item.color}30`,
+                borderRadius: 20,
+                padding: '4px 12px',
+                marginBottom: 16,
+                color: item.color,
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                fontFamily: 'Noto Naskh Arabic, serif',
+              }}>
+                {item.icon} {item.label}
+              </div>
+
+              <p style={{
+                fontFamily: 'Amiri, serif',
+                fontSize: '1.25rem',
+                color: COLORS.GOLD3,
+                lineHeight: 1.9,
+                marginBottom: 8,
+              }}>{item.ayah}</p>
+
+              <p style={{
+                fontSize: '0.72rem',
+                color: item.color,
+                fontFamily: 'Noto Naskh Arabic, serif',
+                marginBottom: 14,
+                fontWeight: 700,
+              }}>{item.ref}</p>
+
+              <p style={{
+                fontFamily: 'Noto Naskh Arabic, serif',
+                fontSize: '0.9rem',
+                color: COLORS.TXT2,
+                lineHeight: 2,
+                borderRight: `2px solid ${item.color}50`,
+                paddingRight: 12,
+              }}>{item.excerpt}</p>
+
+              <button
+                onClick={() => navigate('/part1')}
+                style={{
+                  marginTop: 18,
+                  background: 'transparent',
+                  border: `1px solid ${item.color}40`,
+                  borderRadius: 8,
+                  padding: '7px 16px',
+                  color: item.color,
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  fontFamily: 'Noto Naskh Arabic, serif',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = item.color + '15'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                اقرأ التفسير كاملاً ←
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   MULTILINGUAL SECTION
+══════════════════════════════════════════════════════════ */
+function MultilingualSection({ lang, onLangChange }) {
+  const samples = {
+    ar: { title: 'فيوض التأويل المعاصر', text: 'قراءة تفسيرية معاصرة تجمع بين البيان القرآني والتدبر التربوي والبصيرة النفسية' },
+    en: { title: 'Streams of Contemporary Tafsir', text: 'A contemporary exegetical reading combining Quranic eloquence, pedagogical contemplation, and spiritual insight' },
+    ur: { title: 'عصری تفسیر کے فیوض', text: 'ایک جدید تفسیری مطالعہ جو قرآنی بیان، تربیتی تدبر اور نفسیاتی بصیرت کو یکجا کرتا ہے' },
+    id: { title: 'Tafsir Kontemporer', text: 'Tafsir Quran kontemporer yang memadukan keindahan bayan, kontemplasi pedagogis, dan wawasan spiritual' },
+    tr: { title: 'Çağdaş Tefsir Kaynakları', text: 'Kuranın beyan güzelliğini, terbiyevi tefekkürü ve ruhsal kavrayışı bir araya getiren çağdaş bir tefsir' },
+  };
+
+  const current = samples[lang] || samples.ar;
+  const dir = LANGUAGES.find(l => l.code === lang)?.dir || 'rtl';
+
+  return (
+    <section style={{
+      background: `linear-gradient(135deg, #0a1628 0%, #0d1f38 50%, #0a1628 100%)`,
+      padding: '80px 24px',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+        backgroundImage: `radial-gradient(circle at 20% 50%, ${COLORS.TEAL}08 0%, transparent 50%),
+                         radial-gradient(circle at 80% 50%, ${COLORS.GOLD}06 0%, transparent 50%)`,
+        pointerEvents: 'none',
+      }} />
+
+      <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <SectionTitle
+          title="تجربة متعددة اللغات"
+          subtitle="استمتع بتفسير القرآن الكريم بلغتك الأم"
+          light
+        />
+
+        {/* Language Buttons */}
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40 }}>
+          {LANGUAGES.map(l => (
+            <button
+              key={l.code}
+              onClick={() => onLangChange(l.code)}
+              style={{
+                background: lang === l.code
+                  ? `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`
+                  : 'rgba(255,255,255,0.06)',
+                color: lang === l.code ? COLORS.BG : COLORS.TXT2,
+                border: `1.5px solid ${lang === l.code ? COLORS.GOLD : 'rgba(255,255,255,0.1)'}`,
+                borderRadius: 12,
+                padding: '10px 20px',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                fontFamily: l.code === 'ar' || l.code === 'ur' ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
+                display: 'flex', alignItems: 'center', gap: 8,
+              }}
+              onMouseEnter={e => {
+                if (lang !== l.code) {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                  e.currentTarget.style.borderColor = COLORS.GOLD + '50';
+                }
+              }}
+              onMouseLeave={e => {
+                if (lang !== l.code) {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                }
+              }}
+            >
+              <span style={{ fontSize: '1.2rem' }}>{l.flag}</span>
+              <span>{l.label}</span>
+              <span style={{ opacity: 0.6, fontSize: '0.75rem' }}>{l.native}</span>
             </button>
           ))}
         </div>
+
+        {/* Language Preview Card */}
+        <div style={{
+          background: COLORS.CARD,
+          border: `1px solid ${COLORS.BORDER2}`,
+          borderRadius: 20,
+          padding: '36px 40px',
+          textAlign: dir === 'rtl' ? 'right' : 'left',
+          transition: 'all 0.3s',
+          boxShadow: `0 8px 32px rgba(0,0,0,0.3)`,
+        }} dir={dir}>
+          <h3 style={{
+            fontFamily: dir === 'rtl' ? 'Amiri, serif' : 'Playfair Display, serif',
+            fontSize: '1.8rem',
+            color: COLORS.GOLD2,
+            marginBottom: 16,
+            fontWeight: 700,
+          }}>
+            {current.title}
+          </h3>
+          <p style={{
+            fontFamily: dir === 'rtl' ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
+            fontSize: '1rem',
+            color: COLORS.TXT2,
+            lineHeight: 2,
+          }}>
+            {current.text}
+          </p>
+        </div>
       </div>
     </section>
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   9. SCHOLARLY CREDIBILITY
-══════════════════════════════════════════════════════ */
-function CredibilitySection({ lang }) {
-  const isRTL = ['ar','ur'].includes(lang);
-
+/* ══════════════════════════════════════════════════════════
+   CREDIBILITY SECTION
+══════════════════════════════════════════════════════════ */
+function CredibilitySection() {
   const items = [
-    { icon:'📚', ar:'المنهج العلمي الرصين',          en:'Rigorous Scholarly Method',      ar_d:'تفسير مرتبط بمصادره', en_d:'Tafsir grounded in its sources' },
-    { icon:'📝', ar:'العناية بالتوثيق',               en:'Meticulous Documentation',       ar_d:'استشهاد بالمراجع الكبرى', en_d:'Citing major references' },
-    { icon:'🔗', ar:'الارتباط بالتراث التفسيري',      en:'Rooted in Tafsir Heritage',      ar_d:'الطبري، ابن كثير، القرطبي...', en_d:'Al-Tabari, Ibn Kathir, Al-Qurtubi...' },
-    { icon:'💡', ar:'إبراز المعنى التربوي والنفسي',    en:'Pedagogical & Psychological',    ar_d:'تفسير يبني ويشفي', en_d:'Tafsir that builds and heals' },
-    { icon:'🌉', ar:'جسر بين التراث والمعاصرة',       en:'Bridge: Heritage & Modernity',   ar_d:'للباحث والقارئ العام معاً', en_d:'For both scholar and general reader' },
-    { icon:'🌱', ar:'تفسير يُثمر في الحياة',          en:'Tafsir Bearing Life Fruit',      ar_d:'من القرآن إلى السلوك', en_d:'From Quran to lived behavior' },
+    { icon: <Award size={26}/>, color: '#b45309', title: 'مصادر علمية موثَّقة', text: 'كل فقرة مستندة إلى مصادر من أمهات كتب التفسير والعلوم' },
+    { icon: <CheckCircle size={26}/>, color: '#047857', title: 'مراجعة علمية دقيقة', text: 'تمت مراجعة المحتوى وفق منهجية علمية رصينة' },
+    { icon: <Users size={26}/>, color: '#1d4ed8', title: 'للمسلم المعاصر', text: 'بلغة تراعي احتياجات الإنسان العصري ووعيه الثقافي' },
+    { icon: <Globe size={26}/>, color: '#7c3aed', title: 'متعدد اللغات', text: 'خمس لغات عالمية لنشر نور القرآن في أرجاء المعمورة' },
+    { icon: <BarChart2 size={26}/>, color: '#0f766e', title: 'أبعاد تفسيرية متكاملة', text: 'سبعة أبعاد: بياني، تأويلي، روحاني، نفسي، تربوي، معاصر، استشهادي' },
+    { icon: <MessageSquare size={26}/>, color: '#be123c', title: 'لغة الحوار والتأمل', text: 'أسلوب يدعو للتفكر لا يكتفي بالإخبار' },
   ];
 
   return (
     <section style={{
-      background:C.ivory, padding:'80px 32px',
-      direction: isRTL?'rtl':'ltr',
+      background: `linear-gradient(180deg, ${COLORS.BG2} 0%, ${COLORS.BG3} 100%)`,
+      padding: '80px 24px',
     }}>
-      <div style={{ maxWidth:1100, margin:'0 auto' }}>
-        <div style={{ textAlign:'center', marginBottom:52 }}>
-          <p style={{ fontFamily:'Amiri, serif', color:C.gold, fontSize:'0.95rem', marginBottom:10, letterSpacing:2 }}>
-            ✦ {isRTL?'الثقة والمصداقية العلمية':'Trust & Scholarly Credibility'} ✦
-          </p>
-          <h2 style={{
-            fontFamily: isRTL?'Amiri, serif':'Playfair Display, serif',
-            fontSize:'clamp(1.6rem, 4vw, 2.2rem)', color:C.emerald, marginBottom:12,
-          }}>
-            {isRTL?'لماذا فيوض التأويل المعاصر؟':'Why Fuyud Al-Taweel?'}
-          </h2>
-          <GoldDivider margin="0 auto 0" width="120px"/>
-        </div>
-
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <SectionTitle
+          title="المصداقية العلمية"
+          subtitle="مشروع يقف على أسس علمية راسخة مع لغة تُخاطب الروح"
+        />
         <div style={{
-          display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(280px, 1fr))',
-          gap:20,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: 16,
         }}>
-          {items.map((item,i) => (
-            <div key={i} style={{
-              display:'flex', gap:16, alignItems:'flex-start',
-              background:C.white, borderRadius:14, padding:'22px 20px',
-              border:`1px solid ${C.borderLight}`,
-              boxShadow:'0 2px 12px rgba(0,0,0,0.05)',
-              transition:'all 0.2s',
+          {items.map(item => (
+            <div key={item.title} style={{
+              background: COLORS.CARD,
+              border: `1px solid ${COLORS.BORDER}`,
+              borderRadius: 14,
+              padding: '22px 18px',
+              display: 'flex', alignItems: 'flex-start', gap: 14,
+              transition: 'all 0.2s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor=C.gold+'50'; e.currentTarget.style.transform='translateX(4px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor=C.borderLight; e.currentTarget.style.transform='none'; }}>
-              <div style={{
-                width:44, height:44, borderRadius:'50%',
-                background:`${C.emerald}12`, display:'flex',
-                alignItems:'center', justifyContent:'center',
-                fontSize:'1.3rem', flexShrink:0,
-              }}>{item.icon}</div>
+            dir="rtl"
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = item.color + '50';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = COLORS.BORDER;
+              e.currentTarget.style.transform = 'none';
+            }}>
+              <div style={{ color: item.color, flexShrink: 0, marginTop: 2 }}>{item.icon}</div>
               <div>
-                <h4 style={{
-                  fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                  fontSize:'0.92rem', fontWeight:700, color:C.emerald, marginBottom:4,
-                }}>{isRTL?item.ar:item.en}</h4>
-                <p style={{
-                  fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                  fontSize:'0.8rem', color:C.textLight, margin:0, lineHeight:1.7,
-                }}>{isRTL?item.ar_d:item.en_d}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ══════════════════════════════════════════════════════
-   10. SPECIAL FEATURES
-══════════════════════════════════════════════════════ */
-function FeaturesSection({ lang }) {
-  const isRTL = ['ar','ur'].includes(lang);
-
-  const features = [
-    { icon:'🔍', ar:'البحث الذكي',                 en:'Smart Search',              available:true  },
-    { icon:'📊', ar:'الخرائط المعرفية',             en:'Knowledge Maps',            available:false },
-    { icon:'🔀', ar:'الروابط الموضوعية',            en:'Thematic Links',            available:false },
-    { icon:'⚖️', ar:'مقارنة الآيات المتشابهة',     en:'Compare Similar Verses',    available:false },
-    { icon:'🌐', ar:'التصفح حسب القضايا المعاصرة', en:'Browse by Modern Issues',   available:false },
-    { icon:'❤️', ar:'المفضلة والحفظ',              en:'Favourites & Bookmarks',    available:false },
-  ];
-
-  return (
-    <section style={{
-      background:C.parchment, padding:'80px 32px',
-      direction: isRTL?'rtl':'ltr',
-    }}>
-      <div style={{ maxWidth:1000, margin:'0 auto' }}>
-        <div style={{ textAlign:'center', marginBottom:52 }}>
-          <p style={{ fontFamily:'Amiri, serif', color:C.gold, fontSize:'0.95rem', marginBottom:10, letterSpacing:2 }}>
-            ✦ {isRTL?'أدوات المنصة':'Platform Tools'} ✦
-          </p>
-          <h2 style={{
-            fontFamily: isRTL?'Amiri, serif':'Playfair Display, serif',
-            fontSize:'clamp(1.6rem, 4vw, 2.2rem)', color:C.emerald, marginBottom:12,
-          }}>
-            {isRTL?'مميزات فيوض التأويل المعاصر':'Platform Features'}
-          </h2>
-          <GoldDivider margin="0 auto 0" width="120px"/>
-        </div>
-
-        <div style={{
-          display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))',
-          gap:16,
-        }}>
-          {features.map((f,i) => (
-            <div key={i} style={{
-              background:C.white, borderRadius:14, padding:'24px 20px',
-              border:`1px solid ${f.available ? C.gold+'40' : C.borderLight}`,
-              textAlign:'center', opacity: f.available?1:0.65,
-              transition:'all 0.25s',
-              position:'relative', overflow:'hidden',
-            }}
-            onMouseEnter={e => { if(f.available){ e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow=`0 10px 28px rgba(0,0,0,0.1)`; }}}
-            onMouseLeave={e => { e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='none'; }}>
-              {!f.available && (
-                <span style={{
-                  position:'absolute', top:10, left:isRTL?'auto':10, right:isRTL?10:'auto',
-                  background:'#8888',
-                  color:C.white, fontSize:'0.6rem', padding:'2px 8px', borderRadius:10,
-                  fontFamily:'Inter, sans-serif',
-                }}>
-                  {isRTL?'قريباً':'Soon'}
-                </span>
-              )}
-              <div style={{ fontSize:'2rem', marginBottom:12 }}>{f.icon}</div>
-              <h4 style={{
-                fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                fontSize:'0.85rem', fontWeight:700, color:C.emerald, margin:0,
-              }}>{isRTL?f.ar:f.en}</h4>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ══════════════════════════════════════════════════════
-   11. LATEST UPDATES
-══════════════════════════════════════════════════════ */
-function LatestSection({ lang, navigate }) {
-  const isRTL = ['ar','ur'].includes(lang);
-
-  const updates = [
-    { type_ar:'سورة مضافة',  type_en:'Surah Added',   title_ar:'سورة البقرة – الجزء الثاني', title_en:'Al-Baqarah – Part 2', path:'/ar/baqarah/2', date:'مارس 2026' },
-    { type_ar:'سورة مضافة',  type_en:'Surah Added',   title_ar:'سورة البقرة – الجزء الأول',  title_en:'Al-Baqarah – Part 1', path:'/ar/baqarah/1', date:'مارس 2026' },
-    { type_ar:'إطلاق المنصة',type_en:'Platform Launch',title_ar:'إطلاق فيوض التأويل المعاصر', title_en:'Fuyud Platform Launch', path:'/', date:'مارس 2026' },
-  ];
-
-  return (
-    <section style={{
-      background:C.ivory, padding:'72px 32px',
-      direction: isRTL?'rtl':'ltr',
-    }}>
-      <div style={{ maxWidth:900, margin:'0 auto' }}>
-        <div style={{ textAlign:'center', marginBottom:44 }}>
-          <p style={{ fontFamily:'Amiri, serif', color:C.gold, fontSize:'0.95rem', marginBottom:10, letterSpacing:2 }}>
-            ✦ {isRTL?'آخر الإضافات':'Latest Updates'} ✦
-          </p>
-          <h2 style={{
-            fontFamily: isRTL?'Amiri, serif':'Playfair Display, serif',
-            fontSize:'clamp(1.5rem, 3.5vw, 2.1rem)', color:C.emerald, marginBottom:12,
-          }}>
-            {isRTL?'جديد في المنصة':'What\'s New'}
-          </h2>
-          <GoldDivider margin="0 auto 0" width="100px"/>
-        </div>
-
-        <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
-          {updates.map((u,i) => (
-            <div key={i}
-              onClick={() => navigate(u.path)}
-              style={{
-                background:C.white, borderRadius:14, padding:'20px 24px',
-                border:`1px solid ${C.borderLight}`,
-                display:'flex', justifyContent:'space-between', alignItems:'center',
-                cursor:'pointer', transition:'all 0.2s',
-                boxShadow:'0 2px 10px rgba(0,0,0,0.05)',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor=C.gold+'50'; e.currentTarget.style.boxShadow=`0 6px 20px rgba(0,0,0,0.1)`; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor=C.borderLight; e.currentTarget.style.boxShadow='0 2px 10px rgba(0,0,0,0.05)'; }}>
-
-              <div style={{ display:'flex', gap:14, alignItems:'center' }}>
                 <div style={{
-                  width:44, height:44, borderRadius:10,
-                  background:`${C.emerald}12`,
-                  display:'flex', alignItems:'center', justifyContent:'center',
-                  flexShrink:0,
-                }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                      stroke={C.emerald} strokeWidth="1.8" strokeLinecap="round"/>
-                  </svg>
-                </div>
-                <div>
-                  <p style={{ margin:'0 0 3px',
-                    fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                    fontSize:'0.95rem', fontWeight:700, color:C.textDark }}>
-                    {isRTL?u.title_ar:u.title_en}
-                  </p>
-                  <span style={{
-                    background:`${C.emerald}14`, color:C.emerald,
-                    fontSize:'0.68rem', padding:'2px 10px', borderRadius:12, fontWeight:600,
-                    fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                  }}>{isRTL?u.type_ar:u.type_en}</span>
-                </div>
-              </div>
-
-              <div style={{ display:'flex', gap:12, alignItems:'center' }}>
-                <span style={{ fontSize:'0.75rem', color:C.textLight, whiteSpace:'nowrap',
-                  fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif' }}>
-                  {u.date}
-                </span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  style={{ transform: isRTL?'rotate(180deg)':'none', flexShrink:0 }}>
-                  <path d="M9 6l6 6-6 6" stroke={C.gold} strokeWidth="2" strokeLinecap="round"/>
-                </svg>
+                  fontFamily: 'Noto Naskh Arabic, serif',
+                  fontWeight: 700, color: COLORS.TXT,
+                  fontSize: '0.95rem', marginBottom: 5,
+                }}>{item.title}</div>
+                <div style={{
+                  fontFamily: 'Noto Naskh Arabic, serif',
+                  fontSize: '0.83rem', color: COLORS.TXT2,
+                  lineHeight: 1.9,
+                }}>{item.text}</div>
               </div>
             </div>
           ))}
@@ -1359,194 +1392,327 @@ function LatestSection({ lang, navigate }) {
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   12. NEWSLETTER
-══════════════════════════════════════════════════════ */
-function NewsletterSection({ lang }) {
-  const isRTL = ['ar','ur'].includes(lang);
-  const [email, setEmail] = useState('');
+/* ══════════════════════════════════════════════════════════
+   FEATURES SECTION
+══════════════════════════════════════════════════════════ */
+function FeaturesSection() {
+  const features = [
+    { icon: <Search size={24}/>, color: '#3a9478', title: 'البحث الذكي', text: 'بحث بالآية والكلمة والموضوع والجذر اللغوي', badge: 'متاح' },
+    { icon: <Layers size={24}/>, color: '#b45309', title: 'مقارنة الآيات', text: 'مقارنة التفسيرات وربط الآيات ذات الموضوع الواحد', badge: 'قريباً' },
+    { icon: <Map size={24}/>, color: '#7c3aed', title: 'خرائط المعرفة', text: 'خرائط ذهنية للمواضيع القرآنية وترابطها', badge: 'قريباً' },
+    { icon: <Volume2 size={24}/>, color: '#1d4ed8', title: 'التفسير الصوتي', text: 'الاستماع للتفسير بأصوات عالية الجودة', badge: 'قريباً' },
+    { icon: <BookMarked size={24}/>, color: '#be123c', title: 'المسارات الموضوعية', text: 'تصفح التفسير حسب المواضيع والأبعاد', badge: 'متاح' },
+    { icon: <Globe size={24}/>, color: '#0f766e', title: 'خمس لغات', text: 'العربية والإنجليزية والأردو والإندونيسية والتركية', badge: 'متاح' },
+  ];
 
   return (
-    <section style={{
-      background:`linear-gradient(135deg, ${C.emerald} 0%, ${C.teal} 100%)`,
-      padding:'72px 32px', direction: isRTL?'rtl':'ltr',
+    <section id="features" style={{
+      background: COLORS.BG,
+      padding: '80px 24px',
+      position: 'relative',
+      overflow: 'hidden',
     }}>
-      <div style={{ maxWidth:640, margin:'0 auto', textAlign:'center' }}>
-        <p style={{ fontFamily:'Amiri, serif', color:C.gold, fontSize:'0.95rem', marginBottom:12, letterSpacing:2 }}>
-          ✦ {isRTL?'ابقَ على اطلاع':'Stay Informed'} ✦
-        </p>
-        <h2 style={{
-          fontFamily: isRTL?'Amiri, serif':'Playfair Display, serif',
-          fontSize:'clamp(1.5rem, 4vw, 2.1rem)', color:C.goldPale, marginBottom:12,
-        }}>
-          {isRTL?'اشترك في نشرة فيوض التأويل':'Subscribe to Our Newsletter'}
-        </h2>
-        <GoldDivider margin="0 auto 20px" width="100px"/>
-        <p style={{
-          fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-          fontSize:'0.9rem', color:`${C.goldPale}70`, maxWidth:480, margin:'0 auto 36px', lineHeight:2,
-        }}>
-          {isRTL
-            ? 'تلقَّ جديد التفسير، والوقفات التدبرية، والمقالات المختارة، وتحديثات المنصة في بريدك الإلكتروني.'
-            : 'Receive new tafsir additions, contemplative reflections, selected articles, and platform updates in your inbox.'
-          }
-        </p>
-
+      <GeometricPattern opacity={0.04} />
+      <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <SectionTitle
+          title="خصائص المنصة"
+          subtitle="أدوات ذكية وتجربة غنية لفهم القرآن الكريم"
+        />
         <div style={{
-          display:'flex', gap:0, borderRadius:50, overflow:'hidden',
-          boxShadow:`0 6px 24px rgba(0,0,0,0.2)`,
-          border:`1.5px solid ${C.gold}40`,
-          maxWidth:480, margin:'0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+          gap: 18,
         }}>
-          <input value={email} onChange={e => setEmail(e.target.value)}
-            placeholder={isRTL?'بريدك الإلكتروني':'Your email address'}
-            style={{
-              flex:1, padding:'16px 22px', border:'none', outline:'none',
-              background:C.white, fontSize:'0.9rem', color:C.textDark,
-              fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-              direction: isRTL?'rtl':'ltr',
-            }}/>
-          <button style={{
-            background:`linear-gradient(135deg, ${C.gold}, ${C.goldLight})`,
-            color:C.teal, border:'none', padding:'0 26px',
-            fontSize:'0.85rem', fontWeight:700, cursor:'pointer',
-            fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-            whiteSpace:'nowrap',
-          }}>
-            {isRTL?'اشترك':'Subscribe'}
-          </button>
+          {features.map(f => (
+            <div key={f.title} style={{
+              background: COLORS.CARD,
+              border: `1px solid ${COLORS.BORDER}`,
+              borderRadius: 16,
+              padding: '26px 22px',
+              transition: 'all 0.25s',
+              position: 'relative',
+            }}
+            dir="rtl"
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = f.color + '50';
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.boxShadow = `0 8px 24px rgba(0,0,0,0.2)`;
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = COLORS.BORDER;
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.boxShadow = 'none';
+            }}>
+              <div style={{ position: 'absolute', top: 14, left: 14 }}>
+                <span style={{
+                  background: f.badge === 'متاح' ? '#047857' + '20' : '#b45309' + '20',
+                  color: f.badge === 'متاح' ? '#34d399' : '#fbbf24',
+                  border: `1px solid ${f.badge === 'متاح' ? '#34d399' : '#fbbf24'}30`,
+                  borderRadius: 20,
+                  padding: '2px 9px',
+                  fontSize: '0.68rem',
+                  fontWeight: 700,
+                  fontFamily: 'Noto Naskh Arabic, serif',
+                }}>
+                  {f.badge}
+                </span>
+              </div>
+              <div style={{
+                width: 52, height: 52, borderRadius: 14,
+                background: f.color + '15',
+                border: `1.5px solid ${f.color}30`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: f.color, marginBottom: 14,
+              }}>{f.icon}</div>
+              <h4 style={{
+                fontFamily: 'Noto Naskh Arabic, serif',
+                fontWeight: 700, color: COLORS.TXT,
+                fontSize: '1rem', marginBottom: 8,
+              }}>{f.title}</h4>
+              <p style={{
+                fontFamily: 'Noto Naskh Arabic, serif',
+                color: COLORS.TXT2, fontSize: '0.87rem',
+                lineHeight: 1.9, margin: 0,
+              }}>{f.text}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   13. FOOTER
-══════════════════════════════════════════════════════ */
-function Footer({ lang, setLang, navigate }) {
-  const isRTL = ['ar','ur'].includes(lang);
+/* ══════════════════════════════════════════════════════════
+   NEWSLETTER SECTION
+══════════════════════════════════════════════════════════ */
+function NewsletterSection() {
+  const [email, setEmail] = useState('');
+  const [done, setDone] = useState(false);
+
+  return (
+    <section style={{
+      background: `linear-gradient(135deg, ${COLORS.BG3} 0%, ${COLORS.BG4} 100%)`,
+      padding: '80px 24px',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0,
+        backgroundImage: `radial-gradient(circle at 50% 50%, ${COLORS.GOLD}06 0%, transparent 60%)`,
+        pointerEvents: 'none',
+      }} />
+      <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }} dir="rtl">
+        <IslamicStar size={50} color={COLORS.GOLD} opacity={0.3} />
+        <h2 style={{
+          fontFamily: 'Amiri, serif',
+          fontSize: 'clamp(1.6rem, 3vw, 2.2rem)',
+          color: COLORS.GOLD2, margin: '20px 0 12px',
+        }}>
+          تابع الإضافات الجديدة
+        </h2>
+        <p style={{
+          fontFamily: 'Noto Naskh Arabic, serif',
+          fontSize: '0.95rem', color: COLORS.TXT2,
+          lineHeight: 1.9, marginBottom: 28,
+        }}>
+          اشترك ليصلك كل جديد من فيوض التأويل المعاصر — آيات وتفسيرات وإضافات سور جديدة
+        </p>
+
+        {done ? (
+          <div style={{
+            background: '#047857' + '20',
+            border: `1px solid #34d39950`,
+            borderRadius: 12, padding: '14px 24px',
+            color: '#34d399', fontFamily: 'Noto Naskh Arabic, serif',
+            fontSize: '0.95rem',
+          }}>
+            ✅ شكراً! تم تسجيل اشتراكك بنجاح
+          </div>
+        ) : (
+          <div style={{ display: 'flex', gap: 10 }}>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="بريدك الإلكتروني"
+              dir="rtl"
+              style={{
+                flex: 1,
+                background: COLORS.CARD,
+                border: `1.5px solid ${COLORS.BORDER2}`,
+                borderRadius: 12,
+                padding: '12px 16px',
+                color: COLORS.TXT,
+                fontSize: '0.9rem',
+                fontFamily: 'Noto Naskh Arabic, serif',
+                outline: 'none',
+              }}
+            />
+            <button
+              onClick={() => email && setDone(true)}
+              style={{
+                background: `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2})`,
+                color: COLORS.BG,
+                border: 'none',
+                borderRadius: 12,
+                padding: '12px 24px',
+                fontSize: '0.9rem',
+                fontWeight: 800,
+                fontFamily: 'Noto Naskh Arabic, serif',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              اشترك
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════ */
+function Footer() {
+  const navigate = useNavigate();
 
   return (
     <footer style={{
-      background:C.navy, padding:'60px 32px 0',
-      direction: isRTL?'rtl':'ltr',
+      background: `linear-gradient(180deg, ${COLORS.BG} 0%, #060f09 100%)`,
+      borderTop: `1px solid ${COLORS.BORDER}`,
+      padding: '60px 24px 28px',
     }}>
-      <div style={{ maxWidth:1200, margin:'0 auto' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{
-          display:'grid',
-          gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))',
-          gap:40, marginBottom:48,
-        }}>
-          {/* brand */}
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gap: 40,
+          marginBottom: 40,
+        }} dir="rtl">
+          {/* Brand column */}
           <div>
-            <img src="/logo.png" alt="logo"
-              style={{ width:80, height:'auto', marginBottom:16,
-                filter:'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}
-              onError={e=>{e.target.style.display='none'}}/>
-            <h3 style={{
-              fontFamily:'Amiri, serif', fontSize:'1.1rem', color:C.goldPale, marginBottom:8,
-            }}>فيوض التأويل المعاصر</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: 10,
+                border: `1.5px solid ${COLORS.BORDER2}`,
+                overflow: 'hidden', background: COLORS.CARD,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <img src="/logo.png" alt="Logo" style={{ width: '100%', objectFit: 'contain' }} />
+              </div>
+              <div>
+                <div style={{
+                  fontFamily: 'Amiri, serif', fontSize: '1rem',
+                  color: COLORS.GOLD2, fontWeight: 700, lineHeight: 1.3,
+                }}>
+                  فيوض التأويل المعاصر
+                </div>
+              </div>
+            </div>
             <p style={{
-              fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-              fontSize:'0.78rem', color:`${C.white}55`, lineHeight:1.8, margin:0,
+              fontFamily: 'Noto Naskh Arabic, serif',
+              fontSize: '0.82rem', color: COLORS.TXT3, lineHeight: 1.9,
             }}>
-              {isRTL
-                ? 'منصة تفسيرية معرفية تجمع بين أصالة التفسير ووعي الإنسان المعاصر'
-                : 'A scholarly tafsir platform bridging classical heritage and contemporary insight'
-              }
+              مشروع تفسيري قرآني معاصر يقدم سورة البقرة بأسلوب متعدد الأبعاد
             </p>
           </div>
 
-          {/* quick links */}
+          {/* Quick Links */}
           <div>
             <h4 style={{
-              fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-              fontSize:'0.9rem', color:C.goldPale, marginBottom:16, fontWeight:700,
-            }}>{isRTL?'روابط سريعة':'Quick Links'}</h4>
+              fontFamily: 'Noto Naskh Arabic, serif',
+              color: COLORS.GOLD2, fontSize: '0.9rem',
+              fontWeight: 700, marginBottom: 14,
+            }}>روابط سريعة</h4>
             {[
-              { ar:'الرئيسية',      en:'Home',          path:'/' },
-              { ar:'سورة البقرة ج١',en:'Al-Baqarah P.1',path:'/ar/baqarah/1' },
-              { ar:'سورة البقرة ج٢',en:'Al-Baqarah P.2',path:'/ar/baqarah/2' },
-              { ar:'عن المشروع',    en:'About',         path:'/' },
-            ].map((l,i) => (
-              <div key={i}
-                onClick={() => navigate(l.path)}
-                style={{
-                  fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                  fontSize:'0.8rem', color:`${C.white}55`, marginBottom:10,
-                  cursor:'pointer', transition:'color 0.2s',
+              { label: 'الجزء الأول', path: '/part1' },
+              { label: 'الجزء الثاني', path: '/part2' },
+              { label: 'عن المشروع', href: '#about' },
+              { label: 'البحث', href: '#search-section' },
+            ].map(link => (
+              <div key={link.label} style={{ marginBottom: 8 }}>
+                <button onClick={() => link.path ? navigate(link.path) : document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' })} style={{
+                  background: 'none', border: 'none',
+                  color: COLORS.TXT2, fontSize: '0.83rem',
+                  fontFamily: 'Noto Naskh Arabic, serif',
+                  cursor: 'pointer', padding: 0, transition: 'color 0.2s',
                 }}
-                onMouseEnter={e => e.target.style.color=C.goldPale}
-                onMouseLeave={e => e.target.style.color=`${C.white}55`}
-              >{isRTL?l.ar:l.en}</div>
-            ))}
-          </div>
-
-          {/* languages */}
-          <div>
-            <h4 style={{
-              fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-              fontSize:'0.9rem', color:C.goldPale, marginBottom:16, fontWeight:700,
-            }}>{isRTL?'اللغات':'Languages'}</h4>
-            {LANGUAGES.map(l => (
-              <div key={l.code}
-                onClick={() => setLang(l.code)}
-                style={{
-                  fontFamily: l.dir==='rtl'?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                  fontSize:'0.8rem', color: lang===l.code ? C.gold : `${C.white}55`,
-                  marginBottom:10, cursor:'pointer', transition:'color 0.2s',
-                }}>
-                {l.flag} {l.label}
+                onMouseEnter={e => e.currentTarget.style.color = COLORS.GOLD2}
+                onMouseLeave={e => e.currentTarget.style.color = COLORS.TXT2}>
+                  ← {link.label}
+                </button>
               </div>
             ))}
           </div>
 
-          {/* contact */}
+          {/* Languages */}
           <div>
             <h4 style={{
-              fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-              fontSize:'0.9rem', color:C.goldPale, marginBottom:16, fontWeight:700,
-            }}>{isRTL?'التواصل':'Contact'}</h4>
+              fontFamily: 'Noto Naskh Arabic, serif',
+              color: COLORS.GOLD2, fontSize: '0.9rem',
+              fontWeight: 700, marginBottom: 14,
+            }}>اللغات</h4>
+            {LANGUAGES.map(l => (
+              <div key={l.code} style={{ marginBottom: 6 }}>
+                <span style={{
+                  fontSize: '0.82rem', color: COLORS.TXT2,
+                  fontFamily: l.code === 'ar' || l.code === 'ur' ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
+                }}>
+                  {l.flag} {l.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 style={{
+              fontFamily: 'Noto Naskh Arabic, serif',
+              color: COLORS.GOLD2, fontSize: '0.9rem',
+              fontWeight: 700, marginBottom: 14,
+            }}>تواصل معنا</h4>
             <p style={{
-              fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-              fontSize:'0.78rem', color:`${C.white}55`, lineHeight:1.9, margin:0,
+              fontFamily: 'Noto Naskh Arabic, serif',
+              fontSize: '0.82rem', color: COLORS.TXT3, lineHeight: 1.9,
             }}>
-              {isRTL
-                ? 'للتواصل والمراسلة العلمية يسعدنا استقبال ملاحظاتكم ومقترحاتكم.'
-                : 'For correspondence and scholarly communication, we welcome your feedback.'
-              }
+              للتواصل والملاحظات العلمية حول المشروع يُرجى المراسلة عبر البريد الإلكتروني
             </p>
+            <a href="mailto:info@fuyud-tafsir.com" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              color: COLORS.GOLD2, fontSize: '0.82rem',
+              fontFamily: 'Inter, sans-serif', textDecoration: 'none',
+              marginTop: 8,
+            }}>
+              <Mail size={14} />
+              info@fuyud-tafsir.com
+            </a>
           </div>
         </div>
 
-        {/* bottom bar */}
+        <GoldDivider />
+
         <div style={{
-          borderTop:`1px solid ${C.gold}18`, padding:'20px 0',
-          display:'flex', justifyContent:'space-between', alignItems:'center',
-          flexWrap:'wrap', gap:12,
-        }}>
+          display: 'flex', justifyContent: 'space-between',
+          alignItems: 'center', flexWrap: 'wrap', gap: 12,
+          marginTop: 20, paddingTop: 4,
+        }} dir="rtl">
           <p style={{
-            fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-            fontSize:'0.73rem', color:`${C.white}40`, margin:0,
+            fontFamily: 'Noto Naskh Arabic, serif',
+            fontSize: '0.78rem', color: COLORS.TXT3, margin: 0,
           }}>
-            {isRTL
-              ? '© 2026 فيوض التأويل المعاصر • جميع الحقوق محفوظة'
-              : '© 2026 Fuyud Al-Taweel Al-Muasir • All rights reserved'
-            }
+            © ١٤٤٦ هـ | فيوض التأويل المعاصر — جميع الحقوق محفوظة
           </p>
-          <div style={{ display:'flex', gap:20 }}>
-            {(isRTL
-              ? ['سياسة الخصوصية','شروط الاستخدام']
-              : ['Privacy Policy','Terms of Use']
-            ).map((t,i) => (
-              <span key={i} style={{
-                fontFamily: isRTL?'Noto Naskh Arabic, serif':'Inter, sans-serif',
-                fontSize:'0.72rem', color:`${C.white}40`, cursor:'pointer', transition:'color 0.2s',
-              }}
-              onMouseEnter={e => e.target.style.color=C.gold}
-              onMouseLeave={e => e.target.style.color=`${C.white}40`}
-              >{t}</span>
+          <div style={{ display: 'flex', gap: 20 }}>
+            {['سياسة الخصوصية', 'شروط الاستخدام'].map(t => (
+              <span key={t} style={{
+                fontSize: '0.75rem', color: COLORS.TXT3,
+                fontFamily: 'Noto Naskh Arabic, serif',
+                cursor: 'pointer',
+              }}>{t}</span>
             ))}
           </div>
         </div>
@@ -1555,67 +1721,43 @@ function Footer({ lang, setLang, navigate }) {
   );
 }
 
-/* ══════════════════════════════════════════════════════
-   MAIN HOMEPAGE ORCHESTRATOR
-══════════════════════════════════════════════════════ */
-export default function HomePage() {
-  const [selectedLang, setSelectedLang] = useState(null);   // null = show splash
-  const [scrolled, setScrolled]         = useState(false);
+/* ══════════════════════════════════════════════════════════
+   MAIN HOMEPAGE COMPONENT
+══════════════════════════════════════════════════════════ */
+export default function HomePage({ lang, onLangChange }) {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const saved = localStorage.getItem('fuyud_lang');
-    if(saved) setSelectedLang(saved);
-  }, []);
-
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', fn);
-    return () => window.removeEventListener('scroll', fn);
-  }, []);
-
-  const handleLangSelect = (code) => {
-    localStorage.setItem('fuyud_lang', code);
-    setSelectedLang(code);
-  };
-
-  const handleLangChange = (code) => {
-    localStorage.setItem('fuyud_lang', code);
-    setSelectedLang(code);
-  };
-
-  /* show language splash first */
-  if(!selectedLang) {
-    return <LanguageSplash onSelect={handleLangSelect} />;
-  }
-
   return (
-    <div style={{ background:C.ivory }}>
+    <div style={{
+      background: COLORS.BG,
+      minHeight: '100vh',
+      direction: 'rtl',
+      fontFamily: 'Noto Naskh Arabic, serif',
+    }}>
+      {/* Keyframe animations */}
       <style>{`
         @keyframes bounce {
-          0%,100%{ transform:translateY(0); }
-          50%{ transform:translateY(8px); }
+          0%, 100% { transform: translateX(-50%) translateY(0); }
+          50% { transform: translateX(-50%) translateY(8px); }
+        }
+        .hidden-mobile { display: flex; }
+        @media (max-width: 768px) {
+          .hidden-mobile { display: none; }
         }
       `}</style>
 
-      <Header
-        lang={selectedLang}
-        setLang={handleLangChange}
-        scrolled={scrolled}
-      />
-
-      <HeroSection       lang={selectedLang} navigate={navigate} />
-      <SearchSection     lang={selectedLang} />
-      <ProjectIntroSection lang={selectedLang} />
-      <BrowseSection     lang={selectedLang} navigate={navigate} />
-      <PathwaysSection   lang={selectedLang} />
-      <FeaturedExcerptsSection lang={selectedLang} navigate={navigate} />
-      <MultilingualSection lang={selectedLang} setLang={handleLangChange} />
-      <CredibilitySection lang={selectedLang} />
-      <FeaturesSection   lang={selectedLang} />
-      <LatestSection     lang={selectedLang} navigate={navigate} />
-      <NewsletterSection lang={selectedLang} />
-      <Footer            lang={selectedLang} setLang={handleLangChange} navigate={navigate} />
+      <Header lang={lang} onLangChange={onLangChange} />
+      <HeroSection onNavigate={navigate} />
+      <SearchSection />
+      <AboutSection />
+      <SurahsSection />
+      <PathsSection />
+      <FeaturedSection />
+      <MultilingualSection lang={lang} onLangChange={onLangChange} />
+      <CredibilitySection />
+      <FeaturesSection />
+      <NewsletterSection />
+      <Footer />
     </div>
   );
 }

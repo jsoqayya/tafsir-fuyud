@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
-import { BookOpen, Globe, Moon, Sun, Home } from 'lucide-react';
+import { BookOpen, Globe, Moon, Sun } from 'lucide-react';
 import Introduction from './components/Introduction';
 import AyahCard from './components/AyahCard';
 import SearchBar from './components/SearchBar';
@@ -13,8 +13,8 @@ import tafsirData2 from './data/tafsirData2.json';
 ──────────────────────────────────────────── */
 function PartNav({ darkMode }) {
   const parts = [
-    { to: '/ar/baqarah/1', label: 'الجزء الأول',  range: '١ – ١٠١'  },
-    { to: '/ar/baqarah/2', label: 'الجزء الثاني', range: '١٠٢ – ٢٠٠' },
+    { to: '/part1', label: 'الجزء الأول',  range: '١ – ١٠١'  },
+    { to: '/part2', label: 'الجزء الثاني', range: '١٠٢ – ٢٠٠' },
   ];
   return (
     <div
@@ -47,33 +47,31 @@ function PartNav({ darkMode }) {
 }
 
 /* ────────────────────────────────────────────
-   الهيدر العلوي (للصفحات الداخلية فقط)
+   الهيدر العلوي لصفحات التفسير
 ──────────────────────────────────────────── */
 function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
-  const navigate = useNavigate();
   const LANGUAGES = [
     { code: 'ar', label: 'العربية' },
     { code: 'en', label: 'English' },
+    { code: 'ur', label: 'اردو' },
+    { code: 'id', label: 'Bahasa' },
+    { code: 'tr', label: 'Türkçe' },
   ];
+  const navigate = useNavigate();
   return (
     <header className={`sticky top-0 z-50 backdrop-blur-sm shadow-sm border-b ${
       darkMode ? 'bg-gray-900/95 border-gray-700' : 'bg-white/95 border-gray-100'
     }`}>
       <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3" dir="rtl">
-          {/* زر العودة للرئيسية */}
           <button
             onClick={() => navigate('/')}
-            className={`p-2 rounded-lg transition-colors ${
-              darkMode ? 'hover:bg-gray-700 text-amber-400' : 'hover:bg-amber-50 text-amber-700'
+            className={`w-10 h-10 rounded-xl overflow-hidden border-2 flex items-center justify-center shadow-md ${
+              darkMode ? 'border-emerald-700 bg-gray-800' : 'border-emerald-200 bg-white'
             }`}
-            title="الصفحة الرئيسية"
           >
-            <Home size={18} />
+            <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
           </button>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-700 to-amber-500 flex items-center justify-center shadow-md">
-            <BookOpen size={16} className="text-white" />
-          </div>
           <div>
             <h1
               className={`text-sm font-bold leading-tight ${darkMode ? 'text-white' : 'text-gray-800'}`}
@@ -81,7 +79,7 @@ function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
             >
               فيوض التأويل المعاصر
             </h1>
-            <p className="text-xs text-amber-600 font-medium" style={{ fontFamily: 'Noto Naskh Arabic, serif' }}>
+            <p className="text-xs text-emerald-600 font-medium" style={{ fontFamily: 'Noto Naskh Arabic, serif' }}>
               سورة البقرة
             </p>
           </div>
@@ -104,7 +102,7 @@ function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
                 onClick={() => onLanguageChange(lang.code)}
                 className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-200 ${
                   language === lang.code
-                    ? 'bg-white text-amber-700 shadow-sm'
+                    ? 'bg-white text-emerald-700 shadow-sm'
                     : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -119,7 +117,7 @@ function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
 }
 
 /* ────────────────────────────────────────────
-   صفحة عرض الآيات (مشتركة بين الجزأين)
+   صفحة عرض الآيات
 ──────────────────────────────────────────── */
 function TafsirPage({ data, language, darkMode }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -137,9 +135,8 @@ function TafsirPage({ data, language, darkMode }) {
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-8">
-      {/* بانر السورة */}
       <div className="text-center mb-8 py-6" dir="rtl">
-        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-700 to-amber-500 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md mb-3">
+        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md mb-3">
           <span>سورة</span>
           <span className="text-lg font-bold" style={{ fontFamily: 'Amiri, serif' }}>البقرة</span>
           <span className="opacity-70">•</span>
@@ -161,10 +158,7 @@ function TafsirPage({ data, language, darkMode }) {
         </p>
       </div>
 
-      {/* المقدمة */}
       <Introduction text={introduction} darkMode={darkMode} />
-
-      {/* البحث */}
       <SearchBar value={searchQuery} onChange={setSearchQuery} darkMode={darkMode} />
 
       {searchQuery && (
@@ -177,14 +171,12 @@ function TafsirPage({ data, language, darkMode }) {
         </p>
       )}
 
-      {/* بطاقات الآيات */}
       <div>
         {filteredAyahs.map((ayah) => (
           <AyahCard key={ayah.id} ayah={ayah} language={language} darkMode={darkMode} />
         ))}
       </div>
 
-      {/* الفوتر */}
       <footer
         className={`text-center py-8 mt-8 border-t ${
           darkMode ? 'border-gray-700 text-gray-500' : 'border-gray-200 text-gray-400'
@@ -200,7 +192,7 @@ function TafsirPage({ data, language, darkMode }) {
 }
 
 /* ────────────────────────────────────────────
-   غلاف صفحة التفسير (مع هيدر وناف)
+   غلاف صفحة التفسير
 ──────────────────────────────────────────── */
 function TafsirLayout({ data, language, onLanguageChange, darkMode, onToggleDark }) {
   return (
@@ -225,7 +217,7 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = language === 'ar' || language === 'ur' ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
   }, [language]);
 
@@ -242,36 +234,39 @@ export default function App() {
   return (
     <Routes>
       {/* الصفحة الرئيسية */}
-      <Route path="/" element={<HomePage />} />
-
-      {/* صفحات التفسير */}
-      <Route
-        path="/ar/baqarah/1"
-        element={
-          <TafsirLayout
-            data={tafsirData}
-            language={language}
-            onLanguageChange={setLanguage}
-            darkMode={darkMode}
-            onToggleDark={() => setDarkMode(!darkMode)}
-          />
-        }
-      />
-      <Route
-        path="/ar/baqarah/2"
-        element={
-          <TafsirLayout
-            data={tafsirData2}
-            language={language}
-            onLanguageChange={setLanguage}
-            darkMode={darkMode}
-            onToggleDark={() => setDarkMode(!darkMode)}
-          />
-        }
-      />
-
-      {/* مسارات قديمة للتوافق */}
+      <Route path="/" element={
+        <HomePage lang={language} onLangChange={setLanguage} />
+      } />
+      {/* الجزء الأول */}
+      <Route path="/part1" element={
+        <TafsirLayout
+          data={tafsirData}
+          language={language}
+          onLanguageChange={setLanguage}
+          darkMode={darkMode}
+          onToggleDark={() => setDarkMode(!darkMode)}
+        />
+      } />
+      {/* الجزء الثاني */}
       <Route path="/part2" element={
+        <TafsirLayout
+          data={tafsirData2}
+          language={language}
+          onLanguageChange={setLanguage}
+          darkMode={darkMode}
+          onToggleDark={() => setDarkMode(!darkMode)}
+        />
+      } />
+      <Route path="/ar/baqarah/1" element={
+        <TafsirLayout
+          data={tafsirData}
+          language={language}
+          onLanguageChange={setLanguage}
+          darkMode={darkMode}
+          onToggleDark={() => setDarkMode(!darkMode)}
+        />
+      } />
+      <Route path="/ar/baqarah/2" element={
         <TafsirLayout
           data={tafsirData2}
           language={language}
