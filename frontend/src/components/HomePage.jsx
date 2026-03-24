@@ -12,29 +12,37 @@ import {
    CONSTANTS & CONFIG
 ══════════════════════════════════════════════════════════ */
 const COLORS = {
-  // Deep emerald greens
-  BG:        '#0b1f14',
-  BG2:       '#0f2d1c',
-  BG3:       '#133523',
-  BG4:       '#1a4230',
-  CARD:      '#122b1d',
-  CARD2:     '#163520',
-  BORDER:    'rgba(180,148,60,0.18)',
-  BORDER2:   'rgba(180,148,60,0.35)',
-  // Gold palette
-  GOLD:      '#c9a43c',
-  GOLD2:     '#e2bc5a',
-  GOLD3:     '#f0d07a',
-  GOLD_DIM:  'rgba(201,164,60,0.12)',
-  GOLD_MID:  'rgba(201,164,60,0.25)',
-  GOLD_TXT:  'rgba(240,208,122,0.9)',
+  // Olive-Sage Green Tones (darker, richer, more elegant)
+  BG:        '#3a4a2a',      // Darkest olive
+  BG2:       '#4a5a3a',      // Deep olive
+  BG3:       '#576847',      // Primary olive
+  BG4:       '#687858',      // Medium olive-sage
+  CARD:      '#465538',      // Card background
+  CARD2:     '#526545',      // Card hover
+  BORDER:    'rgba(180,148,60,0.22)',
+  BORDER2:   'rgba(180,148,60,0.40)',
+  // Warm Ivory/Cream
+  IVORY:     '#f5f0e6',
+  CREAM:     '#ebe5d8',
+  CREAM2:    '#e0d8c8',
+  // Matte Gold Accents (refined, noble)
+  GOLD:      '#b8a050',
+  GOLD2:     '#c9b060',
+  GOLD3:     '#dac578',
+  GOLD_DIM:  'rgba(185,160,80,0.15)',
+  GOLD_MID:  'rgba(185,160,80,0.30)',
+  GOLD_TXT:  'rgba(218,197,120,0.95)',
+  // Andalusian Mosaic Blue
+  BLUE:      '#2d5a7b',
+  BLUE2:     '#4a7a9b',
+  BLUE_DIM:  'rgba(45,90,123,0.25)',
   // Text
-  TXT:       '#f0ead8',
-  TXT2:      'rgba(240,234,216,0.75)',
-  TXT3:      'rgba(240,234,216,0.5)',
+  TXT:       '#f5f0e6',
+  TXT2:      'rgba(245,240,230,0.80)',
+  TXT3:      'rgba(245,240,230,0.55)',
   // Accent
-  TEAL:      '#2d7a62',
-  TEAL2:     '#3a9478',
+  TEAL:      '#5a7a6a',
+  TEAL2:     '#6a8a7a',
 };
 
 const LANGUAGES = [
@@ -348,6 +356,124 @@ function Header({ lang, onLangChange }) {
 }
 
 /* ══════════════════════════════════════════════════════════
+   ISLAMIC ARCHITECTURAL SILHOUETTES (SVG)
+══════════════════════════════════════════════════════════ */
+
+// Mosque silhouette with minarets - left side
+function MosqueSilhouette({ position = 'left' }) {
+  const isLeft = position === 'left';
+  return (
+    <svg 
+      style={{
+        position: 'absolute',
+        [isLeft ? 'left' : 'right']: '-3%',
+        top: '3%',
+        width: '48%',
+        height: '94%',
+        opacity: 0.12,
+        pointerEvents: 'none',
+        transform: isLeft ? 'none' : 'scaleX(-1)',
+      }}
+      viewBox="0 0 400 600" 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id={`fade${position}`} x1={isLeft ? "0%" : "100%"} y1="0%" x2={isLeft ? "100%" : "0%"} y2="0%">
+          <stop offset="0%" style={{ stopColor: COLORS.IVORY, stopOpacity: 1 }} />
+          <stop offset="70%" style={{ stopColor: COLORS.IVORY, stopOpacity: 0.4 }} />
+          <stop offset="100%" style={{ stopColor: COLORS.IVORY, stopOpacity: 0 }} />
+        </linearGradient>
+      </defs>
+      <g fill={`url(#fade${position})`}>
+        {/* Main Dome */}
+        <ellipse cx="200" cy="180" rx="110" ry="90" />
+        <rect x="90" y="180" width="220" height="320" />
+        {/* Dome Finial */}
+        <ellipse cx="200" cy="95" rx="12" ry="20" />
+        <rect x="195" y="75" width="10" height="20" />
+        {/* Left Minaret */}
+        <rect x="20" y="100" width="45" height="400" />
+        <ellipse cx="42" cy="100" rx="28" ry="24" />
+        <rect x="34" y="60" width="16" height="40" />
+        <ellipse cx="42" cy="55" rx="12" ry="10" />
+        <polygon points="42,25 30,55 54,55" />
+        {/* Right Minaret */}
+        <rect x="335" y="130" width="40" height="370" />
+        <ellipse cx="355" cy="130" rx="24" ry="20" />
+        <rect x="348" y="95" width="14" height="35" />
+        <ellipse cx="355" cy="90" rx="10" ry="8" />
+        {/* Andalusian Arches */}
+        <path d="M110 420 Q160 350 210 420 L210 500 L110 500 Z" />
+        <path d="M200 420 Q250 350 300 420 L300 500 L200 500 Z" />
+        {/* Small side domes */}
+        <ellipse cx="130" cy="300" rx="40" ry="30" />
+        <ellipse cx="270" cy="300" rx="40" ry="30" />
+      </g>
+    </svg>
+  );
+}
+
+// Andalusian arches pattern - top
+function ArchesPattern() {
+  return (
+    <svg 
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '180px',
+        opacity: 0.09,
+        pointerEvents: 'none',
+      }}
+      viewBox="0 0 1200 150" 
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="xMidYMin slice"
+    >
+      <defs>
+        <linearGradient id="archFade" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style={{ stopColor: COLORS.IVORY, stopOpacity: 1 }} />
+          <stop offset="100%" style={{ stopColor: COLORS.IVORY, stopOpacity: 0 }} />
+        </linearGradient>
+      </defs>
+      <g fill="url(#archFade)">
+        {[0,1,2,3,4,5,6,7,8,9,10,11].map(i => (
+          <path key={i} d={`M${i*100} 150 Q${i*100+50} 40 ${i*100+100} 150`} fill="none" stroke={COLORS.IVORY} strokeWidth="2.5" opacity="0.6"/>
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+// Blue mosaic accent strip
+function MosaicStrip({ position = 'left' }) {
+  const isLeft = position === 'left';
+  return (
+    <div style={{
+      position: 'absolute',
+      [isLeft ? 'left' : 'right']: 0,
+      top: '15%',
+      width: '65px',
+      height: '70%',
+      background: isLeft 
+        ? `linear-gradient(to right, ${COLORS.BLUE}40, transparent)`
+        : `linear-gradient(to left, ${COLORS.BLUE}40, transparent)`,
+      pointerEvents: 'none',
+    }}>
+      <svg width="100%" height="100%" viewBox="0 0 60 500" style={{ opacity: 0.5 }}>
+        {[...Array(12)].map((_, i) => (
+          <g key={i} transform={`translate(0, ${i * 42})`}>
+            <polygon points="30,0 60,21 30,42 0,21" fill={COLORS.BLUE} fillOpacity="0.35" />
+            <polygon points="30,8 50,21 30,34 10,21" fill={COLORS.GOLD} fillOpacity="0.25" />
+            <circle cx="30" cy="21" r="4" fill={COLORS.GOLD} fillOpacity="0.3" />
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
    HERO SECTION
 ══════════════════════════════════════════════════════════ */
 function HeroSection({ onNavigate }) {
@@ -361,42 +487,76 @@ function HeroSection({ onNavigate }) {
       alignItems: 'center',
       justifyContent: 'center',
       overflow: 'hidden',
-      background: `radial-gradient(ellipse at 50% 0%, ${COLORS.BG4}80 0%, ${COLORS.BG} 70%)`,
+      background: `
+        radial-gradient(ellipse at 50% 30%, ${COLORS.BG4}60 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 100%, ${COLORS.BG2} 0%, transparent 50%),
+        linear-gradient(160deg, ${COLORS.BG} 0%, ${COLORS.BG2} 25%, ${COLORS.BG3} 50%, ${COLORS.BG2} 75%, ${COLORS.BG} 100%)
+      `,
     }}>
-      <GeometricPattern opacity={0.06} />
-
-      {/* Corner ornaments */}
-      <div style={{ position: 'absolute', top: 24, right: 24 }}>
-        <IslamicStar size={60} color={COLORS.GOLD} opacity={0.2} rotate={22} />
-      </div>
-      <div style={{ position: 'absolute', top: 24, left: 24 }}>
-        <IslamicStar size={60} color={COLORS.GOLD} opacity={0.2} rotate={-22} />
-      </div>
-      <div style={{ position: 'absolute', bottom: 24, right: 24 }}>
-        <IslamicStar size={44} color={COLORS.GOLD2} opacity={0.15} rotate={45} />
-      </div>
-      <div style={{ position: 'absolute', bottom: 24, left: 24 }}>
-        <IslamicStar size={44} color={COLORS.GOLD2} opacity={0.15} rotate={-45} />
-      </div>
-
-      {/* Glowing orb top */}
+      {/* Architectural Background Elements */}
+      <MosqueSilhouette position="left" />
+      <MosqueSilhouette position="right" />
+      <ArchesPattern />
+      
+      {/* Blue Mosaic Accents */}
+      <MosaicStrip position="left" />
+      <MosaicStrip position="right" />
+      
+      {/* Gold Border Top */}
       <div style={{
-        position: 'absolute', top: -80, left: '50%', transform: 'translateX(-50%)',
-        width: 400, height: 400, borderRadius: '50%',
-        background: `radial-gradient(circle, ${COLORS.TEAL}15 0%, transparent 70%)`,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '3px',
+        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}80, ${COLORS.GOLD2}, ${COLORS.GOLD}80, transparent)`,
+      }} />
+      
+      {/* Gold Border Bottom */}
+      <div style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: '3px',
+        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}80, ${COLORS.GOLD2}, ${COLORS.GOLD}80, transparent)`,
+      }} />
+      
+      <GeometricPattern opacity={0.04} />
+
+      {/* Corner ornaments with Islamic stars */}
+      <div style={{ position: 'absolute', top: 20, right: 20 }}>
+        <IslamicStar size={70} color={COLORS.GOLD} opacity={0.25} rotate={0} />
+      </div>
+      <div style={{ position: 'absolute', top: 20, left: 20 }}>
+        <IslamicStar size={70} color={COLORS.GOLD} opacity={0.25} rotate={45} />
+      </div>
+      <div style={{ position: 'absolute', bottom: 60, right: 20 }}>
+        <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.18} rotate={22} />
+      </div>
+      <div style={{ position: 'absolute', bottom: 60, left: 20 }}>
+        <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.18} rotate={-22} />
+      </div>
+
+      {/* Central glow */}
+      <div style={{
+        position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%, -50%)',
+        width: 500, height: 500, borderRadius: '50%',
+        background: `radial-gradient(circle, ${COLORS.GOLD_DIM} 0%, transparent 60%)`,
         pointerEvents: 'none',
+        filter: 'blur(40px)',
       }} />
 
       {/* Content */}
-      <div style={{ textAlign: 'center', maxWidth: 820, padding: '60px 24px', position: 'relative', zIndex: 1 }} dir="rtl">
+      <div style={{ textAlign: 'center', maxWidth: 900, padding: '60px 24px', position: 'relative', zIndex: 1 }} dir="rtl">
 
         {/* Hero Logo - Calligraphy Art */}
         <div style={{
           display: 'flex', justifyContent: 'center', marginBottom: 20,
         }}>
           <div style={{
-            width: 320, height: 320,
-            borderRadius: 20,
+            width: 340, height: 340,
+            borderRadius: 24,
             overflow: 'hidden',
             background: 'transparent',
             position: 'relative',
@@ -404,36 +564,40 @@ function HeroSection({ onNavigate }) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            {/* Outer decorative frame */}
+            {/* Outer decorative frame with gold border */}
             <div style={{
               position: 'absolute',
               inset: 0,
-              border: `2px solid ${COLORS.GOLD}40`,
-              borderRadius: 20,
-              boxShadow: `0 0 80px ${COLORS.GOLD}25, inset 0 0 60px ${COLORS.GOLD}10`,
+              border: `3px solid ${COLORS.GOLD}50`,
+              borderRadius: 24,
+              boxShadow: `
+                0 0 100px ${COLORS.GOLD}30, 
+                inset 0 0 80px ${COLORS.GOLD}15,
+                0 0 0 6px ${COLORS.GOLD}10
+              `,
             }} />
             {/* Islamic geometric corner ornaments */}
-            <div style={{ position: 'absolute', top: 8, right: 8 }}>
-              <IslamicStar size={32} color={COLORS.GOLD2} opacity={0.4} rotate={0} />
+            <div style={{ position: 'absolute', top: 10, right: 10 }}>
+              <IslamicStar size={36} color={COLORS.GOLD2} opacity={0.5} rotate={0} />
             </div>
-            <div style={{ position: 'absolute', top: 8, left: 8 }}>
-              <IslamicStar size={32} color={COLORS.GOLD2} opacity={0.4} rotate={45} />
+            <div style={{ position: 'absolute', top: 10, left: 10 }}>
+              <IslamicStar size={36} color={COLORS.GOLD2} opacity={0.5} rotate={45} />
             </div>
-            <div style={{ position: 'absolute', bottom: 8, right: 8 }}>
-              <IslamicStar size={32} color={COLORS.GOLD2} opacity={0.4} rotate={45} />
+            <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
+              <IslamicStar size={36} color={COLORS.GOLD2} opacity={0.5} rotate={45} />
             </div>
-            <div style={{ position: 'absolute', bottom: 8, left: 8 }}>
-              <IslamicStar size={32} color={COLORS.GOLD2} opacity={0.4} rotate={0} />
+            <div style={{ position: 'absolute', bottom: 10, left: 10 }}>
+              <IslamicStar size={36} color={COLORS.GOLD2} opacity={0.5} rotate={0} />
             </div>
             <img
               src="/logo_calligraphy.png"
               alt="فيوض التأويل المعاصر"
               style={{
-                width: '95%',
-                height: '95%',
+                width: '92%',
+                height: '92%',
                 objectFit: 'contain',
                 display: 'block',
-                filter: 'drop-shadow(0 0 30px rgba(201,164,60,0.3))',
+                filter: 'drop-shadow(0 0 40px rgba(185,160,80,0.35))',
               }}
             />
           </div>
@@ -443,11 +607,11 @@ function HeroSection({ onNavigate }) {
         <div style={{
           display: 'inline-block',
           background: `linear-gradient(135deg, ${COLORS.GOLD_DIM}, ${COLORS.GOLD_MID})`,
-          border: `1px solid ${COLORS.BORDER2}`,
+          border: `1.5px solid ${COLORS.GOLD}40`,
           borderRadius: 16,
-          padding: '12px 32px',
-          marginBottom: 32,
-          boxShadow: `0 0 40px ${COLORS.GOLD}08, inset 0 1px 0 ${COLORS.GOLD}30`,
+          padding: '14px 36px',
+          marginBottom: 28,
+          boxShadow: `0 0 50px ${COLORS.GOLD}12, inset 0 1px 0 ${COLORS.GOLD}40`,
         }}>
           <p style={{
             fontFamily: 'Amiri, serif',
