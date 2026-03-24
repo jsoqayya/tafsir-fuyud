@@ -5,6 +5,7 @@ import Introduction from './components/Introduction';
 import AyahCard from './components/AyahCard';
 import SearchBar from './components/SearchBar';
 import HomePage from './components/HomePage';
+import SurahIndex from './components/SurahIndex';
 import tafsirData from './data/tafsirData.json';
 import tafsirData2 from './data/tafsirData2.json';
 
@@ -236,6 +237,10 @@ export default function App() {
       {/* الصفحة الرئيسية */}
       <Route path="/" element={
         <HomePage lang={language} onLangChange={setLanguage} />
+      } />
+      {/* فهرس السور */}
+      <Route path="/surahs" element={
+        <SurahIndex lang={language} onLangChange={setLanguage} />
       } />
       {/* الجزء الأول */}
       <Route path="/part1" element={

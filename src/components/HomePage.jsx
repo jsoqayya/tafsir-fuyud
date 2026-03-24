@@ -342,7 +342,7 @@ function Header({ lang, onLangChange }) {
             ))}
           </nav>
 
-          <button onClick={()=>nav('/part1')} style={{
+          <button onClick={()=>nav('/surahs')} style={{
             background:`linear-gradient(135deg,${C.G2},${C.G4},${C.G5})`,
             color:'#2a1000',border:'none',borderRadius:11,
             padding:'11px 24px',fontSize:'.93rem',fontWeight:800,
@@ -514,8 +514,8 @@ function Hero() {
         {/* أزرار */}
         <div style={{display:'flex',gap:12,justifyContent:'center',flexWrap:'wrap',marginBottom:52}}>
           {[
-            {label:'ابدأ التصفح',pri:true,to:'/part1'},
-            {label:'تصفح السور',pri:false,href:'#surahs'},
+            {label:'ابدأ التصفح',pri:true,to:'/surahs'},
+            {label:'تصفح السور',pri:false,to:'/surahs'},
             {label:'البحث',pri:false,href:'#search-sec'},
             {label:'عن المشروع',pri:false,href:'#about'},
           ].map((b,i)=><HBtn key={i} {...b} nav={nav} dark/>)}
@@ -645,13 +645,13 @@ function SearchSection() {
           }}>
             <Search size={22} color={C.G3} style={{flexShrink:0}}/>
             <input value={q} onChange={e=>setQ(e.target.value)}
-              onKeyDown={e=>e.key==='Enter'&&nav('/part1')}
+              onKeyDown={e=>e.key==='Enter'&&nav('/surahs')}
               placeholder="ابحث في فيوض التفسير... (مثال: الصبر، التوبة، الرزق)"
               dir="rtl" style={{
                 flex:1,background:'transparent',border:'none',outline:'none',
                 color:C.TXT,fontSize:'1rem',fontFamily:'Noto Naskh Arabic,serif',
               }}/>
-            <button onClick={()=>nav('/part1')} style={{
+            <button onClick={()=>nav('/surahs')} style={{
               background:`linear-gradient(135deg,${C.G3},${C.G5})`,
               color:'#2a1000',border:'none',borderRadius:11,
               padding:'9px 24px',fontSize:'.92rem',fontWeight:800,
@@ -671,7 +671,7 @@ function SearchSection() {
             {icon:'📖',label:'التدبر التربوي', bg:C.OLIV,  bd:C.OLIV3,  tx:C.TW},
             {icon:'🌍',label:'المعاصرة',       bg:C.COPP,  bd:C.COPP3,  tx:C.TW},
           ].map(card=>(
-            <button key={card.label} onClick={()=>nav('/part1')} style={{
+            <button key={card.label} onClick={()=>nav('/surahs')} style={{
               background:`linear-gradient(160deg,${card.bg},${card.bg}cc)`,
               border:`1.5px solid ${card.bd}90`,
               borderRadius:15,padding:'16px 10px',cursor:'pointer',
