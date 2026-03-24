@@ -95,22 +95,31 @@ const LANGS = [
 /* ═══════════════════════════════
    SVG — نمط هندسي إسلامي
 ═══════════════════════════════ */
-function GeomPattern({ opacity = 0.10 }) {
+function GeomPattern({ opacity = 0.18, id = 'gp' }) {
   return (
     <svg style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }}
       xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <pattern id="gp" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+        <pattern id={id} x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          {/* نجمة ثمانية */}
           <polygon points="40,4 48,26 70,26 53,40 60,62 40,49 20,62 27,40 10,26 32,26"
-            fill="none" stroke={C.G3} strokeWidth="1.0"/>
+            fill="none" stroke={C.G3} strokeWidth="1.3"/>
           <polygon points="40,14 46,28 62,28 50,38 55,54 40,45 25,54 30,38 18,28 34,28"
-            fill={C.G3} fillOpacity="0.08" stroke={C.G2} strokeWidth="0.5"/>
-          <circle cx="40" cy="40" r="2.5" fill={C.G4} fillOpacity="0.45"/>
-          <line x1="0" y1="40" x2="80" y2="40" stroke={C.G2} strokeWidth="0.4" opacity="0.5"/>
-          <line x1="40" y1="0" x2="40" y2="80" stroke={C.G2} strokeWidth="0.4" opacity="0.5"/>
+            fill={C.G3} fillOpacity="0.13" stroke={C.G2} strokeWidth="0.7"/>
+          {/* دائرة مركزية */}
+          <circle cx="40" cy="40" r="3.5" fill={C.G4} fillOpacity="0.65"/>
+          <circle cx="40" cy="40" r="6.5" fill="none" stroke={C.G4} strokeWidth="0.7" opacity="0.5"/>
+          {/* خطوط شبكة */}
+          <line x1="0" y1="40" x2="80" y2="40" stroke={C.G3} strokeWidth="0.5" opacity="0.55"/>
+          <line x1="40" y1="0" x2="40" y2="80" stroke={C.G3} strokeWidth="0.5" opacity="0.55"/>
+          {/* نقاط الزوايا */}
+          <circle cx="0"  cy="0"  r="1.8" fill={C.G3} fillOpacity="0.50"/>
+          <circle cx="80" cy="0"  r="1.8" fill={C.G3} fillOpacity="0.50"/>
+          <circle cx="0"  cy="80" r="1.8" fill={C.G3} fillOpacity="0.50"/>
+          <circle cx="80" cy="80" r="1.8" fill={C.G3} fillOpacity="0.50"/>
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#gp)" opacity={opacity}/>
+      <rect width="100%" height="100%" fill={`url(#${id})`} opacity={opacity}/>
     </svg>
   );
 }
@@ -120,8 +129,9 @@ function GeomPattern({ opacity = 0.10 }) {
 ═══════════════════════════════ */
 function Muqarnas({ h = 44, flip = false, dark = false }) {
   const n = 22, uw = 60, total = n * uw;
-  const fillCol = dark ? 'rgba(30,15,0,0.85)' : 'rgba(245,234,200,0.9)';
-  const strokeCol = dark ? C.G5 : C.G3;
+  const fillCol   = dark ? 'rgba(18,8,0,0.94)'    : 'rgba(244,232,190,0.97)';
+  const strokeCol = dark ? C.G6                    : C.G3;
+  const accentCol = dark ? C.G7                    : C.G5;
   return (
     <div style={{ width:'100%', overflow:'hidden', lineHeight:0,
       transform: flip ? 'scaleY(-1)' : 'none' }}>
@@ -130,15 +140,24 @@ function Muqarnas({ h = 44, flip = false, dark = false }) {
           const x = i*uw, cx = x+uw/2;
           return (
             <g key={i}>
-              <path d={`M${x},${h} L${x},${h*.52} Q${cx},${-h*.12} ${x+uw},${h*.52} L${x+uw},${h}`}
-                fill={fillCol} stroke={strokeCol} strokeWidth="0.9" opacity="0.9"/>
-              <path d={`M${x+7},${h} L${x+7},${h*.63} Q${cx},${h*.16} ${x+uw-7},${h*.63} L${x+uw-7},${h}`}
-                fill="none" stroke={strokeCol} strokeWidth="0.5" opacity="0.6"/>
-              <circle cx={cx} cy={h*.1} r="2" fill={strokeCol} fillOpacity="0.8"/>
+              {/* القوس الرئيسي المملوء */}
+              <path d={`M${x},${h} L${x},${h*.50} Q${cx},${-h*.15} ${x+uw},${h*.50} L${x+uw},${h}`}
+                fill={fillCol} stroke={strokeCol} strokeWidth="1.4"/>
+              {/* القوس الداخلي الزخرفي */}
+              <path d={`M${x+8},${h} L${x+8},${h*.62} Q${cx},${h*.14} ${x+uw-8},${h*.62} L${x+uw-8},${h}`}
+                fill="none" stroke={accentCol} strokeWidth="1.0" opacity="0.9"/>
+              {/* نقطة القمة */}
+              <circle cx={cx} cy={h*.06} r="3.2" fill={accentCol}/>
+              <circle cx={cx} cy={h*.06} r="5.5" fill="none" stroke={strokeCol} strokeWidth="0.6" opacity="0.7"/>
+              {/* نقاط جانبية صغيرة */}
+              <circle cx={x+15} cy={h*.53} r="1.5" fill={strokeCol} opacity="0.8"/>
+              <circle cx={x+uw-15} cy={h*.53} r="1.5" fill={strokeCol} opacity="0.8"/>
             </g>
           );
         })}
-        <line x1="0" y1={h*.97} x2={total} y2={h*.97} stroke={strokeCol} strokeWidth="1.2" opacity="0.65"/>
+        {/* خط ذهبي مزدوج */}
+        <line x1="0" y1={h*.94} x2={total} y2={h*.94} stroke={accentCol} strokeWidth="1.8"/>
+        <line x1="0" y1={h*.98} x2={total} y2={h*.98} stroke={strokeCol} strokeWidth="0.8" opacity="0.6"/>
       </svg>
     </div>
   );
@@ -380,8 +399,8 @@ function Hero() {
       }}/>
 
       {/* مقرنصات أعلى — شفافة */}
-      <div style={{position:'absolute',top:0,left:0,right:0,zIndex:3,opacity:0.55}}>
-        <Muqarnas h={50} dark/>
+      <div style={{position:'absolute',top:0,left:0,right:0,zIndex:3,opacity:0.95}}>
+        <Muqarnas h={60} dark/>
       </div>
 
       {/* خطوط عمودية ذهبية جانبية */}
@@ -529,8 +548,8 @@ function Hero() {
       </div>
 
       {/* مقرنصات أسفل */}
-      <div style={{position:'absolute',bottom:0,left:0,right:0,zIndex:3,opacity:0.6}}>
-        <Muqarnas h={44} flip dark/>
+      <div style={{position:'absolute',bottom:0,left:0,right:0,zIndex:3,opacity:0.95}}>
+        <Muqarnas h={56} flip dark/>
       </div>
 
       {/* سهم تمرير */}
@@ -582,7 +601,7 @@ function SearchSection() {
       background:`linear-gradient(180deg,${C.BG1},${C.BG2})`,
       padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GeomPattern opacity={.10}/>
+      <GeomPattern opacity={.18} id="gp1"/>
       <div style={{position:'absolute',top:0,left:0,right:0,height:4,
         background:`linear-gradient(90deg,transparent,${C.G3},${C.G5},${C.G3},transparent)`}}/>
 
@@ -686,7 +705,7 @@ function About() {
       background:`linear-gradient(160deg,${C.BG2},${C.BG} 50%,${C.BG1})`,
       padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GeomPattern opacity={.09}/>
+      <GeomPattern opacity={.17} id="gp2"/>
       <div style={{position:'absolute',top:0,left:0,right:0,height:3,
         background:`linear-gradient(90deg,transparent,${C.G3},${C.G5},${C.G3},transparent)`}}/>
       <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
@@ -764,7 +783,7 @@ function Surahs() {
       background:`linear-gradient(180deg,${C.BG1},${C.BG2} 50%,${C.BG1})`,
       padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GeomPattern opacity={.09}/>
+      <GeomPattern opacity={.17} id="gp3"/>
       <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
         <SecTitle title="تصفح سورة البقرة"
           sub="٢٨٦ آية في ثلاثة أجزاء — كل جزء باب من أبواب المعرفة القرآنية"/>
@@ -858,7 +877,7 @@ function Paths() {
       background:`linear-gradient(180deg,${C.BG2},${C.BG1} 50%,${C.BG2})`,
       padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GeomPattern opacity={.09}/>
+      <GeomPattern opacity={.17} id="gp4"/>
       <div style={{position:'absolute',top:0,left:0,right:0,height:3,
         background:`linear-gradient(90deg,transparent,${C.G3},${C.G5},${C.G3},transparent)`}}/>
       <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
@@ -910,7 +929,7 @@ function Featured() {
       background:`linear-gradient(160deg,${C.BG},${C.BG1})`,
       padding:'92px 26px',overflow:'hidden',
     }}>
-      <GeomPattern opacity={.10}/>
+      <GeomPattern opacity={.18} id="gp5"/>
       <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
         <SecTitle title="مختارات التفسير"/>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(345px,1fr))',gap:22}}>
@@ -967,7 +986,7 @@ function Multilingual({ lang, onLangChange }) {
       background:`linear-gradient(135deg,${C.BG1},${C.BG} 50%,${C.BG1})`,
       padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GeomPattern opacity={.10}/>
+      <GeomPattern opacity={.18} id="gp6"/>
       <div style={{position:'absolute',inset:0,
         background:`radial-gradient(ellipse 60% 50% at 50% 50%,rgba(180,130,0,.10) 0%,transparent 65%)`,
         pointerEvents:'none'}}/>
@@ -1036,7 +1055,7 @@ function Features() {
       background:`linear-gradient(180deg,${C.BG2},${C.BG} 50%,${C.BG2})`,
       padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GeomPattern opacity={.09}/>
+      <GeomPattern opacity={.17} id="gp7"/>
       <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
         <SecTitle title="خصائص المنصة"/>
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(325px,1fr))',gap:18}}>
@@ -1078,7 +1097,7 @@ function Newsletter() {
       background:`linear-gradient(180deg,${C.BG1},${C.BG2})`,
       padding:'82px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GeomPattern opacity={.10}/>
+      <GeomPattern opacity={.18} id="gp8"/>
       <div style={{position:'absolute',inset:0,
         background:`radial-gradient(ellipse at 50% 50%,rgba(180,130,0,.12) 0%,transparent 60%)`,pointerEvents:'none'}}/>
       <div style={{maxWidth:600,margin:'0 auto',textAlign:'center',position:'relative',zIndex:1}} dir="rtl">
@@ -1126,7 +1145,7 @@ function Footer() {
       borderTop:`2px solid ${C.BD3}`,padding:'60px 26px 32px',
       position:'relative',overflow:'hidden',
     }}>
-      <GeomPattern opacity={.08}/>
+      <GeomPattern opacity={.16} id="gp9"/>
       <div style={{position:'absolute',top:0,left:0,right:0}}>
         <Muqarnas h={32}/>
       </div>
