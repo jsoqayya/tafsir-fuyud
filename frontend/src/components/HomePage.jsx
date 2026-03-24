@@ -19,21 +19,21 @@ const COLORS = {
   BG4:       '#5a6a4a',      // Medium olive-sage
   CARD:      '#3a4a2a',      // Card background
   CARD2:     '#4a5a3a',      // Card hover
-  BORDER:    'rgba(212,175,55,0.25)',
-  BORDER2:   'rgba(212,175,55,0.50)',
+  BORDER:    'rgba(201,162,39,0.30)',
+  BORDER2:   'rgba(201,162,39,0.55)',
   // Warm Ivory/Cream
   IVORY:     '#f5f0e6',
   CREAM:     '#ebe5d8',
   CREAM2:    '#e0d8c8',
-  // SHINY GOLD - Like the logo (bright, luminous, precious)
-  GOLD:      '#d4af37',      // Classic shiny gold
-  GOLD2:     '#e6c547',      // Bright gold
-  GOLD3:     '#f0d060',      // Light shiny gold
-  GOLD4:     '#ffd700',      // Pure gold
-  GOLD_DIM:  'rgba(212,175,55,0.20)',
-  GOLD_MID:  'rgba(212,175,55,0.40)',
-  GOLD_TXT:  '#f0d060',      // Gold text color - bright
-  GOLD_SHINE: '#fff0a0',     // Gold shine/highlight
+  // RICH DEEP GOLD - Like the calligraphy logo (dark, rich, precious)
+  GOLD:      '#b8960f',      // Deep rich gold (darkest)
+  GOLD2:     '#c9a227',      // Classic deep gold (like the logo)
+  GOLD3:     '#d4aa30',      // Medium rich gold
+  GOLD4:     '#deb838',      // Lighter rich gold
+  GOLD_DIM:  'rgba(201,162,39,0.22)',
+  GOLD_MID:  'rgba(201,162,39,0.45)',
+  GOLD_TXT:  '#c9a227',      // Gold text - matches logo
+  GOLD_SHINE: '#e8c848',     // Gold highlight
   // Andalusian Mosaic Blue
   BLUE:      '#2d5a7b',
   BLUE2:     '#4a7a9b',
@@ -657,10 +657,10 @@ function HeroSection({ onNavigate }) {
           <h1 style={{
             fontFamily: 'Amiri, serif',
             fontSize: 'clamp(2.8rem, 7vw, 4.5rem)',
-            color: COLORS.GOLD4,
+            color: COLORS.GOLD2,
             margin: '0 0 10px',
             fontWeight: 700,
-            textShadow: `0 0 30px ${COLORS.GOLD}80, 0 0 60px ${COLORS.GOLD}40, 0 2px 4px rgba(0,0,0,0.3)`,
+            textShadow: `0 2px 4px rgba(0,0,0,0.4), 0 0 40px ${COLORS.GOLD}50`,
             letterSpacing: '0.02em',
           }}>
             فيوض التأويل المعاصر
@@ -673,7 +673,7 @@ function HeroSection({ onNavigate }) {
             fontWeight: 600,
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
-            textShadow: `0 0 20px ${COLORS.GOLD}60`,
+            textShadow: `0 1px 3px rgba(0,0,0,0.3)`,
           }}>
             Fuyud Al-Ta'wil Al-Mu'asir
           </p>
@@ -683,19 +683,19 @@ function HeroSection({ onNavigate }) {
         <div style={{
           display: 'inline-block',
           background: `linear-gradient(135deg, ${COLORS.GOLD_DIM}, ${COLORS.GOLD_MID})`,
-          border: `2px solid ${COLORS.GOLD}70`,
+          border: `2px solid ${COLORS.GOLD2}80`,
           borderRadius: 16,
           padding: '16px 40px',
           marginBottom: 24,
-          boxShadow: `0 0 40px ${COLORS.GOLD}30, inset 0 1px 0 ${COLORS.GOLD_SHINE}40`,
+          boxShadow: `0 0 30px ${COLORS.GOLD}25, inset 0 1px 0 ${COLORS.GOLD_SHINE}30`,
         }}>
           <p style={{
             fontFamily: 'Amiri, serif',
             fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
-            color: COLORS.GOLD4,
+            color: COLORS.GOLD2,
             margin: 0,
             letterSpacing: '0.08em',
-            textShadow: `0 0 15px ${COLORS.GOLD}60`,
+            textShadow: `0 1px 2px rgba(0,0,0,0.3)`,
           }}>
             ﴿ بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴾
           </p>
@@ -705,14 +705,13 @@ function HeroSection({ onNavigate }) {
         <div style={{ margin: '0 0 16px' }}>
           <span style={{
             display: 'inline-block',
-            background: `linear-gradient(135deg, ${COLORS.GOLD2}, ${COLORS.GOLD4}, ${COLORS.GOLD2})`,
+            background: `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2}, ${COLORS.GOLD3})`,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             fontFamily: 'Amiri, serif',
             fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)',
             fontWeight: 600,
-            filter: `drop-shadow(0 0 8px ${COLORS.GOLD}50)`,
           }}>
             تفسير سورة البقرة
           </span>
