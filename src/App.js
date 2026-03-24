@@ -218,8 +218,8 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    document.documentElement.dir = language === 'ar' || language === 'ur' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
+    // HomePage manages its own <html lang> and dir
+    // Only update for tafsir pages (non-home routes)
   }, [language]);
 
   useEffect(() => {
@@ -234,15 +234,19 @@ export default function App() {
 
   return (
     <Routes>
-      {/* الصفحة الرئيسية */}
-      <Route path="/" element={
-        <HomePage lang={language} onLangChange={setLanguage} />
-      } />
-      {/* فهرس السور */}
+      {/* ─── صفحات اللغات الخمس ─── */}
+      <Route path="/"   element={<HomePage lang="ar" />} />
+      <Route path="/en" element={<HomePage lang="en" />} />
+      <Route path="/ur" element={<HomePage lang="ur" />} />
+      <Route path="/id" element={<HomePage lang="id" />} />
+      <Route path="/tr" element={<HomePage lang="tr" />} />
+
+      {/* ─── فهرس السور ─── */}
       <Route path="/surahs" element={
         <SurahIndex lang={language} onLangChange={setLanguage} />
       } />
-      {/* الجزء الأول */}
+
+      {/* ─── صفحات التفسير ─── */}
       <Route path="/part1" element={
         <TafsirLayout
           data={tafsirData}
@@ -252,7 +256,6 @@ export default function App() {
           onToggleDark={() => setDarkMode(!darkMode)}
         />
       } />
-      {/* الجزء الثاني */}
       <Route path="/part2" element={
         <TafsirLayout
           data={tafsirData2}
