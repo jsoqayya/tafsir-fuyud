@@ -356,120 +356,246 @@ function Header({ lang, onLangChange }) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   ISLAMIC ARCHITECTURAL SILHOUETTES (SVG)
+   PREMIUM ISLAMIC ARCHITECTURAL SILHOUETTES
 ══════════════════════════════════════════════════════════ */
 
-// Mosque silhouette with minarets - left side
-function MosqueSilhouette({ position = 'left' }) {
-  const isLeft = position === 'left';
+// Grand Mosque - LEFT SIDE with detailed minarets, dome, arches
+function GrandMosqueLeft() {
   return (
     <svg 
       style={{
         position: 'absolute',
-        [isLeft ? 'left' : 'right']: '-3%',
-        top: '3%',
-        width: '48%',
-        height: '94%',
-        opacity: 0.12,
+        left: '-3%',
+        top: '0',
+        width: '55%',
+        height: '100%',
+        opacity: 0.2,
         pointerEvents: 'none',
-        transform: isLeft ? 'none' : 'scaleX(-1)',
       }}
-      viewBox="0 0 400 600" 
+      viewBox="0 0 600 800" 
       xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="xMinYMid slice"
     >
       <defs>
-        <linearGradient id={`fade${position}`} x1={isLeft ? "0%" : "100%"} y1="0%" x2={isLeft ? "100%" : "0%"} y2="0%">
-          <stop offset="0%" style={{ stopColor: COLORS.IVORY, stopOpacity: 1 }} />
-          <stop offset="70%" style={{ stopColor: COLORS.IVORY, stopOpacity: 0.4 }} />
-          <stop offset="100%" style={{ stopColor: COLORS.IVORY, stopOpacity: 0 }} />
+        <linearGradient id="fadeL" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#f5f0e6" stopOpacity="1" />
+          <stop offset="50%" stopColor="#f5f0e6" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#f5f0e6" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <g fill={`url(#fade${position})`}>
-        {/* Main Dome */}
-        <ellipse cx="200" cy="180" rx="110" ry="90" />
-        <rect x="90" y="180" width="220" height="320" />
-        {/* Dome Finial */}
-        <ellipse cx="200" cy="95" rx="12" ry="20" />
-        <rect x="195" y="75" width="10" height="20" />
-        {/* Left Minaret */}
-        <rect x="20" y="100" width="45" height="400" />
-        <ellipse cx="42" cy="100" rx="28" ry="24" />
-        <rect x="34" y="60" width="16" height="40" />
-        <ellipse cx="42" cy="55" rx="12" ry="10" />
-        <polygon points="42,25 30,55 54,55" />
+      <g fill="url(#fadeL)">
+        {/* Tall Left Minaret */}
+        <rect x="25" y="80" width="60" height="680" />
+        <rect x="10" y="180" width="90" height="14" rx="3" />
+        <rect x="10" y="350" width="90" height="14" rx="3" />
+        <rect x="10" y="520" width="90" height="14" rx="3" />
+        <ellipse cx="55" cy="80" rx="40" ry="35" />
+        <rect x="42" y="30" width="26" height="50" />
+        <ellipse cx="55" cy="25" rx="18" ry="14" />
+        <path d="M55 -5 C45 10 45 22 55 18 C65 22 65 10 55 -5" />
+        
+        {/* Main Central Dome */}
+        <ellipse cx="280" cy="190" rx="160" ry="140" />
+        <rect x="120" y="190" width="320" height="90" />
+        <ellipse cx="280" cy="55" rx="20" ry="32" />
+        <rect x="268" y="28" width="24" height="27" />
+        <ellipse cx="280" cy="22" rx="14" ry="11" />
+        <path d="M280 -8 C268 8 268 20 280 15 C292 20 292 8 280 -8" />
+        
+        {/* Building Body */}
+        <rect x="95" y="280" width="370" height="480" />
+        
+        {/* Secondary Domes */}
+        <ellipse cx="160" cy="255" rx="60" ry="50" />
+        <ellipse cx="400" cy="255" rx="60" ry="50" />
+        <ellipse cx="115" cy="315" rx="40" ry="32" />
+        <ellipse cx="445" cy="315" rx="40" ry="32" />
+        
         {/* Right Minaret */}
-        <rect x="335" y="130" width="40" height="370" />
-        <ellipse cx="355" cy="130" rx="24" ry="20" />
-        <rect x="348" y="95" width="14" height="35" />
-        <ellipse cx="355" cy="90" rx="10" ry="8" />
-        {/* Andalusian Arches */}
-        <path d="M110 420 Q160 350 210 420 L210 500 L110 500 Z" />
-        <path d="M200 420 Q250 350 300 420 L300 500 L200 500 Z" />
-        {/* Small side domes */}
-        <ellipse cx="130" cy="300" rx="40" ry="30" />
-        <ellipse cx="270" cy="300" rx="40" ry="30" />
+        <rect x="490" y="140" width="50" height="620" />
+        <rect x="478" y="240" width="74" height="12" rx="2" />
+        <rect x="478" y="400" width="74" height="12" rx="2" />
+        <ellipse cx="515" cy="140" rx="32" ry="28" />
+        <rect x="502" y="100" width="26" height="40" />
+        <ellipse cx="515" cy="95" rx="16" ry="13" />
+        <path d="M515 68 C505 82 505 92 515 88 C525 92 525 82 515 68" />
+        
+        {/* Horseshoe Arches */}
+        <path d="M140 600 Q195 490 250 600 L250 760 L140 760 Z" />
+        <path d="M265 600 Q320 490 375 600 L375 760 L265 760 Z" />
+        <path d="M390 600 Q445 490 500 600 L500 760 L390 760 Z" />
+        
+        {/* Arch Inner Details */}
+        <path d="M158 610 Q195 520 232 610" fill="none" stroke="#f5f0e6" strokeWidth="2" opacity="0.5"/>
+        <path d="M283 610 Q320 520 357 610" fill="none" stroke="#f5f0e6" strokeWidth="2" opacity="0.5"/>
+        <path d="M408 610 Q445 520 482 610" fill="none" stroke="#f5f0e6" strokeWidth="2" opacity="0.5"/>
+        
+        {/* Decorative Windows */}
+        <ellipse cx="195" cy="420" rx="28" ry="45" fillOpacity="0.4" />
+        <ellipse cx="280" cy="420" rx="28" ry="45" fillOpacity="0.4" />
+        <ellipse cx="365" cy="420" rx="28" ry="45" fillOpacity="0.4" />
+        
+        {/* Geometric Band */}
+        <rect x="95" y="555" width="370" height="30" fillOpacity="0.5" />
       </g>
     </svg>
   );
 }
 
-// Andalusian arches pattern - top
-function ArchesPattern() {
+// Andalusian Palace - RIGHT SIDE
+function AndalusianPalaceRight() {
   return (
     <svg 
       style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '180px',
-        opacity: 0.09,
+        right: '-3%',
+        top: '0',
+        width: '52%',
+        height: '100%',
+        opacity: 0.17,
         pointerEvents: 'none',
       }}
-      viewBox="0 0 1200 150" 
+      viewBox="0 0 550 800" 
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="xMaxYMid slice"
+    >
+      <defs>
+        <linearGradient id="fadeR" x1="100%" y1="0%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#f5f0e6" stopOpacity="1" />
+          <stop offset="50%" stopColor="#f5f0e6" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#f5f0e6" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <g fill="url(#fadeR)">
+        {/* Tall Elegant Minaret */}
+        <rect x="455" y="45" width="65" height="720" />
+        <rect x="438" y="145" width="100" height="16" rx="4" />
+        <rect x="438" y="300" width="100" height="16" rx="4" />
+        <rect x="438" y="455" width="100" height="16" rx="4" />
+        <ellipse cx="487" cy="45" rx="45" ry="40" />
+        <rect x="470" y="-10" width="34" height="55" />
+        <ellipse cx="487" cy="-15" rx="24" ry="20" />
+        <path d="M487 -50 C473 -30 473 -18 487 -22 C501 -18 501 -30 487 -50" />
+        
+        {/* Alhambra Pavilion */}
+        <ellipse cx="280" cy="175" rx="130" ry="110" />
+        <rect x="150" y="175" width="260" height="380" />
+        <ellipse cx="280" cy="70" rx="18" ry="28" />
+        <rect x="270" y="45" width="20" height="25" />
+        
+        {/* Secondary Structure */}
+        <ellipse cx="110" cy="250" rx="80" ry="65" />
+        <rect x="30" y="250" width="160" height="310" />
+        
+        {/* Large Horseshoe Arches */}
+        <path d="M45 420 Q125 280 205 420 L205 560 L45 560 Z" />
+        <path d="M220 450 Q300 310 380 450 L380 560 L220 560 Z" />
+        
+        {/* Arch Decorations */}
+        <circle cx="125" cy="365" r="15" fillOpacity="0.4" />
+        <circle cx="300" cy="395" r="15" fillOpacity="0.4" />
+        <path d="M65 420 L85 395 L105 420 L125 395 L145 420 L165 395 L185 420" 
+              fill="none" stroke="url(#fadeR)" strokeWidth="2" />
+        
+        {/* Pointed Arch Windows */}
+        <path d="M80 580 Q120 520 160 580 L160 700 L80 700 Z" />
+        <path d="M230 580 Q270 520 310 580 L310 700 L230 700 Z" />
+        <path d="M380 580 Q420 520 460 580 L460 700 L380 700 Z" />
+        
+        {/* Colonnade */}
+        <rect x="68" y="700" width="18" height="100" />
+        <rect x="148" y="700" width="18" height="100" />
+        <rect x="248" y="700" width="18" height="100" />
+        <rect x="328" y="700" width="18" height="100" />
+        <rect x="398" y="700" width="18" height="100" />
+        <rect x="478" y="700" width="18" height="100" />
+        
+        {/* Decorative Band */}
+        <rect x="30" y="545" width="380" height="25" fillOpacity="0.5" />
+        
+        {/* Small Dome */}
+        <ellipse cx="390" cy="220" rx="50" ry="40" />
+      </g>
+    </svg>
+  );
+}
+
+// Top Arches Border
+function TopArchesBorder() {
+  return (
+    <svg 
+      style={{
+        position: 'absolute',
+        top: 0, left: 0, right: 0,
+        height: '220px',
+        opacity: 0.15,
+        pointerEvents: 'none',
+      }}
+      viewBox="0 0 1600 200" 
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMidYMin slice"
     >
       <defs>
-        <linearGradient id="archFade" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style={{ stopColor: COLORS.IVORY, stopOpacity: 1 }} />
-          <stop offset="100%" style={{ stopColor: COLORS.IVORY, stopOpacity: 0 }} />
+        <linearGradient id="topFade" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#f5f0e6" stopOpacity="1" />
+          <stop offset="100%" stopColor="#f5f0e6" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <g fill="url(#archFade)">
-        {[0,1,2,3,4,5,6,7,8,9,10,11].map(i => (
-          <path key={i} d={`M${i*100} 150 Q${i*100+50} 40 ${i*100+100} 150`} fill="none" stroke={COLORS.IVORY} strokeWidth="2.5" opacity="0.6"/>
+      <g stroke="url(#topFade)" fill="none" strokeWidth="3">
+        {[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(i => (
+          <g key={i}>
+            <path d={`M${i*100} 200 Q${i*100+50} 50 ${i*100+100} 200`} />
+            <path d={`M${i*100+18} 200 Q${i*100+50} 85 ${i*100+82} 200`} strokeWidth="1.5" opacity="0.5"/>
+            <circle cx={i*100+50} cy="115" r="10" fill="url(#topFade)" fillOpacity="0.25" />
+          </g>
         ))}
       </g>
     </svg>
   );
 }
 
-// Blue mosaic accent strip
-function MosaicStrip({ position = 'left' }) {
+// Blue Mosaic Strip
+function BlueMosaicStrip({ position = 'left' }) {
   const isLeft = position === 'left';
   return (
     <div style={{
       position: 'absolute',
       [isLeft ? 'left' : 'right']: 0,
-      top: '15%',
-      width: '65px',
-      height: '70%',
-      background: isLeft 
-        ? `linear-gradient(to right, ${COLORS.BLUE}40, transparent)`
-        : `linear-gradient(to left, ${COLORS.BLUE}40, transparent)`,
+      top: '8%',
+      width: '90px',
+      height: '84%',
       pointerEvents: 'none',
+      background: isLeft 
+        ? 'linear-gradient(to right, rgba(45,90,123,0.55), transparent)'
+        : 'linear-gradient(to left, rgba(45,90,123,0.55), transparent)',
     }}>
-      <svg width="100%" height="100%" viewBox="0 0 60 500" style={{ opacity: 0.5 }}>
-        {[...Array(12)].map((_, i) => (
-          <g key={i} transform={`translate(0, ${i * 42})`}>
-            <polygon points="30,0 60,21 30,42 0,21" fill={COLORS.BLUE} fillOpacity="0.35" />
-            <polygon points="30,8 50,21 30,34 10,21" fill={COLORS.GOLD} fillOpacity="0.25" />
-            <circle cx="30" cy="21" r="4" fill={COLORS.GOLD} fillOpacity="0.3" />
+      <svg width="100%" height="100%" viewBox="0 0 90 700" style={{ opacity: 0.75 }}>
+        {[...Array(17)].map((_, i) => (
+          <g key={i} transform={`translate(0, ${i * 41})`}>
+            <polygon points="45,0 90,20.5 45,41 0,20.5" fill="#2d5a7b" fillOpacity="0.45" />
+            <polygon points="45,10 72,20.5 45,31 18,20.5" fill="#c9b060" fillOpacity="0.35" />
+            <polygon points="45,16 56,20.5 45,25 34,20.5" fill="#2d5a7b" fillOpacity="0.55" />
+            <circle cx="45" cy="20.5" r="4" fill="#dac578" fillOpacity="0.5" />
           </g>
         ))}
       </svg>
     </div>
+  );
+}
+
+// Gold Vertical Accent
+function GoldVerticalAccent({ position = 'left' }) {
+  return (
+    <div style={{
+      position: 'absolute',
+      [position]: '90px',
+      top: '3%',
+      width: '3px',
+      height: '94%',
+      background: 'linear-gradient(to bottom, transparent 0%, #c9b060 15%, #dac578 50%, #c9b060 85%, transparent 100%)',
+      opacity: 0.6,
+      pointerEvents: 'none',
+    }} />
   );
 }
 
@@ -482,81 +608,79 @@ function HeroSection({ onNavigate }) {
   return (
     <section style={{
       position: 'relative',
-      minHeight: '92vh',
+      minHeight: '100vh',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       overflow: 'hidden',
       background: `
-        radial-gradient(ellipse at 50% 30%, ${COLORS.BG4}60 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 100%, ${COLORS.BG2} 0%, transparent 50%),
-        linear-gradient(160deg, ${COLORS.BG} 0%, ${COLORS.BG2} 25%, ${COLORS.BG3} 50%, ${COLORS.BG2} 75%, ${COLORS.BG} 100%)
+        radial-gradient(ellipse at 50% 35%, ${COLORS.BG4}60 0%, transparent 45%),
+        radial-gradient(ellipse at 15% 85%, ${COLORS.BLUE_DIM} 0%, transparent 35%),
+        radial-gradient(ellipse at 85% 85%, ${COLORS.BLUE_DIM} 0%, transparent 35%),
+        linear-gradient(165deg, ${COLORS.BG} 0%, ${COLORS.BG2} 18%, ${COLORS.BG3} 40%, ${COLORS.BG4} 55%, ${COLORS.BG3} 68%, ${COLORS.BG2} 82%, ${COLORS.BG} 100%)
       `,
     }}>
-      {/* Architectural Background Elements */}
-      <MosqueSilhouette position="left" />
-      <MosqueSilhouette position="right" />
-      <ArchesPattern />
+      {/* === ARCHITECTURAL BACKGROUNDS === */}
+      <GrandMosqueLeft />
+      <AndalusianPalaceRight />
+      <TopArchesBorder />
       
-      {/* Blue Mosaic Accents */}
-      <MosaicStrip position="left" />
-      <MosaicStrip position="right" />
+      {/* === MOSAIC & GOLD ACCENTS === */}
+      <BlueMosaicStrip position="left" />
+      <BlueMosaicStrip position="right" />
+      <GoldVerticalAccent position="left" />
+      <GoldVerticalAccent position="right" />
       
-      {/* Gold Border Top */}
+      {/* === GOLD BORDERS === */}
       <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '3px',
-        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}80, ${COLORS.GOLD2}, ${COLORS.GOLD}80, transparent)`,
+        position: 'absolute', top: 0, left: 0, right: 0, height: '5px',
+        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}70 12%, ${COLORS.GOLD2} 50%, ${COLORS.GOLD}70 88%, transparent)`,
+      }} />
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: '5px',
+        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}70 12%, ${COLORS.GOLD2} 50%, ${COLORS.GOLD}70 88%, transparent)`,
       }} />
       
-      {/* Gold Border Bottom */}
+      {/* === BOTTOM FADE === */}
       <div style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: '3px',
-        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}80, ${COLORS.GOLD2}, ${COLORS.GOLD}80, transparent)`,
-      }} />
-      
-      <GeometricPattern opacity={0.04} />
-
-      {/* Corner ornaments with Islamic stars */}
-      <div style={{ position: 'absolute', top: 20, right: 20 }}>
-        <IslamicStar size={70} color={COLORS.GOLD} opacity={0.25} rotate={0} />
-      </div>
-      <div style={{ position: 'absolute', top: 20, left: 20 }}>
-        <IslamicStar size={70} color={COLORS.GOLD} opacity={0.25} rotate={45} />
-      </div>
-      <div style={{ position: 'absolute', bottom: 60, right: 20 }}>
-        <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.18} rotate={22} />
-      </div>
-      <div style={{ position: 'absolute', bottom: 60, left: 20 }}>
-        <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.18} rotate={-22} />
-      </div>
-
-      {/* Central glow */}
-      <div style={{
-        position: 'absolute', top: '35%', left: '50%', transform: 'translate(-50%, -50%)',
-        width: 500, height: 500, borderRadius: '50%',
-        background: `radial-gradient(circle, ${COLORS.GOLD_DIM} 0%, transparent 60%)`,
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: '220px',
+        background: `linear-gradient(to top, ${COLORS.BG}95, transparent)`,
         pointerEvents: 'none',
-        filter: 'blur(40px)',
       }} />
 
-      {/* Content */}
-      <div style={{ textAlign: 'center', maxWidth: 900, padding: '60px 24px', position: 'relative', zIndex: 1 }} dir="rtl">
+      <GeometricPattern opacity={0.025} />
 
-        {/* Hero Logo - Calligraphy Art */}
-        <div style={{
-          display: 'flex', justifyContent: 'center', marginBottom: 20,
-        }}>
+      {/* === CORNER STARS === */}
+      <div style={{ position: 'absolute', top: 28, right: 28 }}>
+        <IslamicStar size={90} color={COLORS.GOLD} opacity={0.35} rotate={0} />
+      </div>
+      <div style={{ position: 'absolute', top: 28, left: 28 }}>
+        <IslamicStar size={90} color={COLORS.GOLD} opacity={0.35} rotate={22.5} />
+      </div>
+      <div style={{ position: 'absolute', bottom: 90, right: 28 }}>
+        <IslamicStar size={65} color={COLORS.GOLD2} opacity={0.28} rotate={45} />
+      </div>
+      <div style={{ position: 'absolute', bottom: 90, left: 28 }}>
+        <IslamicStar size={65} color={COLORS.GOLD2} opacity={0.28} rotate={-22.5} />
+      </div>
+
+      {/* === CENTRAL GLOW === */}
+      <div style={{
+        position: 'absolute', top: '38%', left: '50%', transform: 'translate(-50%, -50%)',
+        width: 650, height: 650, borderRadius: '50%',
+        background: `radial-gradient(circle, ${COLORS.GOLD_MID} 0%, ${COLORS.GOLD_DIM} 35%, transparent 60%)`,
+        pointerEvents: 'none',
+        filter: 'blur(60px)',
+      }} />
+
+      {/* === CONTENT === */}
+      <div style={{ textAlign: 'center', maxWidth: 950, padding: '50px 24px', position: 'relative', zIndex: 10 }} dir="rtl">
+
+        {/* === LOGO === */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
           <div style={{
-            width: 340, height: 340,
-            borderRadius: 24,
+            width: 380, height: 380,
+            borderRadius: 30,
             overflow: 'hidden',
             background: 'transparent',
             position: 'relative',
@@ -564,40 +688,31 @@ function HeroSection({ onNavigate }) {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            {/* Outer decorative frame with gold border */}
             <div style={{
-              position: 'absolute',
-              inset: 0,
-              border: `3px solid ${COLORS.GOLD}50`,
-              borderRadius: 24,
-              boxShadow: `
-                0 0 100px ${COLORS.GOLD}30, 
-                inset 0 0 80px ${COLORS.GOLD}15,
-                0 0 0 6px ${COLORS.GOLD}10
-              `,
+              position: 'absolute', inset: 0,
+              border: `4px solid ${COLORS.GOLD}65`,
+              borderRadius: 30,
+              boxShadow: `0 0 140px ${COLORS.GOLD}40, inset 0 0 120px ${COLORS.GOLD}25, 0 0 0 10px ${COLORS.GOLD}18`,
             }} />
-            {/* Islamic geometric corner ornaments */}
-            <div style={{ position: 'absolute', top: 10, right: 10 }}>
-              <IslamicStar size={36} color={COLORS.GOLD2} opacity={0.5} rotate={0} />
+            <div style={{ position: 'absolute', top: 14, right: 14 }}>
+              <IslamicStar size={45} color={COLORS.GOLD2} opacity={0.65} rotate={0} />
             </div>
-            <div style={{ position: 'absolute', top: 10, left: 10 }}>
-              <IslamicStar size={36} color={COLORS.GOLD2} opacity={0.5} rotate={45} />
+            <div style={{ position: 'absolute', top: 14, left: 14 }}>
+              <IslamicStar size={45} color={COLORS.GOLD2} opacity={0.65} rotate={22.5} />
             </div>
-            <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
-              <IslamicStar size={36} color={COLORS.GOLD2} opacity={0.5} rotate={45} />
+            <div style={{ position: 'absolute', bottom: 14, right: 14 }}>
+              <IslamicStar size={45} color={COLORS.GOLD2} opacity={0.65} rotate={22.5} />
             </div>
-            <div style={{ position: 'absolute', bottom: 10, left: 10 }}>
-              <IslamicStar size={36} color={COLORS.GOLD2} opacity={0.5} rotate={0} />
+            <div style={{ position: 'absolute', bottom: 14, left: 14 }}>
+              <IslamicStar size={45} color={COLORS.GOLD2} opacity={0.65} rotate={0} />
             </div>
             <img
               src="/logo_calligraphy.png"
               alt="فيوض التأويل المعاصر"
               style={{
-                width: '92%',
-                height: '92%',
+                width: '88%', height: '88%',
                 objectFit: 'contain',
-                display: 'block',
-                filter: 'drop-shadow(0 0 40px rgba(185,160,80,0.35))',
+                filter: 'drop-shadow(0 0 60px rgba(185,160,80,0.45))',
               }}
             />
           </div>
