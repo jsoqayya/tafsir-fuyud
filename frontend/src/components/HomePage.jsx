@@ -603,10 +603,10 @@ function HeroSection({ onNavigate }) {
       <div style={{ textAlign: 'center', maxWidth: 1000, padding: '40px 24px', position: 'relative', zIndex: 10 }} dir="rtl">
 
         {/* === LARGE LOGO (Fills the frame) === */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 30 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
           <div style={{
-            width: 420, height: 420,
-            borderRadius: 20,
+            width: 320, height: 320,
+            borderRadius: 18,
             overflow: 'hidden',
             background: `linear-gradient(145deg, ${COLORS.BG2}80, ${COLORS.BG}90)`,
             position: 'relative',
@@ -618,60 +618,60 @@ function HeroSection({ onNavigate }) {
             {/* Thick dark gold border */}
             <div style={{
               position: 'absolute', inset: 0,
-              border: `5px solid ${COLORS.GOLD}`,
-              borderRadius: 20,
+              border: `4px solid ${COLORS.GOLD2}`,
+              borderRadius: 18,
               boxShadow: `
-                0 0 80px ${COLORS.GOLD}50, 
-                inset 0 0 60px ${COLORS.GOLD}30,
-                0 0 0 12px ${COLORS.GOLD}25
+                0 0 60px ${COLORS.GOLD}40, 
+                inset 0 0 50px ${COLORS.GOLD}25,
+                0 0 0 10px ${COLORS.GOLD}20
               `,
             }} />
             {/* Corner stars */}
-            <div style={{ position: 'absolute', top: 15, right: 15 }}>
-              <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.7} rotate={0} />
+            <div style={{ position: 'absolute', top: 12, right: 12 }}>
+              <IslamicStar size={40} color={COLORS.GOLD2} opacity={0.65} rotate={0} />
             </div>
-            <div style={{ position: 'absolute', top: 15, left: 15 }}>
-              <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.7} rotate={22.5} />
+            <div style={{ position: 'absolute', top: 12, left: 12 }}>
+              <IslamicStar size={40} color={COLORS.GOLD2} opacity={0.65} rotate={22.5} />
             </div>
-            <div style={{ position: 'absolute', bottom: 15, right: 15 }}>
-              <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.7} rotate={22.5} />
+            <div style={{ position: 'absolute', bottom: 12, right: 12 }}>
+              <IslamicStar size={40} color={COLORS.GOLD2} opacity={0.65} rotate={22.5} />
             </div>
-            <div style={{ position: 'absolute', bottom: 15, left: 15 }}>
-              <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.7} rotate={0} />
+            <div style={{ position: 'absolute', bottom: 12, left: 12 }}>
+              <IslamicStar size={40} color={COLORS.GOLD2} opacity={0.65} rotate={0} />
             </div>
             {/* Logo Image - FULL SIZE */}
             <img
               src="/logo_calligraphy.png"
               alt="فيوض التأويل المعاصر"
               style={{
-                width: '98%', height: '98%',
+                width: '96%', height: '96%',
                 objectFit: 'contain',
-                filter: 'drop-shadow(0 0 40px rgba(160,128,64,0.5))',
+                filter: 'drop-shadow(0 0 30px rgba(201,162,39,0.4))',
               }}
             />
           </div>
         </div>
 
         {/* === TITLE WITH ENGLISH === */}
-        <div style={{ marginBottom: 20 }}>
+        <div style={{ marginBottom: 14 }}>
           <h1 style={{
             fontFamily: 'Amiri, serif',
-            fontSize: 'clamp(2.8rem, 7vw, 4.5rem)',
+            fontSize: 'clamp(2.2rem, 5.5vw, 3.5rem)',
             color: COLORS.GOLD2,
-            margin: '0 0 10px',
+            margin: '0 0 8px',
             fontWeight: 700,
-            textShadow: `0 2px 4px rgba(0,0,0,0.4), 0 0 40px ${COLORS.GOLD}50`,
+            textShadow: `0 2px 4px rgba(0,0,0,0.4), 0 0 30px ${COLORS.GOLD}40`,
             letterSpacing: '0.02em',
           }}>
             فيوض التأويل المعاصر
           </h1>
           <p style={{
             fontFamily: 'Inter, sans-serif',
-            fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
+            fontSize: 'clamp(0.9rem, 2vw, 1.25rem)',
             color: COLORS.GOLD3,
             margin: 0,
             fontWeight: 600,
-            letterSpacing: '0.3em',
+            letterSpacing: '0.25em',
             textTransform: 'uppercase',
             textShadow: `0 1px 3px rgba(0,0,0,0.3)`,
           }}>
@@ -683,18 +683,18 @@ function HeroSection({ onNavigate }) {
         <div style={{
           display: 'inline-block',
           background: `linear-gradient(135deg, ${COLORS.GOLD_DIM}, ${COLORS.GOLD_MID})`,
-          border: `2px solid ${COLORS.GOLD2}80`,
-          borderRadius: 16,
-          padding: '16px 40px',
-          marginBottom: 24,
-          boxShadow: `0 0 30px ${COLORS.GOLD}25, inset 0 1px 0 ${COLORS.GOLD_SHINE}30`,
+          border: `2px solid ${COLORS.GOLD2}70`,
+          borderRadius: 14,
+          padding: '12px 32px',
+          marginBottom: 16,
+          boxShadow: `0 0 25px ${COLORS.GOLD}20, inset 0 1px 0 ${COLORS.GOLD_SHINE}25`,
         }}>
           <p style={{
             fontFamily: 'Amiri, serif',
-            fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
+            fontSize: 'clamp(1.3rem, 2.5vw, 1.8rem)',
             color: COLORS.GOLD2,
             margin: 0,
-            letterSpacing: '0.08em',
+            letterSpacing: '0.06em',
             textShadow: `0 1px 2px rgba(0,0,0,0.3)`,
           }}>
             ﴿ بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴾
@@ -702,7 +702,7 @@ function HeroSection({ onNavigate }) {
         </div>
 
         {/* Subtitle */}
-        <div style={{ margin: '0 0 16px' }}>
+        <div style={{ margin: '0 0 12px' }}>
           <span style={{
             display: 'inline-block',
             background: `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD2}, ${COLORS.GOLD3})`,
@@ -710,7 +710,7 @@ function HeroSection({ onNavigate }) {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             fontFamily: 'Amiri, serif',
-            fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)',
+            fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
             fontWeight: 600,
           }}>
             تفسير سورة البقرة
@@ -720,40 +720,50 @@ function HeroSection({ onNavigate }) {
         {/* Description */}
         <p style={{
           fontFamily: 'Noto Naskh Arabic, serif',
-          fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+          fontSize: 'clamp(0.95rem, 1.8vw, 1.15rem)',
           color: COLORS.TXT2,
-          lineHeight: 2,
-          maxWidth: 650,
-          margin: '0 auto 40px',
+          lineHeight: 1.9,
+          maxWidth: 600,
+          margin: '0 auto 24px',
         }}>
           قراءة تفسيرية معاصرة تجمع بين البيان القرآني والتدبر التربوي والبصيرة النفسية،
           بلغة قريبة من الإنسان المعاصر
         </p>
 
-        {/* CTA Buttons */}
-        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 48 }}>
-          <CTAButton primary onClick={() => navigate('/part1')} icon={<BookOpen size={17} />}>
+        {/* CTA Buttons - Compact */}
+        <div style={{ 
+          display: 'flex', 
+          gap: 10, 
+          justifyContent: 'center', 
+          flexWrap: 'wrap', 
+          marginBottom: 24,
+          maxWidth: 700,
+          margin: '0 auto 24px',
+        }}>
+          <CTAButton primary onClick={() => navigate('/part1')} icon={<BookOpen size={16} />}>
             ابدأ التصفح
           </CTAButton>
-          <CTAButton onClick={() => document.getElementById('surahs')?.scrollIntoView({ behavior: 'smooth' })} icon={<BookMarked size={17} />}>
+          <CTAButton onClick={() => document.getElementById('surahs')?.scrollIntoView({ behavior: 'smooth' })} icon={<BookMarked size={16} />}>
             تصفح السور
           </CTAButton>
-          <CTAButton onClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })} icon={<Search size={17} />}>
+          <CTAButton onClick={() => document.getElementById('search-section')?.scrollIntoView({ behavior: 'smooth' })} icon={<Search size={16} />}>
             البحث في التفسير
           </CTAButton>
-          <CTAButton onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} icon={<Compass size={17} />}>
+          <CTAButton onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} icon={<Compass size={16} />}>
             عن المشروع
           </CTAButton>
         </div>
 
-        {/* Stats row */}
+        {/* Stats row - Compact */}
         <div style={{
-          display: 'flex', gap: 32, justifyContent: 'center', flexWrap: 'wrap',
-          padding: '24px 32px',
+          display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap',
+          padding: '16px 24px',
           background: COLORS.GOLD_DIM,
-          borderRadius: 16,
+          borderRadius: 12,
           border: `1px solid ${COLORS.BORDER}`,
           backdropFilter: 'blur(8px)',
+          maxWidth: 550,
+          margin: '0 auto',
         }}>
           {[
             { num: '٢٨٦', label: 'آية مفسَّرة' },
@@ -764,16 +774,16 @@ function HeroSection({ onNavigate }) {
             <div key={s.label} style={{ textAlign: 'center' }}>
               <div style={{
                 fontFamily: 'Amiri, serif',
-                fontSize: '1.8rem',
+                fontSize: '1.5rem',
                 fontWeight: 700,
                 color: COLORS.GOLD2,
                 lineHeight: 1,
               }}>{s.num}</div>
               <div style={{
                 fontFamily: 'Noto Naskh Arabic, serif',
-                fontSize: '0.8rem',
+                fontSize: '0.75rem',
                 color: COLORS.TXT3,
-                marginTop: 4,
+                marginTop: 3,
               }}>{s.label}</div>
             </div>
           ))}
