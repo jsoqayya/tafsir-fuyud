@@ -1,0 +1,1058 @@
+/* ============================================
+   FUYUD AL-TA'WIL AL-MU'ASIR
+   Premium Islamic Scholarly Platform
+   Andalusian-Inspired Design
+   ============================================ */
+
+/* CSS Variables for Islamic Color Palette */
+:root {
+  /* Primary Olive-Sage Green Tones - Richer, Deeper */
+  --olive-darkest: #3a4a2a;
+  --olive-deep: #4a5a3a;
+  --olive-primary: #576847;
+  --olive-medium: #687858;
+  --sage-soft: #788868;
+  --sage-light: #8a9878;
+  
+  /* Warm Cream & Ivory */
+  --ivory-warm: #f5f0e6;
+  --ivory-soft: #f0ebe0;
+  --cream-soft: #ebe5d8;
+  --cream-medium: #e0d8c8;
+  --cream-light: #faf7f0;
+  
+  /* Matte Gold Accents - Richer */
+  --gold-dark: #9a8040;
+  --gold-matte: #b8a050;
+  --gold-rich: #c9b060;
+  --gold-light: #dac578;
+  --gold-pale: #e8d898;
+  --gold-glow: rgba(201, 176, 96, 0.35);
+  --gold-glow-strong: rgba(201, 176, 96, 0.5);
+  
+  /* Andalusian Blue Mosaic */
+  --mosaic-blue-dark: #1d4a6b;
+  --mosaic-blue: #2d5a7b;
+  --mosaic-blue-medium: #3d6a8b;
+  --mosaic-blue-light: #5a8aab;
+  --mosaic-blue-soft: rgba(45, 90, 123, 0.5);
+  
+  /* Text Colors */
+  --text-primary: #2a3424;
+  --text-secondary: #4a5a3a;
+  --text-light: #f5f0e6;
+  --text-cream: #ebe5d8;
+  --text-gold: #c9b060;
+}
+
+/* Global Reset */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Noto Naskh Arabic', 'Amiri', serif;
+  background: var(--olive-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Main App Container */
+.App {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ============================================
+   HERO SECTION - MAIN BACKGROUND
+   ============================================ */
+
+.hero-section {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  
+  /* Rich layered gradient background */
+  background: 
+    /* Vignette effect */
+    radial-gradient(ellipse at center, transparent 0%, rgba(42, 52, 36, 0.4) 100%),
+    /* Diagonal gradient for depth */
+    linear-gradient(
+      160deg,
+      var(--olive-darkest) 0%,
+      var(--olive-deep) 15%,
+      var(--olive-primary) 35%,
+      var(--olive-medium) 55%,
+      var(--olive-primary) 75%,
+      var(--olive-deep) 90%,
+      var(--olive-darkest) 100%
+    );
+}
+
+/* Premium texture overlay */
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    /* Subtle noise texture */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Central radial light glow */
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150%;
+  height: 150%;
+  background: 
+    radial-gradient(
+      ellipse 60% 50% at 50% 45%,
+      rgba(245, 240, 230, 0.06) 0%,
+      rgba(201, 176, 96, 0.03) 25%,
+      transparent 55%
+    );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ============================================
+   ARCHITECTURAL BACKGROUND LAYERS
+   ============================================ */
+
+.architectural-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Left Side - Mosque with Minarets */
+.arch-left {
+  position: absolute;
+  left: -8%;
+  top: 5%;
+  width: 50%;
+  height: 95%;
+  opacity: 0.1;
+  filter: blur(0.5px);
+  animation: floatArchLeft 25s ease-in-out infinite;
+}
+
+.arch-left svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Right Side - Andalusian Architecture */
+.arch-right {
+  position: absolute;
+  right: -8%;
+  top: 0;
+  width: 45%;
+  height: 100%;
+  opacity: 0.08;
+  filter: blur(0.5px);
+  animation: floatArchRight 30s ease-in-out infinite;
+}
+
+.arch-right svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Top Arches Border */
+.arch-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  opacity: 0.07;
+  overflow: hidden;
+}
+
+.arch-top svg {
+  width: 200%;
+  height: 100%;
+  animation: scrollArches 40s linear infinite;
+}
+
+/* Bottom Gradient Fade */
+.pattern-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(
+    to top,
+    rgba(42, 52, 36, 0.6) 0%,
+    rgba(58, 74, 42, 0.3) 50%,
+    transparent 100%
+  );
+  z-index: 3;
+}
+
+/* ============================================
+   GEOMETRIC ISLAMIC PATTERNS
+   ============================================ */
+
+.geometric-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* Corner Ornaments */
+.corner-ornament {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  opacity: 0.18;
+  transition: opacity 0.5s ease;
+}
+
+.corner-ornament:hover {
+  opacity: 0.25;
+}
+
+.corner-ornament.top-left {
+  top: 15px;
+  left: 15px;
+}
+
+.corner-ornament.top-right {
+  top: 15px;
+  right: 15px;
+  transform: scaleX(-1);
+}
+
+.corner-ornament.bottom-left {
+  bottom: 15px;
+  left: 15px;
+  transform: scaleY(-1);
+}
+
+.corner-ornament.bottom-right {
+  bottom: 15px;
+  right: 15px;
+  transform: scale(-1, -1);
+}
+
+/* ============================================
+   MOSAIC BLUE ACCENT STRIPS
+   ============================================ */
+
+.mosaic-accent-left {
+  position: absolute;
+  left: 0;
+  top: 15%;
+  width: 60px;
+  height: 70%;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.mosaic-accent-right {
+  position: absolute;
+  right: 0;
+  top: 10%;
+  width: 60px;
+  height: 75%;
+  z-index: 5;
+  overflow: hidden;
+}
+
+/* ============================================
+   GOLD BORDER FRAMES
+   ============================================ */
+
+.gold-frame-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gold-dark) 10%,
+    var(--gold-matte) 30%,
+    var(--gold-rich) 50%,
+    var(--gold-matte) 70%,
+    var(--gold-dark) 90%,
+    transparent 100%
+  );
+  opacity: 0.7;
+  z-index: 10;
+}
+
+.gold-frame-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gold-dark) 10%,
+    var(--gold-matte) 30%,
+    var(--gold-rich) 50%,
+    var(--gold-matte) 70%,
+    var(--gold-dark) 90%,
+    transparent 100%
+  );
+  opacity: 0.7;
+  z-index: 10;
+}
+
+/* Side gold accent lines */
+.gold-frame-left,
+.gold-frame-right {
+  position: absolute;
+  top: 10%;
+  width: 2px;
+  height: 80%;
+  z-index: 10;
+}
+
+.gold-frame-left {
+  left: 60px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--gold-matte) 20%,
+    var(--gold-rich) 50%,
+    var(--gold-matte) 80%,
+    transparent 100%
+  );
+  opacity: 0.4;
+}
+
+.gold-frame-right {
+  right: 60px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--gold-matte) 20%,
+    var(--gold-rich) 50%,
+    var(--gold-matte) 80%,
+    transparent 100%
+  );
+  opacity: 0.4;
+}
+
+/* ============================================
+   HERO CONTENT
+   ============================================ */
+
+.hero-content {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  max-width: 1000px;
+}
+
+/* ============================================
+   LOGO MEDALLION FRAME - ENHANCED
+   ============================================ */
+
+.logo-medallion {
+  position: relative;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Outer Ornamental Rings */
+.medallion-outer {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border: 2px solid var(--gold-matte);
+  border-radius: 50%;
+  opacity: 0.35;
+  animation: rotateSlowReverse 80s linear infinite;
+}
+
+.medallion-outer::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border: 1px solid var(--gold-light);
+  border-radius: 50%;
+  opacity: 0.25;
+}
+
+.medallion-outer::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  border: 1px dashed var(--gold-dark);
+  border-radius: 50%;
+  opacity: 0.2;
+}
+
+/* Inner Decorative Ring */
+.medallion-inner {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border: 1.5px solid var(--gold-matte);
+  border-radius: 50%;
+  opacity: 0.45;
+  animation: rotateSlow 60s linear infinite;
+}
+
+.medallion-inner::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid var(--gold-light);
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+/* Eight-Point Star Pattern */
+.medallion-star {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  opacity: 0.3;
+  animation: rotateSlow 120s linear infinite;
+}
+
+/* Central Glowing Backdrop */
+.logo-glow {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  background: 
+    radial-gradient(
+      circle,
+      var(--gold-glow-strong) 0%,
+      var(--gold-glow) 30%,
+      rgba(201, 176, 96, 0.1) 50%,
+      transparent 70%
+    );
+  border-radius: 50%;
+  filter: blur(25px);
+  animation: pulseGlow 5s ease-in-out infinite;
+}
+
+/* Secondary Inner Glow */
+.logo-glow-inner {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  background: 
+    radial-gradient(
+      circle,
+      rgba(245, 240, 230, 0.15) 0%,
+      rgba(245, 240, 230, 0.05) 40%,
+      transparent 60%
+    );
+  border-radius: 50%;
+  filter: blur(15px);
+}
+
+/* Logo Text Container */
+.logo-container {
+  position: relative;
+  z-index: 5;
+  padding: 3.5rem 4rem;
+  background: 
+    radial-gradient(
+      ellipse at center,
+      rgba(87, 104, 71, 0.3) 0%,
+      transparent 70%
+    );
+  border-radius: 50%;
+}
+
+/* Arabic Title - Main Logo */
+.logo-arabic {
+  font-family: 'Scheherazade New', 'Amiri', serif;
+  font-size: 5rem;
+  font-weight: 700;
+  color: var(--ivory-warm);
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    0 0 60px var(--gold-glow-strong),
+    0 0 100px rgba(201, 176, 96, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.15);
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.75rem;
+  direction: rtl;
+}
+
+/* English Subtitle */
+.logo-english {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--gold-rich);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-top: 0.75rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   DECORATIVE DIVIDER
+   ============================================ */
+
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin: 1.75rem 0;
+  width: 100%;
+  max-width: 550px;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  opacity: 0.5;
+}
+
+.divider-line.left {
+  background: linear-gradient(to right, transparent, var(--gold-matte));
+}
+
+.divider-line.right {
+  background: linear-gradient(to left, transparent, var(--gold-matte));
+}
+
+.divider-ornament {
+  width: 14px;
+  height: 14px;
+  background: var(--gold-rich);
+  transform: rotate(45deg);
+  opacity: 0.8;
+  box-shadow: 0 0 10px var(--gold-glow);
+}
+
+.divider-ornament::before,
+.divider-ornament::after {
+  content: '';
+  position: absolute;
+  background: var(--gold-matte);
+}
+
+.divider-ornament::before {
+  width: 6px;
+  height: 6px;
+  top: 50%;
+  left: -20px;
+  transform: translateY(-50%) rotate(45deg);
+  opacity: 0.6;
+}
+
+.divider-ornament::after {
+  width: 6px;
+  height: 6px;
+  top: 50%;
+  right: -20px;
+  transform: translateY(-50%) rotate(45deg);
+  opacity: 0.6;
+}
+
+/* ============================================
+   TAGLINE
+   ============================================ */
+
+.tagline {
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--cream-soft);
+  margin-bottom: 2.75rem;
+  opacity: 0.92;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  line-height: 1.6;
+  direction: rtl;
+}
+
+/* ============================================
+   ACTION BUTTONS
+   ============================================ */
+
+.hero-buttons {
+  display: flex;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  padding: 1.1rem 2.75rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  direction: rtl;
+}
+
+.btn i {
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--gold-rich) 0%,
+    var(--gold-matte) 50%,
+    var(--gold-dark) 100%
+  );
+  color: var(--olive-darkest);
+  box-shadow: 
+    0 4px 20px rgba(201, 176, 96, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(
+    135deg,
+    var(--gold-light) 0%,
+    var(--gold-rich) 50%,
+    var(--gold-matte) 100%
+  );
+  transform: translateY(-3px);
+  box-shadow: 
+    0 8px 30px rgba(201, 176, 96, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: rgba(87, 104, 71, 0.4);
+  color: var(--ivory-warm);
+  border: 1.5px solid var(--gold-matte);
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+}
+
+.btn-secondary:hover {
+  background: rgba(201, 176, 96, 0.15);
+  border-color: var(--gold-light);
+  transform: translateY(-3px);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 0 20px var(--gold-glow);
+}
+
+.btn-secondary:active {
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   SCROLL INDICATOR
+   ============================================ */
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  opacity: 0.55;
+  animation: bounceDown 2.5s ease-in-out infinite;
+  z-index: 20;
+}
+
+.scroll-indicator span {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: var(--cream-soft);
+  letter-spacing: 0.15em;
+  font-weight: 500;
+}
+
+.scroll-arrow {
+  width: 20px;
+  height: 20px;
+  border-right: 2px solid var(--gold-matte);
+  border-bottom: 2px solid var(--gold-matte);
+  transform: rotate(45deg);
+  opacity: 0.8;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes floatArchLeft {
+  0%, 100% { 
+    transform: translateY(0) translateX(0) scale(1); 
+    opacity: 0.1;
+  }
+  50% { 
+    transform: translateY(-25px) translateX(15px) scale(1.02); 
+    opacity: 0.12;
+  }
+}
+
+@keyframes floatArchRight {
+  0%, 100% { 
+    transform: translateY(0) translateX(0) scale(1); 
+    opacity: 0.08;
+  }
+  50% { 
+    transform: translateY(-20px) translateX(-15px) scale(1.02); 
+    opacity: 0.1;
+  }
+}
+
+@keyframes scrollArches {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotateSlowReverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 0.75; 
+    transform: scale(1.08); 
+  }
+}
+
+@keyframes bounceDown {
+  0%, 100% { 
+    transform: translateX(-50%) translateY(0); 
+    opacity: 0.55;
+  }
+  50% { 
+    transform: translateX(-50%) translateY(12px); 
+    opacity: 0.75;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Entrance Animations */
+.hero-content {
+  animation: fadeInUp 1.2s ease-out;
+}
+
+.logo-medallion {
+  animation: fadeIn 1.5s ease-out;
+}
+
+.logo-arabic {
+  animation: fadeInUp 1.2s ease-out 0.3s both;
+}
+
+.logo-english {
+  animation: fadeInUp 1s ease-out 0.5s both;
+}
+
+.divider {
+  animation: fadeIn 1s ease-out 0.7s both;
+}
+
+.tagline {
+  animation: fadeInUp 1s ease-out 0.8s both;
+}
+
+.hero-buttons {
+  animation: fadeInUp 1s ease-out 1s both;
+}
+
+.corner-ornament {
+  animation: fadeIn 1.5s ease-out 0.5s both;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .logo-arabic {
+    font-size: 4rem;
+  }
+  
+  .medallion-outer {
+    width: 350px;
+    height: 350px;
+  }
+  
+  .medallion-inner {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .medallion-star {
+    width: 330px;
+    height: 330px;
+  }
+  
+  .logo-glow {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .corner-ornament {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-arabic {
+    font-size: 3rem;
+  }
+  
+  .logo-english {
+    font-size: 0.9rem;
+    letter-spacing: 0.25em;
+  }
+  
+  .tagline {
+    font-size: 1.25rem;
+    padding: 0 1rem;
+  }
+  
+  .medallion-outer {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .medallion-inner {
+    width: 260px;
+    height: 260px;
+  }
+  
+  .medallion-star {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .logo-glow {
+    width: 240px;
+    height: 240px;
+  }
+  
+  .logo-container {
+    padding: 2.5rem;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    padding: 0 1.5rem;
+    gap: 1rem;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 2rem;
+  }
+  
+  .corner-ornament {
+    width: 100px;
+    height: 100px;
+    opacity: 0.12;
+  }
+  
+  .arch-left, .arch-right {
+    opacity: 0.06;
+  }
+  
+  .mosaic-accent-left,
+  .mosaic-accent-right {
+    width: 40px;
+  }
+  
+  .gold-frame-left {
+    left: 40px;
+  }
+  
+  .gold-frame-right {
+    right: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-arabic {
+    font-size: 2.4rem;
+  }
+  
+  .logo-english {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+  }
+  
+  .tagline {
+    font-size: 1.1rem;
+  }
+  
+  .btn {
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .medallion-outer {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .medallion-inner {
+    width: 220px;
+    height: 220px;
+  }
+  
+  .medallion-star {
+    width: 235px;
+    height: 235px;
+  }
+  
+  .logo-glow {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .corner-ornament {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .divider {
+    max-width: 300px;
+  }
+  
+  .mosaic-accent-left,
+  .mosaic-accent-right,
+  .gold-frame-left,
+  .gold-frame-right {
+    display: none;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY & UTILITIES
+   ============================================ */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus styles for accessibility */
+.btn:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 3px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
