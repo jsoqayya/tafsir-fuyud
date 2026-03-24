@@ -1,392 +1,259 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Search, BookOpen, Globe, ChevronDown, BookMarked,
-  Heart, Brain, Shield, Award, Layers, Map, Volume2,
-  Mail, CheckCircle, Compass, Feather, Flame, Eye,
-  Zap, BarChart2, MessageSquare, Sparkles, Star
+  Heart, Brain, Shield, Layers, Map, Volume2,
+  Mail, Compass, Feather, Flame, Eye,
+  Zap, Sparkles
 } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════
-   🎨 PALETTE — ذهبي دافئ مشرق · مستلهم من داخل قصر الحمراء
-   بنية ذهبية · عاجي ناصع · فيروزي زمردي · نحاسي دافئ
+   PALETTE — ذهبي داكن فاخر مع ألوان فاتحة ومضيئة
+   الخلفية: الصورة الإسلامية + طبقة شفافة فاتحة
+   الصناديق: ألوان مشبعة فاتحة بشفافية عالية
 ═══════════════════════════════════════════════════════════ */
 const C = {
-  /* ── خلفيات بنية ذهبية دافئة — متوسطة الإضاءة كجدران الحمراء */
-  BG0:    '#1c1200',   /* بني ذهبي عميق */
-  BG1:    '#241800',   /* بني كهرماني */
-  BG2:    '#2e2004',   /* كهرماني دافئ */
-  BG3:    '#382808',   /* كهرماني متوسط */
-  BG4:    '#42300c',   /* عنبري دافئ */
-  CARD:   '#362802',   /* بطاقة ذهبية */
-  CARD2:  '#3e2e04',   /* بطاقة ثانوية */
+  /* خلفيات — دافئة ذهبية فاتحة نسبياً */
+  BG:    '#1a1000',
+  BG1:   '#221400',
+  BG2:   '#2a1a00',
+  BG3:   '#201000',
+  BG4:   '#180c00',
+  CARD:  '#2a1800',
 
-  /* ── ذهب نحاسي لامع متعدد الدرجات */
-  G1:     '#8a6a10',   /* ذهب نحاسي داكن */
-  G2:     '#b08820',   /* ذهب نحاسي */
-  G3:     '#cfa030',   /* ذهب كلاسيكي */
-  G4:     '#e0b84a',   /* ذهب لامع */
-  G5:     '#f0cc68',   /* ذهب مضيء */
-  G6:     '#f8dc88',   /* ذهب فاتح */
-  G7:     '#fdeeb8',   /* ذهب كريمي */
+  /* ذهب ناصع */
+  G1: '#8a6800',
+  G2: '#b88c10',
+  G3: '#d4a820',
+  G4: '#e8c040',
+  G5: '#f5d460',
+  G6: '#fbe880',
+  G7: '#fff3b0',
 
-  /* ── ألوان فاتحة دافئة — جص أبيض ورخام أندلسي */
-  IVORY:  '#fdf8ec',   /* عاجي ناصع */
-  CREAM:  '#f5ecd0',   /* كريمي دافئ */
-  PLASTER:'#ece0b8',   /* جص قديم */
-  WARM:   '#d8c898',   /* دافئ خافت */
-  PARCHM: '#c4b080',   /* مخطوط عتيق */
+  /* ألوان الصناديق الملونة — مشبعة فاتحة مضيئة */
+  /* فيروزي زمردي مضيء */
+  TEAL:  '#0a5c45',
+  TEAL2: '#0e7a5c',
+  TEAL3: '#14a878',
+  TEAL4: '#2fd49a',
+  /* أزرق ملكي مضيء */
+  BLUE:  '#0e2d6a',
+  BLUE2: '#1a4898',
+  BLUE3: '#2868c8',
+  BLUE4: '#5898f8',
+  /* بنفسجي مضيء */
+  PURP:  '#2d1258',
+  PURP2: '#4a20a0',
+  PURP3: '#7040d8',
+  PURP4: '#b080ff',
+  /* نحاسي دافئ مضيء */
+  COPP:  '#5a2800',
+  COPP2: '#8a4010',
+  COPP3: '#c06820',
+  COPP4: '#f09050',
+  /* زيتوني مضيء */
+  OLIV:  '#1e3c10',
+  OLIV2: '#2e5a1e',
+  OLIV3: '#4a8030',
+  OLIV4: '#7ab850',
+  /* وردي مسكي مضيء */
+  ROSE:  '#4a0a28',
+  ROSE2: '#7a1a40',
+  ROSE3: '#b03060',
+  ROSE4: '#f060a0',
 
-  /* ── فيروزي زمردي — من بلاط الحمراء */
-  TEAL0:  '#0d4a3c',   /* زمردي عميق */
-  TEAL:   '#186850',   /* فيروزي كلاسيكي */
-  TEAL2:  '#228c6c',   /* فيروزي متوسط */
-  TEAL3:  '#34b488',   /* فيروزي مضيء */
-  TEAL4:  '#5ad4a8',   /* زمردي لامع */
+  /* نص أبيض دافئ */
+  TW:  '#fff8e8',
+  TW2: 'rgba(255,248,232,0.92)',
+  TW3: 'rgba(255,248,232,0.68)',
+  TW4: 'rgba(255,248,232,0.42)',
 
-  /* ── أزرق ملكي أندلسي */
-  NAVY:   '#162444',   /* كحلي ملكي */
-  BLUE:   '#1e3460',   /* أزرق ملكي */
-  BLUE2:  '#2e5890',   /* أزرق أندلسي */
-  BLUE3:  '#4880c8',   /* أزرق فاتح */
-  BLUE4:  '#80b0e8',   /* أزرق سماوي */
+  /* حدود ذهبية */
+  BD1: 'rgba(232,192,64,0.18)',
+  BD2: 'rgba(232,192,64,0.38)',
+  BD3: 'rgba(232,192,64,0.60)',
+  BD4: 'rgba(232,192,64,0.85)',
 
-  /* ── أحمر ياقوتي دافئ */
-  RUBY0:  '#4a1010',   /* ياقوتي غامق */
-  RUBY:   '#8c1818',   /* ياقوتي دافئ */
-  RUBY2:  '#d84040',   /* ياقوتي لامع */
-
-  /* ── نصوص فاتحة */
-  TW:     '#fdf8ec',
-  TW2:    'rgba(253,248,236,0.85)',
-  TW3:    'rgba(253,248,236,0.60)',
-  TW4:    'rgba(253,248,236,0.38)',
-  TW5:    'rgba(253,248,236,0.18)',
-
-  /* ── نص داكن على الفاتح */
-  DARK:   '#1c1200',
-  DARK2:  '#2e1e00',
-
-  /* ── حدود ذهبية */
-  BD1:    'rgba(224,184,74,0.15)',
-  BD2:    'rgba(224,184,74,0.32)',
-  BD3:    'rgba(224,184,74,0.55)',
-  BD4:    'rgba(224,184,74,0.80)',
-  BD5:    'rgba(224,184,74,0.96)',
-
-  /* ── توهجات */
-  GLOW:   'rgba(224,184,74,0.12)',
-  GLOW2:  'rgba(224,184,74,0.26)',
-  GLOW3:  'rgba(224,184,74,0.45)',
-  TGLOW:  'rgba(52,180,136,0.18)',
+  /* توهجات */
+  GLOW:  'rgba(232,192,64,0.14)',
+  GLOW2: 'rgba(232,192,64,0.30)',
 };
 
-const LANGUAGES = [
-  { code: 'ar', label: 'العربية',  flag: '🇸🇦', dir: 'rtl' },
-  { code: 'en', label: 'English',  flag: '🇬🇧', dir: 'ltr' },
-  { code: 'ur', label: 'اردو',     flag: '🇵🇰', dir: 'rtl' },
-  { code: 'id', label: 'Bahasa',   flag: '🇮🇩', dir: 'ltr' },
-  { code: 'tr', label: 'Türkçe',   flag: '🇹🇷', dir: 'ltr' },
+const LANGS = [
+  { code:'ar', label:'العربية', flag:'🇸🇦', dir:'rtl' },
+  { code:'en', label:'English', flag:'🇬🇧', dir:'ltr' },
+  { code:'ur', label:'اردو',    flag:'🇵🇰', dir:'rtl' },
+  { code:'id', label:'Bahasa',  flag:'🇮🇩', dir:'ltr' },
+  { code:'tr', label:'Türkçe',  flag:'🇹🇷', dir:'ltr' },
 ];
 
-/* ═══════════════════════════════════════════════════════════
-   🌟 SVG — نمط الجريد الإسلامي الأصيل
-   مستلهم من جدران مسجد السلطان حسن بالقاهرة
-═══════════════════════════════════════════════════════════ */
-function GiridPattern({ opacity = 0.07 }) {
+/* ═══════════════════════════════
+   SVG — نمط هندسي إسلامي
+═══════════════════════════════ */
+function GeomPattern({ opacity = 0.07 }) {
   return (
-    <svg
-      style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }}
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none' }}
+      xmlns="http://www.w3.org/2000/svg">
       <defs>
-        {/* النجمة الثمانية — أساس الجريد الإسلامي */}
-        <pattern id="girih8" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-          {/* نجمة ثمانية من مربعين */}
-          <polygon points="50,8 59,27 80,22 74,42 92,50 74,58 80,78 59,73 50,92 41,73 20,78 26,58 8,50 26,42 20,22 41,27"
-            fill="none" stroke={C.G4} strokeWidth="0.7" opacity="1"/>
-          {/* مربع داخلي */}
-          <rect x="36" y="36" width="28" height="28" rx="2"
-            fill={C.G4} fillOpacity="0.05" stroke={C.G3} strokeWidth="0.4" transform="rotate(45 50 50)"/>
-          {/* نقطة مركزية */}
-          <circle cx="50" cy="50" r="2.5" fill={C.G5} fillOpacity="0.30"/>
-          {/* خطوط الشبكة الخفية */}
-          <line x1="0" y1="50" x2="100" y2="50" stroke={C.G2} strokeWidth="0.25" opacity="0.4"/>
-          <line x1="50" y1="0" x2="50" y2="100" stroke={C.G2} strokeWidth="0.25" opacity="0.4"/>
-        </pattern>
-        {/* نمط ثانوي — دوائر متداخلة كالزخرف المغربي */}
-        <pattern id="moresque" x="0" y="0" width="56" height="56" patternUnits="userSpaceOnUse">
-          <circle cx="28" cy="28" r="22" fill="none" stroke={C.G5} strokeWidth="0.35" opacity="0.5"/>
-          <circle cx="28" cy="28" r="14" fill="none" stroke={C.G4} strokeWidth="0.25" opacity="0.4"/>
-          <circle cx="0" cy="0" r="8" fill="none" stroke={C.G3} strokeWidth="0.3" opacity="0.35"/>
-          <circle cx="56" cy="0" r="8" fill="none" stroke={C.G3} strokeWidth="0.3" opacity="0.35"/>
-          <circle cx="0" cy="56" r="8" fill="none" stroke={C.G3} strokeWidth="0.3" opacity="0.35"/>
-          <circle cx="56" cy="56" r="8" fill="none" stroke={C.G3} strokeWidth="0.3" opacity="0.35"/>
+        <pattern id="gp" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          <polygon points="40,4 48,26 70,26 53,40 60,62 40,49 20,62 27,40 10,26 32,26"
+            fill="none" stroke={C.G4} strokeWidth="0.8"/>
+          <polygon points="40,14 46,28 62,28 50,38 55,54 40,45 25,54 30,38 18,28 34,28"
+            fill={C.G4} fillOpacity="0.06" stroke={C.G3} strokeWidth="0.5"/>
+          <circle cx="40" cy="40" r="2.5" fill={C.G5} fillOpacity="0.35"/>
+          <line x1="0" y1="40" x2="80" y2="40" stroke={C.G3} strokeWidth="0.3" opacity="0.4"/>
+          <line x1="40" y1="0" x2="40" y2="80" stroke={C.G3} strokeWidth="0.3" opacity="0.4"/>
         </pattern>
       </defs>
-      <rect width="100%" height="100%" fill="url(#girih8)" opacity={opacity}/>
+      <rect width="100%" height="100%" fill="url(#gp)" opacity={opacity}/>
     </svg>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🕌 SVG — مقرنصات (Muqarnas) معمارية أصيلة
-   مستلهمة من قبة مسجد الإمام في أصفهان
-═══════════════════════════════════════════════════════════ */
-function MuqarnasBand({ height = 48, flipped = false }) {
-  const units = 20;
-  const uw = 64;
-  const total = units * uw;
+/* ═══════════════════════════════
+   SVG — شريط مقرنصات
+═══════════════════════════════ */
+function Muqarnas({ h = 44, flip = false }) {
+  const n = 22, uw = 60, total = n * uw;
   return (
-    <div style={{ width:'100%', overflow:'hidden', lineHeight:0, transform: flipped ? 'scaleY(-1)' : 'none' }}>
-      <svg width="100%" height={height} viewBox={`0 0 ${total} ${height}`} preserveAspectRatio="none">
-        {Array.from({ length: units }).map((_, i) => {
-          const x = i * uw;
-          const cx = x + uw / 2;
+    <div style={{ width:'100%', overflow:'hidden', lineHeight:0,
+      transform: flip ? 'scaleY(-1)' : 'none' }}>
+      <svg width="100%" height={h} viewBox={`0 0 ${total} ${h}`} preserveAspectRatio="none">
+        {Array.from({length:n}).map((_,i) => {
+          const x = i*uw, cx = x+uw/2;
           return (
             <g key={i}>
-              {/* القوس الخارجي */}
-              <path d={`M${x},${height} L${x},${height*0.55} Q${cx},${-height*0.1} ${x+uw},${height*0.55} L${x+uw},${height}`}
-                fill={C.BG3} stroke={C.G4} strokeWidth="1" opacity="0.85"/>
-              {/* القوس الداخلي الصغير */}
-              <path d={`M${x+8},${height} L${x+8},${height*0.65} Q${cx},${height*0.15} ${x+uw-8},${height*0.65} L${x+uw-8},${height}`}
-                fill="none" stroke={C.G6} strokeWidth="0.6" opacity="0.7"/>
-              {/* نقطة الذروة */}
-              <circle cx={cx} cy={height*0.12} r="2.5" fill={C.G5} fillOpacity="0.9"/>
-              {/* خط أفقي رابط */}
-              <line x1={x} y1={height*0.55} x2={x+uw} y2={height*0.55}
-                stroke={C.G4} strokeWidth="0.5" opacity="0.5"/>
+              <path d={`M${x},${h} L${x},${h*.52} Q${cx},${-h*.12} ${x+uw},${h*.52} L${x+uw},${h}`}
+                fill="rgba(20,10,0,0.7)" stroke={C.G4} strokeWidth="0.9" opacity="0.7"/>
+              <path d={`M${x+7},${h} L${x+7},${h*.63} Q${cx},${h*.16} ${x+uw-7},${h*.63} L${x+uw-7},${h}`}
+                fill="none" stroke={C.G5} strokeWidth="0.5" opacity="0.6"/>
+              <circle cx={cx} cy={h*.1} r="2" fill={C.G5} fillOpacity="0.75"/>
             </g>
           );
         })}
-        {/* خط ذهبي أفقي */}
-        <line x1="0" y1={height*0.98} x2={total} y2={height*0.98}
-          stroke={C.G4} strokeWidth="1" opacity="0.5"/>
+        <line x1="0" y1={h*.97} x2={total} y2={h*.97} stroke={C.G4} strokeWidth="1.2" opacity="0.55"/>
       </svg>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🌹 SVG — زخرفة ركنية أرابيسك
-═══════════════════════════════════════════════════════════ */
-function CornerOrnament({ size = 80, flip = false, flipY = false }) {
-  const sx = flip ? -1 : 1;
-  const sy = flipY ? -1 : 1;
+/* ═══════════════════════════════
+   SVG — فاصل ذهبي
+═══════════════════════════════ */
+function Divider() {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100"
-      style={{ transform:`scale(${sx},${sy})`, display:'block' }}>
-      {/* الإطار الخارجي */}
-      <path d="M3,3 L42,3 Q54,3 54,15 L54,54" fill="none" stroke={C.G4} strokeWidth="1.4" opacity="0.6"/>
-      <path d="M3,3 L3,42 Q3,54 15,54 L54,54" fill="none" stroke={C.G4} strokeWidth="1.4" opacity="0.6"/>
-      {/* الإطار الداخلي */}
-      <path d="M10,10 L36,10 Q44,10 44,18 L44,44" fill="none" stroke={C.G3} strokeWidth="0.7" opacity="0.4"/>
-      <path d="M10,10 L10,36 Q10,44 18,44 L44,44" fill="none" stroke={C.G3} strokeWidth="0.7" opacity="0.4"/>
-      {/* الأرابيسك النباتي */}
-      <path d="M12,12 Q22,8 26,18 Q30,28 20,30 Q10,32 12,22" fill="none" stroke={C.G5} strokeWidth="0.7" opacity="0.55"/>
-      <path d="M12,12 Q8,22 18,26 Q28,30 30,20 Q32,10 22,12" fill="none" stroke={C.G5} strokeWidth="0.7" opacity="0.55"/>
-      {/* النجمة الركنية */}
-      <polygon points="8,8 10.5,14.5 17,14.5 12,18.5 14,25 8,21 2,25 4,18.5 -1,14.5 5.5,14.5"
-        fill={C.G4} fillOpacity="0.5" stroke={C.G5} strokeWidth="0.4"/>
-    </svg>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════
-   🏛️ SVG — قوس مغربي مدبّب (Horseshoe / Pointed Arch)
-   مستلهم من أقواس الجامع الكبير في قرطبة
-═══════════════════════════════════════════════════════════ */
-function MoorishArch({ width = 320, height = 90, color = C.G4, opacity = 0.45, filled = false }) {
-  const w = width, h = height;
-  const cx = w / 2;
-  return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ display:'block' }}>
-      {/* الحشوة الداخلية */}
-      {filled && (
-        <path
-          d={`M${w*0.08},${h} L${w*0.08},${h*0.55} Q${cx},${-h*0.25} ${w*0.92},${h*0.55} L${w*0.92},${h} Z`}
-          fill={color} fillOpacity={opacity * 0.1}
-        />
-      )}
-      {/* القوس الرئيسي */}
-      <path
-        d={`M${w*0.05},${h} L${w*0.05},${h*0.52} Q${cx},${-h*0.28} ${w*0.95},${h*0.52} L${w*0.95},${h}`}
-        fill="none" stroke={color} strokeWidth="1.8" opacity={opacity}
-      />
-      {/* القوس الداخلي */}
-      <path
-        d={`M${w*0.14},${h} L${w*0.14},${h*0.58} Q${cx},${-h*0.08} ${w*0.86},${h*0.58} L${w*0.86},${h}`}
-        fill="none" stroke={color} strokeWidth="0.7" opacity={opacity * 0.55}
-      />
-      {/* نقطة الذروة */}
-      <circle cx={cx} cy={h*0.04} r="3.5" fill={color} fillOpacity={opacity * 0.9}/>
-      {/* تزيين النقطة */}
-      <circle cx={cx} cy={h*0.04} r="6" fill="none" stroke={color} strokeWidth="0.7" opacity={opacity * 0.4}/>
-    </svg>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════
-   ✨ SVG — فاصل زخرفي ذهبي فاخر
-═══════════════════════════════════════════════════════════ */
-function OrnamentalDivider({ width = '100%', light = false }) {
-  const g = light ? '#b8960f' : C.G4;
-  const g2 = light ? '#d4a843' : C.G5;
-  return (
-    <div style={{ display:'flex', alignItems:'center', gap:10, width, margin:'18px 0' }}>
-      {/* الخط */}
-      <div style={{ flex:1, height:'1px', background:`linear-gradient(to left, ${g}70, transparent)` }}/>
-      {/* نجمة ثمانية مركزية */}
-      <svg width="32" height="32" viewBox="0 0 32 32">
-        <rect x="6" y="6" width="20" height="20" rx="1.5"
-          fill="none" stroke={g} strokeWidth="1.2" transform="rotate(45 16 16)" opacity="0.9"/>
-        <rect x="9" y="9" width="14" height="14" rx="1"
-          fill={g} fillOpacity="0.12" stroke={g2} strokeWidth="0.7" opacity="0.7"/>
-        <circle cx="16" cy="16" r="3" fill={g2} fillOpacity="0.7"/>
-        {/* نقاط الجهات */}
-        {[0,90,180,270].map(deg => (
-          <circle key={deg}
-            cx={16 + 11.5*Math.cos(deg*Math.PI/180)}
-            cy={16 + 11.5*Math.sin(deg*Math.PI/180)}
-            r="1.5" fill={g} fillOpacity="0.55"/>
-        ))}
+    <div style={{ display:'flex', alignItems:'center', gap:10, margin:'16px 0' }}>
+      <div style={{ flex:1, height:1, background:`linear-gradient(to left,${C.G4}80,transparent)` }}/>
+      <svg width="30" height="30" viewBox="0 0 30 30">
+        <rect x="5" y="5" width="20" height="20" rx="1" fill="none"
+          stroke={C.G4} strokeWidth="1.2" transform="rotate(45 15 15)" opacity="0.9"/>
+        <rect x="8" y="8" width="14" height="14" rx="1"
+          fill={C.G4} fillOpacity="0.18" stroke={C.G5} strokeWidth="0.7" opacity="0.8"/>
+        <circle cx="15" cy="15" r="2.8" fill={C.G5} fillOpacity="0.8"/>
       </svg>
-      <div style={{ flex:1, height:'1px', background:`linear-gradient(to right, ${g}70, transparent)` }}/>
+      <div style={{ flex:1, height:1, background:`linear-gradient(to right,${C.G4}80,transparent)` }}/>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🔆 SVG — تاج الميحراب (نصف قبة علوية)
-═══════════════════════════════════════════════════════════ */
-function MihrabCrown({ width = 500, height = 120 }) {
-  const w = width, h = height;
-  const cx = w / 2;
+/* ═══════════════════════════════
+   SVG — قوس مغربي
+═══════════════════════════════ */
+function Arch({ w=300, h=80, col=C.G4, op=0.5 }) {
+  const cx = w/2;
   return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ display:'block', pointerEvents:'none' }}>
-      <defs>
-        <linearGradient id="crownGold" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={C.G6} stopOpacity="0.5"/>
-          <stop offset="100%" stopColor={C.G3} stopOpacity="0.1"/>
-        </linearGradient>
-        <linearGradient id="crownGold2" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="transparent"/>
-          <stop offset="50%" stopColor={C.G4} stopOpacity="0.8"/>
-          <stop offset="100%" stopColor="transparent"/>
-        </linearGradient>
-      </defs>
-
-      {/* الشكل الرئيسي */}
-      <path d={`M0,${h} Q${cx},${-h*0.6} ${w},${h}`}
-        fill="url(#crownGold)" stroke={C.G4} strokeWidth="1"/>
-
-      {/* خطوط ذهبية متوهجة */}
-      <path d={`M${w*0.15},${h} Q${cx},${-h*0.3} ${w*0.85},${h}`}
-        fill="none" stroke={C.G5} strokeWidth="0.7" opacity="0.5"/>
-      <path d={`M${w*0.3},${h} Q${cx},${-h*0.05} ${w*0.7},${h}`}
-        fill="none" stroke={C.G6} strokeWidth="0.5" opacity="0.4"/>
-
-      {/* الخط الأفقي الذهبي */}
-      <line x1="0" y1={h} x2={w} y2={h} stroke="url(#crownGold2)" strokeWidth="1.5"/>
-
-      {/* نقطة الذروة ومحيطها */}
-      <circle cx={cx} cy={h*0.05} r="6" fill={C.G5} fillOpacity="0.8"/>
-      <circle cx={cx} cy={h*0.05} r="12" fill="none" stroke={C.G4} strokeWidth="0.8" opacity="0.5"/>
-      <circle cx={cx} cy={h*0.05} r="20" fill="none" stroke={C.G3} strokeWidth="0.5" opacity="0.3"/>
-
-      {/* نقاط الزخرفة اليسارية واليمنية */}
-      {[-1, 1].map(side => (
-        <g key={side}>
-          <circle cx={cx + side*80} cy={h*0.35} r="3" fill={C.G4} fillOpacity="0.6"/>
-          <circle cx={cx + side*80} cy={h*0.35} r="6" fill="none" stroke={C.G3} strokeWidth="0.5" opacity="0.4"/>
-          <circle cx={cx + side*160} cy={h*0.7} r="2.5" fill={C.G3} fillOpacity="0.5"/>
-        </g>
-      ))}
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{display:'block'}}>
+      <path d={`M${w*.05},${h} L${w*.05},${h*.5} Q${cx},${-h*.3} ${w*.95},${h*.5} L${w*.95},${h}`}
+        fill="none" stroke={col} strokeWidth="1.8" opacity={op}/>
+      <path d={`M${w*.15},${h} L${w*.15},${h*.6} Q${cx},${-h*.05} ${w*.85},${h*.6} L${w*.85},${h}`}
+        fill="none" stroke={col} strokeWidth="0.7" opacity={op*.6}/>
+      <circle cx={cx} cy={h*.04} r="3.5" fill={col} fillOpacity={op}/>
     </svg>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🌙 SECTION TITLE — عنوان القسم بإطار معماري
-═══════════════════════════════════════════════════════════ */
-function SectionTitle({ title, subtitle }) {
+/* ═══════════════════════════════
+   SVG — زخرفة ركنية
+═══════════════════════════════ */
+function Corner({ size=70, fx=false, fy=false }) {
   return (
-    <div style={{ textAlign:'center', marginBottom:52 }} dir="rtl">
-      {/* قبة صغيرة فوق العنوان */}
-      <div style={{ display:'flex', justifyContent:'center', marginBottom:6, opacity:0.5 }}>
-        <MoorishArch width={200} height={36} color={C.G4} opacity={0.6}/>
+    <svg width={size} height={size} viewBox="0 0 80 80"
+      style={{transform:`scale(${fx?-1:1},${fy?-1:1})`,display:'block'}}>
+      <path d="M4,4 L38,4 Q46,4 46,12 L46,46" fill="none" stroke={C.G4} strokeWidth="1.4" opacity="0.75"/>
+      <path d="M4,4 L4,38 Q4,46 12,46 L46,46" fill="none" stroke={C.G4} strokeWidth="1.4" opacity="0.75"/>
+      <path d="M10,10 Q20,6 24,16 Q28,26 18,28 Q8,30 10,20" fill="none" stroke={C.G5} strokeWidth="0.8" opacity="0.65"/>
+      <path d="M10,10 Q6,20 16,24 Q26,28 28,18 Q30,8 20,10" fill="none" stroke={C.G5} strokeWidth="0.8" opacity="0.65"/>
+      <polygon points="7,7 9,13 15,13 10.5,17 12.5,23 7,19 1.5,23 3.5,17 -1,13 5,13"
+        fill={C.G4} fillOpacity="0.65" stroke={C.G5} strokeWidth="0.5"/>
+    </svg>
+  );
+}
+
+/* ═══════════════════════════════
+   عنوان القسم
+═══════════════════════════════ */
+function SecTitle({ title, sub }) {
+  return (
+    <div style={{textAlign:'center', marginBottom:50, direction:'rtl'}}>
+      <div style={{display:'flex',justifyContent:'center',marginBottom:4,opacity:.65}}>
+        <Arch w={180} h={30} col={C.G4} op={.8}/>
       </div>
-      <OrnamentalDivider/>
+      <Divider/>
       <h2 style={{
         fontFamily:'Amiri,serif',
-        fontSize:'clamp(1.8rem,3vw,2.7rem)',
-        fontWeight:700,
-        margin:'10px 0 14px',
-        background:`linear-gradient(135deg, ${C.G4} 0%, ${C.G6} 45%, ${C.G7} 65%, ${C.G5} 100%)`,
-        WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
-        backgroundClip:'text',
-        filter:`drop-shadow(0 2px 16px ${C.G3}30)`,
+        fontSize:'clamp(1.85rem,3vw,2.8rem)',
+        fontWeight:700, margin:'8px 0 12px',
+        background:`linear-gradient(135deg,${C.G3} 0%,${C.G5} 35%,${C.G7} 60%,${C.G5} 85%,${C.G4} 100%)`,
+        WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
+        filter:`drop-shadow(0 2px 18px ${C.G4}55)`,
         letterSpacing:'0.02em',
+        textShadow:'none',
       }}>{title}</h2>
-      {subtitle && (
-        <p style={{
-          fontFamily:'Noto Naskh Arabic,serif',
-          fontSize:'0.98rem', color:C.TW3, lineHeight:1.9,
-          maxWidth:500, margin:'0 auto',
-        }}>{subtitle}</p>
-      )}
-      <OrnamentalDivider/>
+      {sub && <p style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'1rem',
+        color:C.TW3,lineHeight:1.9,maxWidth:500,margin:'0 auto'}}>{sub}</p>}
+      <Divider/>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🏛️ HEADER — رأس الصفحة بطراز القصر الأندلسي
-═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════
+   HEADER
+═══════════════════════════════ */
 function Header({ lang, onLangChange }) {
-  const [scrolled, setScrolled] = useState(false);
-  const navigate = useNavigate();
-
+  const [sc, setSc] = useState(false);
+  const nav = useNavigate();
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60);
+    const fn = () => setSc(window.scrollY > 50);
     window.addEventListener('scroll', fn);
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
   return (
-    <div style={{ position:'sticky', top:0, zIndex:300 }}>
-
-      {/* شريط اللغات — كالكتابة الكوفية على إفريز المسجد */}
+    <div style={{position:'sticky',top:0,zIndex:300}}>
+      {/* شريط اللغات */}
       <div style={{
-        background:`linear-gradient(180deg, ${C.BG2}, ${C.BG3})`,
+        background:`linear-gradient(180deg,rgba(20,12,0,0.95),rgba(28,16,0,0.92))`,
+        backdropFilter:'blur(16px)',
         borderBottom:`1px solid ${C.BD3}`,
-        padding:'8px 20px',
-        display:'flex', justifyContent:'center', alignItems:'center',
-        gap:8, flexWrap:'wrap',
-        position:'relative', overflow:'hidden',
+        padding:'7px 18px',
+        display:'flex', justifyContent:'center', alignItems:'center', gap:7, flexWrap:'wrap',
       }}>
-        {/* نمط خفي */}
-        <GiridPattern opacity={0.20}/>
-        <Globe size={15} color={C.G4} style={{ marginLeft:4, opacity:0.7, flexShrink:0 }}/>
-        {LANGUAGES.map(l => (
+        <Globe size={14} color={C.G5} style={{opacity:.8}}/>
+        {LANGS.map(l => (
           <button key={l.code} onClick={() => onLangChange(l.code)} style={{
-            background: lang === l.code
-              ? `linear-gradient(135deg, ${C.G2}, ${C.G4}, ${C.G5})`
-              : 'transparent',
-            color: lang === l.code ? C.DARK : C.TW2,
-            border:`1.5px solid ${lang === l.code ? C.G4 : C.BD2}`,
-            borderRadius:22, padding:'5px 16px',
-            fontSize:'0.88rem', fontWeight:700, cursor:'pointer',
-            fontFamily: l.code==='ar'||l.code==='ur' ? 'Noto Naskh Arabic,serif':'Inter,sans-serif',
-            display:'flex', alignItems:'center', gap:7,
-            transition:'all 0.22s',
-            boxShadow: lang===l.code ? `0 2px 12px ${C.G3}50` : 'none',
-            letterSpacing: l.code==='ar' || l.code==='ur' ? '0' : '0.01em',
+            background: lang===l.code ? `linear-gradient(135deg,${C.G2},${C.G4},${C.G5})` : 'transparent',
+            color: lang===l.code ? '#150a00' : C.TW2,
+            border:`1.5px solid ${lang===l.code ? C.G4 : C.BD2}`,
+            borderRadius:20, padding:'4px 16px',
+            fontSize:'0.86rem', fontWeight:700, cursor:'pointer',
+            fontFamily: ['ar','ur'].includes(l.code) ? 'Noto Naskh Arabic,serif':'Inter,sans-serif',
+            display:'flex', alignItems:'center', gap:6,
+            transition:'all .2s',
+            boxShadow: lang===l.code ? `0 2px 12px ${C.G4}60` : 'none',
           }}
-          onMouseEnter={e => { if(lang!==l.code){ e.currentTarget.style.borderColor=C.G4; e.currentTarget.style.color=C.G6; e.currentTarget.style.background=C.GLOW2; }}}
-          onMouseLeave={e => { if(lang!==l.code){ e.currentTarget.style.borderColor=C.BD2; e.currentTarget.style.color=C.TW2; e.currentTarget.style.background='transparent'; }}}
-          >
-            <span style={{fontSize:'1.05rem'}}>{l.flag}</span>
+          onMouseEnter={e=>{if(lang!==l.code){e.currentTarget.style.borderColor=C.G4;e.currentTarget.style.color=C.G6;e.currentTarget.style.background=C.GLOW2;}}}
+          onMouseLeave={e=>{if(lang!==l.code){e.currentTarget.style.borderColor=C.BD2;e.currentTarget.style.color=C.TW2;e.currentTarget.style.background='transparent';}}}>
+            <span style={{fontSize:'1rem'}}>{l.flag}</span>
             <span>{l.label}</span>
           </button>
         ))}
@@ -394,104 +261,66 @@ function Header({ lang, onLangChange }) {
 
       {/* الهيدر الرئيسي */}
       <header style={{
-        background: scrolled
-          ? `linear-gradient(180deg, ${C.BG1}f8, ${C.BG2}f4)`
-          : `linear-gradient(180deg, ${C.BG2}ee, ${C.BG3}e8)`,
+        background: sc ? 'rgba(18,10,0,0.97)' : 'rgba(20,12,0,0.92)',
         backdropFilter:'blur(24px)',
-        borderBottom:`1px solid ${scrolled ? C.BD4 : C.BD2}`,
-        boxShadow: scrolled ? `0 4px 30px rgba(0,0,0,0.5), 0 0 0 1px ${C.BD2}` : 'none',
-        transition:'all 0.35s',
+        borderBottom:`1px solid ${sc?C.BD3:C.BD2}`,
+        boxShadow: sc ? `0 4px 35px rgba(0,0,0,.75)` : 'none',
+        transition:'all .3s',
       }}>
-        {/* شريط ذهبي أعلى الهيدر */}
-        <div style={{ height:2, background:`linear-gradient(90deg, transparent 0%, ${C.G3} 20%, ${C.G6} 50%, ${C.G3} 80%, transparent 100%)` }}/>
+        <div style={{height:2,background:`linear-gradient(90deg,transparent,${C.G3},${C.G6},${C.G4},transparent)`}}/>
+        <div style={{maxWidth:1300,margin:'0 auto',padding:'10px 26px',
+          display:'flex',alignItems:'center',justifyContent:'space-between',gap:14}}>
 
-        <div style={{
-          maxWidth:1320, margin:'0 auto', padding:'10px 28px',
-          display:'flex', alignItems:'center', justifyContent:'space-between', gap:16,
-        }}>
-          {/* الشعار والعنوان */}
-          <div style={{ display:'flex', alignItems:'center', gap:14, cursor:'pointer' }}
-            onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>
-            {/* إطار الشعار — نافذة مقرنصة */}
+          {/* شعار + عنوان */}
+          <div style={{display:'flex',alignItems:'center',gap:13,cursor:'pointer'}}
+            onClick={()=>window.scrollTo({top:0,behavior:'smooth'})}>
             <div style={{
-              width:60, height:60, flexShrink:0,
-              position:'relative',
+              width:60,height:60,flexShrink:0,
+              borderRadius:'50% 50% 12px 12px',
+              border:`2px solid ${C.G4}90`,
+              overflow:'hidden',background:'rgba(10,6,0,0.9)',
+              boxShadow:`0 0 22px ${C.G4}45`,
+              display:'flex',alignItems:'center',justifyContent:'center',
             }}>
-              {/* نمط القوس فوق الشعار */}
-              <div style={{
-                position:'absolute', inset:-2,
-                borderRadius:'50% 50% 12px 12px',
-                border:`1.5px solid ${C.G4}80`,
-                background:`radial-gradient(circle at 50% 0%, ${C.G3}15, transparent 70%)`,
-                zIndex:0,
-              }}/>
-              <div style={{
-                width:60, height:60, borderRadius:'50% 50% 12px 12px',
-                overflow:'hidden', background:C.BG0,
-                boxShadow:`0 0 16px ${C.G3}30, 0 0 6px ${C.G4}20`,
-                display:'flex', alignItems:'center', justifyContent:'center',
-                position:'relative', zIndex:1,
-              }}>
-                <img src="/logo.png" alt="Logo"
-                  style={{ width:'92%', height:'92%', objectFit:'contain', display:'block' }}/>
-              </div>
+              <img src="/logo.png" alt="Logo"
+                style={{width:'92%',height:'92%',objectFit:'contain'}}/>
             </div>
-
             <div dir="rtl">
               <div style={{
                 fontFamily:'Amiri,serif',
-                fontSize:'clamp(1.15rem,2vw,1.6rem)',
+                fontSize:'clamp(1.1rem,1.9vw,1.6rem)',
                 fontWeight:700,
-                background:`linear-gradient(135deg, ${C.G4}, ${C.G6}, ${C.G5})`,
-                WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
-                backgroundClip:'text', lineHeight:1.25,
-                filter:`drop-shadow(0 0 14px ${C.G3}45)`,
-                letterSpacing:'0.01em',
-              }}>
-                فيوض التأويل المعاصر
-              </div>
-              <div style={{
-                fontSize:'0.78rem', color:C.TW3,
-                fontFamily:'Noto Naskh Arabic,serif', marginTop:2,
-                letterSpacing:'0.02em',
-              }}>
+                background:`linear-gradient(135deg,${C.G4},${C.G6},${C.G5})`,
+                WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text',
+                filter:`drop-shadow(0 0 14px ${C.G4}55)`,
+                lineHeight:1.2,
+              }}>فيوض التأويل المعاصر</div>
+              <div style={{fontSize:'.77rem',color:C.TW3,fontFamily:'Noto Naskh Arabic,serif',marginTop:2}}>
                 تفسير سورة البقرة · قراءة معاصرة متعددة اللغات
               </div>
             </div>
           </div>
 
-          {/* روابط التنقل */}
-          <nav style={{ display:'flex', gap:2, alignItems:'center' }}
-            className="nav-desktop" dir="rtl">
-            {[
-              {href:'#about',   label:'عن المشروع'},
-              {href:'#surahs',  label:'تصفح السور'},
-              {href:'#paths',   label:'مسارات التأويل'},
-              {href:'#features',label:'الخصائص'},
-            ].map(l => (
-              <a key={l.href} href={l.href} style={{
-                color:C.TW2, textDecoration:'none', fontSize:'0.9rem',
-                fontFamily:'Noto Naskh Arabic,serif', fontWeight:600,
-                padding:'7px 14px', borderRadius:8, transition:'all 0.22s',
-              }}
+          {/* ناف */}
+          <nav className="nav-desktop" dir="rtl" style={{display:'flex',gap:2}}>
+            {[['#about','عن المشروع'],['#surahs','تصفح السور'],['#paths','مسارات التأويل'],['#features','الخصائص']].map(([h,l])=>(
+              <a key={h} href={h} style={{color:C.TW2,textDecoration:'none',fontSize:'.9rem',
+                fontFamily:'Noto Naskh Arabic,serif',fontWeight:600,
+                padding:'7px 14px',borderRadius:8,transition:'all .2s'}}
               onMouseEnter={e=>{e.currentTarget.style.color=C.G6;e.currentTarget.style.background=C.GLOW2;}}
-              onMouseLeave={e=>{e.currentTarget.style.color=C.TW2;e.currentTarget.style.background='transparent';}}
-              >{l.label}</a>
+              onMouseLeave={e=>{e.currentTarget.style.color=C.TW2;e.currentTarget.style.background='transparent';}}>{l}</a>
             ))}
           </nav>
 
-          {/* زر البدء — بشكل المحراب */}
-          <button onClick={() => navigate('/part1')} style={{
-            background:`linear-gradient(135deg, ${C.G2}, ${C.G4}, ${C.G5})`,
-            color:C.DARK, border:'none', borderRadius:10,
-            padding:'11px 24px', fontSize:'0.95rem', fontWeight:800,
-            fontFamily:'Noto Naskh Arabic,serif', cursor:'pointer',
-            boxShadow:`0 4px 20px ${C.G3}55`, transition:'all 0.25s',
-            whiteSpace:'nowrap',
-            letterSpacing:'0.01em',
+          <button onClick={()=>nav('/part1')} style={{
+            background:`linear-gradient(135deg,${C.G2},${C.G4},${C.G5})`,
+            color:'#150a00',border:'none',borderRadius:11,
+            padding:'11px 24px',fontSize:'.93rem',fontWeight:800,
+            fontFamily:'Noto Naskh Arabic,serif',cursor:'pointer',
+            boxShadow:`0 4px 20px ${C.G4}60`,transition:'all .25s',whiteSpace:'nowrap',
           }}
-          onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow=`0 8px 28px ${C.G3}75`;}}
-          onMouseLeave={e=>{e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 20px ${C.G3}55`;}}>
+          onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow=`0 8px 28px ${C.G4}80`;}}
+          onMouseLeave={e=>{e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 20px ${C.G4}60`;}}>
             ابدأ التفسير ←
           </button>
         </div>
@@ -500,392 +329,320 @@ function Header({ lang, onLangChange }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🌅 HERO — المحراب الكبير المضاء بالذهب
-   مستلهم من محراب مسجد الشاه أصفهان
-═══════════════════════════════════════════════════════════ */
-function HeroSection() {
-  const navigate = useNavigate();
+/* ═══════════════════════════════
+   HERO — الصورة الإسلامية كخلفية مع طبقة فاتحة
+═══════════════════════════════ */
+function Hero() {
+  const nav = useNavigate();
   return (
     <section style={{
       position:'relative', minHeight:'100vh',
       display:'flex', flexDirection:'column',
       alignItems:'center', justifyContent:'center',
       overflow:'hidden',
-      background:`
-        radial-gradient(ellipse 90% 70% at 50% 100%, ${C.G3}35 0%, transparent 55%),
-        radial-gradient(ellipse 60% 45% at 50% 0%,   ${C.TEAL2}18 0%, transparent 50%),
-        radial-gradient(ellipse 35% 30% at 15% 50%,  ${C.BLUE2}14 0%, transparent 40%),
-        radial-gradient(ellipse 35% 30% at 85% 50%,  ${C.G2}16 0%, transparent 40%),
-        linear-gradient(180deg, ${C.BG1} 0%, ${C.BG2} 40%, ${C.BG3} 75%, ${C.BG4} 100%)
-      `,
     }}>
-      <GiridPattern opacity={0.20}/>
+      {/* ── الصورة خلفية */}
+      <div style={{
+        position:'absolute', inset:0, zIndex:0,
+        backgroundImage:'url(/bg_islamic.jpg)',
+        backgroundSize:'cover',
+        backgroundPosition:'center top',
+        backgroundRepeat:'no-repeat',
+      }}/>
+      {/* ── طبقة ذهبية خفيفة — تُبرز الصورة لا تخفيها */}
+      <div style={{
+        position:'absolute', inset:0, zIndex:1,
+        background:`linear-gradient(180deg,
+          rgba(10,5,0,.55) 0%,
+          rgba(8,4,0,.38) 25%,
+          rgba(10,5,0,.42) 60%,
+          rgba(8,4,0,.70) 100%)`,
+      }}/>
+      {/* ── توهج ذهبي مركزي خفيف */}
+      <div style={{
+        position:'absolute', inset:0, zIndex:2,
+        background:`radial-gradient(ellipse 55% 50% at 50% 42%, rgba(200,140,0,.20) 0%, transparent 65%)`,
+        pointerEvents:'none',
+      }}/>
 
-      {/* مقرنصات الأعلى */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, zIndex:3 }}>
-        <MuqarnasBand height={54}/>
+      {/* مقرنصات أعلى */}
+      <div style={{position:'absolute',top:0,left:0,right:0,zIndex:3}}>
+        <Muqarnas h={54}/>
       </div>
 
-      {/* تاج المحراب العلوي */}
-      <div style={{ position:'absolute', top:54, left:'50%', transform:'translateX(-50%)', width:'85%', maxWidth:900, zIndex:2 }}>
-        <MihrabCrown width={900} height={130}/>
-      </div>
-
-      {/* الأعمدة الجانبية الذهبية */}
-      {[-1, 1].map(side => (
-        <div key={side} style={{
-          position:'absolute', top:0, bottom:0,
-          [side === 1 ? 'right' : 'left']: 24,
-          width:1,
-          background:`linear-gradient(180deg, transparent 0%, ${C.G4}70 25%, ${C.G5}90 50%, ${C.G4}70 75%, transparent 100%)`,
-        }}/>
-      ))}
-      {/* خط عمود ثانوي */}
-      {[-1, 1].map(side => (
-        <div key={`s${side}`} style={{
-          position:'absolute', top:0, bottom:0,
-          [side === 1 ? 'right' : 'left']: 48,
-          width:'1px',
-          background:`linear-gradient(180deg, transparent 0%, ${C.G3}30 30%, ${C.G4}50 50%, ${C.G3}30 70%, transparent 100%)`,
+      {/* خطوط عمودية ذهبية جانبية */}
+      {[{s:'right',d:28},{s:'right',d:56},{s:'left',d:28},{s:'left',d:56}].map((p,i)=>(
+        <div key={i} style={{
+          position:'absolute',top:0,bottom:0,zIndex:3,
+          [p.s]:p.d, width:'1px',
+          background:`linear-gradient(180deg,transparent,${i%2===0?C.G5+'a0':C.G4+'60'},${i%2===0?C.G6+'c0':C.G4+'70'},${i%2===0?C.G5+'a0':C.G4+'60'},transparent)`,
         }}/>
       ))}
 
       {/* زخرفة الأركان */}
-      <div style={{ position:'absolute', top:60, right:16, zIndex:4 }}><CornerOrnament size={88}/></div>
-      <div style={{ position:'absolute', top:60, left:16, zIndex:4 }}><CornerOrnament size={88} flip/></div>
-      <div style={{ position:'absolute', bottom:70, right:16, zIndex:4 }}><CornerOrnament size={72} flipY/></div>
-      <div style={{ position:'absolute', bottom:70, left:16, zIndex:4 }}><CornerOrnament size={72} flip flipY/></div>
+      <div style={{position:'absolute',top:60,right:20,zIndex:4}}><Corner size={88}/></div>
+      <div style={{position:'absolute',top:60,left:20,zIndex:4}}><Corner size={88} fx/></div>
+      <div style={{position:'absolute',bottom:70,right:20,zIndex:4}}><Corner size={70} fy/></div>
+      <div style={{position:'absolute',bottom:70,left:20,zIndex:4}}><Corner size={70} fx fy/></div>
 
-      {/* المحتوى الرئيسي */}
-      <div style={{ textAlign:'center', maxWidth:900, padding:'140px 32px 100px', position:'relative', zIndex:5 }} dir="rtl">
+      {/* المحتوى */}
+      <div style={{
+        position:'relative', zIndex:5,
+        textAlign:'center', maxWidth:880, padding:'140px 30px 100px',
+        direction:'rtl',
+      }}>
 
-        {/* الشعار المركزي الكبير — محاط بإطار المحراب */}
-        <div style={{ display:'flex', justifyContent:'center', marginBottom:36 }}>
-          <div style={{ position:'relative', width:200, height:200 }}>
-            {/* هالات متعددة */}
+        {/* الشعار */}
+        <div style={{display:'flex',justifyContent:'center',marginBottom:36}}>
+          <div style={{position:'relative',width:200,height:200}}>
+            {/* هالة ذهبية */}
             <div style={{
-              position:'absolute', inset:-24, borderRadius:'50%',
-              background:`radial-gradient(circle, ${C.G3}22 0%, transparent 68%)`,
-              animation:'heroGlow 3.5s ease-in-out infinite',
+              position:'absolute',inset:-24,borderRadius:'50%',
+              background:`radial-gradient(circle,${C.G4}38 0%,${C.G3}18 40%,transparent 70%)`,
+              animation:'glow 3.5s ease-in-out infinite',
             }}/>
-            <div style={{
-              position:'absolute', inset:-10, borderRadius:'22px',
-              border:`1px solid ${C.G4}25`,
-            }}/>
-            {/* إطار المحراب فوق الشعار */}
-            <div style={{
-              position:'absolute', top:-26, left:'50%', transform:'translateX(-50%)',
-              opacity:0.6, zIndex:2,
-            }}>
-              <MoorishArch width={160} height={28} color={C.G5} opacity={1}/>
+            {/* قوس فوق الشعار */}
+            <div style={{position:'absolute',top:-28,left:'50%',transform:'translateX(-50%)',opacity:.8,zIndex:2}}>
+              <Arch w={160} h={28} col={C.G5} op={1}/>
             </div>
-            {/* الإطار الرئيسي */}
+            {/* الإطار */}
             <div style={{
-              width:200, height:200,
+              width:200,height:200,
               borderRadius:'50% 50% 18px 18px',
-              border:`2px solid ${C.G4}95`,
-              overflow:'hidden', background:C.BG0,
-              boxShadow:`
-                0 0 0 5px ${C.G3}18,
-                0 0 50px ${C.G3}40,
-                0 0 100px ${C.G3}18,
-                inset 0 0 30px rgba(0,0,0,0.6)
-              `,
-              position:'relative', zIndex:1,
+              border:`2px solid ${C.G4}a0`,
+              overflow:'hidden',background:`rgba(10,5,0,.80)`,
+              boxShadow:`0 0 0 6px ${C.G4}28, 0 0 60px ${C.G4}55, 0 0 120px ${C.G3}22, inset 0 0 40px rgba(0,0,0,.5)`,
+              position:'relative',zIndex:1,
             }}>
               <img src="/logo.png" alt="فيوض التأويل المعاصر"
-                style={{ width:'100%', height:'100%', objectFit:'contain', display:'block', padding:10 }}/>
+                style={{width:'100%',height:'100%',objectFit:'contain',padding:12}}/>
             </div>
-            {/* نجوم الأركان */}
-            {[{t:-10,r:-10},{t:-10,l:-10},{b:-10,r:-10},{b:-10,l:-10}].map((pos,i)=>(
-              <div key={i} style={{ position:'absolute', ...pos, zIndex:6 }}>
-                <svg width="18" height="18" viewBox="0 0 18 18">
-                  <polygon points="9,1 11,7 17,7 12.5,10.5 14.5,16.5 9,13 3.5,16.5 5.5,10.5 1,7 7,7"
-                    fill={C.G5} fillOpacity="0.95"/>
+            {/* نجوم أركان */}
+            {[{t:-10,r:-10},{t:-10,l:-10},{b:-10,r:-10},{b:-10,l:-10}].map((p,i)=>(
+              <div key={i} style={{position:'absolute',...p,zIndex:6}}>
+                <svg width="19" height="19" viewBox="0 0 17 17">
+                  <polygon points="8.5,1 10.5,6.5 16.5,6.5 12,10 14,16 8.5,12.5 3,16 5,10 0.5,6.5 6.5,6.5"
+                    fill={C.G5} fillOpacity=".95"/>
                 </svg>
               </div>
             ))}
           </div>
         </div>
 
-        {/* البسملة — على خلفية ذهبية شفافة */}
+        {/* بسملة */}
         <div style={{
           display:'inline-block',
-          background:`linear-gradient(135deg, ${C.G2}18, ${C.G4}14)`,
+          background:`linear-gradient(135deg,rgba(210,150,0,.28),rgba(240,192,64,.18))`,
           border:`1.5px solid ${C.BD4}`,
-          borderRadius:16, padding:'14px 44px', marginBottom:30,
-          boxShadow:`0 0 40px ${C.G3}14, inset 0 1px 0 ${C.G6}22, inset 0 -1px 0 ${C.G1}40`,
-          position:'relative',
+          borderRadius:16, padding:'14px 50px', marginBottom:32,
+          boxShadow:`0 0 50px ${C.G4}28, inset 0 1px 0 ${C.G6}35`,
+          backdropFilter:'blur(8px)',
         }}>
-          {/* نقاط زخرفية جانبية */}
-          {[-1,1].map(s => (
-            <div key={s} style={{ position:'absolute', top:'50%', [s===1?'right':'left']:'14px', transform:'translateY(-50%)', opacity:0.7 }}>
-              <svg width="8" height="8" viewBox="0 0 8 8">
-                <circle cx="4" cy="4" r="3" fill={C.G5}/>
-              </svg>
-            </div>
-          ))}
-          <p style={{
-            fontFamily:'Amiri,serif',
-            fontSize:'clamp(1.35rem,2.6vw,2rem)',
-            color:C.G7, margin:0, letterSpacing:'0.08em',
-            textShadow:`0 0 30px ${C.G4}60`,
-          }}>
+          <p style={{fontFamily:'Amiri,serif',fontSize:'clamp(1.35rem,2.8vw,2.05rem)',
+            color:C.G7,margin:0,letterSpacing:'.08em',textShadow:`0 0 35px ${C.G4}80, 0 2px 8px rgba(0,0,0,.5)`}}>
             ﴿ بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴾
           </p>
         </div>
 
-        {/* العنوان الرئيسي */}
+        {/* العنوان */}
         <h1 style={{
           fontFamily:'Amiri,serif',
-          fontSize:'clamp(2.8rem,6.5vw,5.2rem)',
-          fontWeight:700, margin:'0 0 6px',
-          background:`linear-gradient(135deg,
-            ${C.G3} 0%, ${C.G5} 25%,
-            ${C.G7} 50%, ${C.IVORY} 60%,
-            ${C.G6} 80%, ${C.G4} 100%)`,
-          WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
-          backgroundClip:'text', lineHeight:1.2,
-          filter:`drop-shadow(0 0 50px ${C.G3}50)`,
-          letterSpacing:'0.025em',
-        }}>
-          فيوض التأويل المعاصر
-        </h1>
+          fontSize:'clamp(2.8rem,6.5vw,5.5rem)',
+          fontWeight:700,margin:'0 0 8px',
+          background:`linear-gradient(135deg,${C.G3} 0%,${C.G5} 25%,${C.G7} 50%,#fffbe8 60%,${C.G6} 80%,${C.G4} 100%)`,
+          WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text',
+          lineHeight:1.2, filter:`drop-shadow(0 0 60px ${C.G4}65)`,letterSpacing:'.03em',
+        }}>فيوض التأويل المعاصر</h1>
 
-        {/* العنوان الفرعي */}
-        <div style={{ margin:'4px 0 18px' }}>
-          <span style={{
-            fontFamily:'Amiri,serif',
-            fontSize:'clamp(1.2rem,2.4vw,1.75rem)',
-            color:C.TEAL4, fontWeight:600,
-            textShadow:`0 0 20px ${C.TEAL2}50`,
-            letterSpacing:'0.03em',
-          }}>
+        <div style={{margin:'6px 0 20px'}}>
+          <span style={{fontFamily:'Amiri,serif',fontSize:'clamp(1.15rem,2.5vw,1.8rem)',
+            color:C.TEAL4,fontWeight:600,textShadow:`0 0 25px ${C.TEAL3}70`}}>
             تفسير سورة البقرة
           </span>
-          <span style={{ color:C.TW4, margin:'0 10px', fontSize:'1rem' }}>·</span>
-          <span style={{
-            fontFamily:'Noto Naskh Arabic,serif',
-            fontSize:'clamp(0.9rem,1.6vw,1.1rem)',
-            color:C.TW3,
-          }}>
+          <span style={{color:C.TW4,margin:'0 12px'}}>·</span>
+          <span style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'clamp(.9rem,1.6vw,1.1rem)',color:C.TW3}}>
             قراءة معاصرة متعددة اللغات
           </span>
         </div>
 
-        <OrnamentalDivider/>
+        <Divider/>
 
-        {/* الوصف */}
         <p style={{
           fontFamily:'Noto Naskh Arabic,serif',
-          fontSize:'clamp(1rem,1.9vw,1.2rem)',
-          color:C.CREAM, lineHeight:2.15,
-          maxWidth:660, margin:'0 auto 40px',
-          textShadow:'0 1px 8px rgba(0,0,0,0.5)',
+          fontSize:'clamp(1rem,1.85vw,1.22rem)',
+          color:'rgba(255,248,220,.92)',lineHeight:2.15,
+          maxWidth:660,margin:'0 auto 42px',
+          textShadow:'0 1px 10px rgba(0,0,0,.7)',
         }}>
           قراءة تفسيرية معاصرة تجمع بين البيان القرآني والتدبر التربوي والبصيرة النفسية —
           بلغة تُخاطب الروح وتستنير بنور الوحي
         </p>
 
-        {/* أزرار CTA */}
-        <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap', marginBottom:52 }}>
+        {/* أزرار */}
+        <div style={{display:'flex',gap:12,justifyContent:'center',flexWrap:'wrap',marginBottom:52}}>
           {[
-            { label:'ابدأ التصفح', primary:true, to:'/part1' },
-            { label:'تصفح السور',  primary:false, href:'#surahs' },
-            { label:'البحث في التفسير', primary:false, href:'#search-sec' },
-            { label:'عن المشروع', primary:false, href:'#about' },
-          ].map((btn,i) => (
-            <HeroBtn key={i} {...btn} navigate={navigate}/>
-          ))}
+            {label:'ابدأ التصفح',pri:true,to:'/part1'},
+            {label:'تصفح السور',pri:false,href:'#surahs'},
+            {label:'البحث',pri:false,href:'#search-sec'},
+            {label:'عن المشروع',pri:false,href:'#about'},
+          ].map((b,i)=><HBtn key={i} {...b} nav={nav}/>)}
         </div>
 
-        {/* إحصائيات — كالتابلو الذهبي في المساجد */}
+        {/* إحصائيات — صناديق شفافة زجاجية ذهبية */}
         <div style={{
-          display:'flex', gap:0, justifyContent:'center', flexWrap:'wrap',
-          background:`linear-gradient(135deg, ${C.GLOW}, rgba(255,255,255,0.025))`,
-          border:`1px solid ${C.BD3}`,
-          borderRadius:22, overflow:'hidden',
-          backdropFilter:'blur(10px)',
-          boxShadow:`0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 ${C.G5}15`,
+          display:'flex',gap:0,justifyContent:'center',flexWrap:'wrap',
+          background:'rgba(220,160,0,.18)',
+          border:`1px solid ${C.BD3}`,borderRadius:22,overflow:'hidden',
+          backdropFilter:'blur(16px)',
+          boxShadow:`0 8px 50px rgba(0,0,0,.55), inset 0 1px 0 ${C.G5}28`,
         }}>
           {[
-            { num:'٢٨٦', label:'آية مفسَّرة',     color:C.G6 },
-            { num:'٧',   label:'أبعاد تفسيرية',  color:C.TEAL4 },
-            { num:'٥',   label:'لغات عالمية',    color:C.BLUE4 },
-            { num:'١٠٠٪', label:'مصادر موثَّقة',  color:C.G7 },
-          ].map((s,i) => (
-            <div key={i} style={{
-              flex:'1 1 110px', padding:'22px 18px', textAlign:'center',
-              borderLeft: i>0 ? `1px solid ${C.BD1}` : 'none',
-              background: i%2===0 ? 'rgba(255,255,255,0.015)' : 'transparent',
-            }}>
-              <div style={{
-                fontFamily:'Amiri,serif', fontSize:'2.2rem', fontWeight:700,
-                color:s.color, lineHeight:1, marginBottom:7,
-                textShadow:`0 0 16px ${s.color}50`,
-              }}>{s.num}</div>
-              <div style={{
-                fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.8rem',
-                color:C.TW3, letterSpacing:'0.01em',
-              }}>{s.label}</div>
+            {n:'٢٨٦',l:'آية مفسَّرة',   c:C.G6},
+            {n:'٧',  l:'أبعاد تفسيرية',c:C.TEAL4},
+            {n:'٥',  l:'لغات عالمية',  c:C.BLUE4},
+            {n:'١٠٠٪',l:'مصادر موثَّقة',c:C.G7},
+          ].map((s,i)=>(
+            <div key={i} style={{flex:'1 1 120px',padding:'24px 18px',textAlign:'center',
+              borderLeft:i>0?`1px solid ${C.BD1}`:'none',
+              background:i%2===0?'rgba(255,255,255,.025)':'transparent'}}>
+              <div style={{fontFamily:'Amiri,serif',fontSize:'2.5rem',fontWeight:700,
+                color:s.c,lineHeight:1,marginBottom:7,textShadow:`0 0 20px ${s.c}70`}}>{s.n}</div>
+              <div style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.83rem',color:C.TW3}}>{s.l}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* مقرنصات السفلى */}
-      <div style={{ position:'absolute', bottom:0, left:0, right:0, zIndex:3 }}>
-        <MuqarnasBand height={40} flipped/>
+      {/* مقرنصات أسفل */}
+      <div style={{position:'absolute',bottom:0,left:0,right:0,zIndex:3}}>
+        <Muqarnas h={44} flip/>
       </div>
 
-      {/* مؤشر التمرير */}
-      <div style={{
-        position:'absolute', bottom:48, left:'50%', transform:'translateX(-50%)',
-        display:'flex', flexDirection:'column', alignItems:'center', gap:4, opacity:0.5, zIndex:5,
-      }}>
-        <span style={{ fontSize:'0.72rem', color:C.G5, fontFamily:'Noto Naskh Arabic' }}>تمرير</span>
-        <ChevronDown size={17} color={C.G5}/>
+      {/* سهم تمرير */}
+      <div style={{position:'absolute',bottom:50,left:'50%',transform:'translateX(-50%)',
+        display:'flex',flexDirection:'column',alignItems:'center',gap:3,opacity:.6,zIndex:5}}>
+        <span style={{fontSize:'.72rem',color:C.G5,fontFamily:'Noto Naskh Arabic'}}>تمرير</span>
+        <ChevronDown size={18} color={C.G5}/>
       </div>
     </section>
   );
 }
 
-function HeroBtn({ label, primary, to, href, navigate }) {
-  const [h, setH] = useState(false);
-  const go = () => to ? navigate(to) : document.querySelector(href)?.scrollIntoView({behavior:'smooth'});
+function HBtn({label,pri,to,href,nav}) {
+  const [h,setH]=useState(false);
+  const go=()=>to?nav(to):document.querySelector(href)?.scrollIntoView({behavior:'smooth'});
   return (
-    <button onClick={go}
-      onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)}
-      style={{
-        display:'flex', alignItems:'center', gap:8,
-        background: primary
-          ? `linear-gradient(135deg, ${C.G2}, ${C.G4}, ${C.G5})`
-          : h ? C.GLOW2 : 'rgba(0,0,0,0.25)',
-        color: primary ? C.DARK : h ? C.G6 : C.TW2,
-        border:`1.5px solid ${primary ? C.G4 : h ? C.G4 : C.BD2}`,
-        borderRadius:12, padding:'12px 24px',
-        fontSize:'0.97rem', fontWeight:700,
-        fontFamily:'Noto Naskh Arabic,serif', cursor:'pointer',
-        transition:'all 0.22s',
-        transform: h ? 'translateY(-3px)' : 'none',
-        boxShadow: primary
-          ? `0 6px 22px ${C.G3}50`
-          : h ? `0 6px 18px ${C.G3}20` : '0 2px 8px rgba(0,0,0,0.3)',
-        backdropFilter: primary ? 'none' : 'blur(8px)',
-      }}
-    >{label}</button>
+    <button onClick={go} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{
+      background:pri?`linear-gradient(135deg,${C.G2},${C.G4},${C.G5})`:h?C.GLOW2:'rgba(255,255,255,.08)',
+      color:pri?'#150a00':h?C.G6:C.TW2,
+      border:`1.5px solid ${pri?C.G4:h?C.G4:C.BD2}`,
+      borderRadius:12,padding:'12px 24px',
+      fontSize:'.96rem',fontWeight:700,
+      fontFamily:'Noto Naskh Arabic,serif',cursor:'pointer',transition:'all .22s',
+      transform:h?'translateY(-3px)':'none',
+      boxShadow:pri?`0 6px 25px ${C.G4}58`:h?`0 6px 20px ${C.G4}28`:'0 2px 10px rgba(0,0,0,.4)',
+      backdropFilter:pri?'none':'blur(10px)',
+    }}>{label}</button>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🔍 SEARCH — بحث ذكي بخلفية رخامية فاتحة
-═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════
+   SEARCH
+═══════════════════════════════ */
 function SearchSection() {
-  const [query, setQuery] = useState('');
-  const [filter, setFilter] = useState('all');
-  const navigate = useNavigate();
+  const [q,setQ]=useState('');
+  const [f,setF]=useState('all');
+  const nav=useNavigate();
 
   return (
     <section id="search-sec" style={{
-      background:`linear-gradient(180deg, ${C.BG3} 0%, ${C.BG2} 100%)`,
-      padding:'90px 28px', position:'relative', overflow:'hidden',
+      /* خلفية دافئة ذهبية */
+      background:`linear-gradient(180deg, #2a1800 0%, #221200 50%, #2a1800 100%)`,
+      padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.13}/>
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:3,
-        background:`linear-gradient(90deg, transparent, ${C.G3}, ${C.G6}, ${C.G3}, transparent)` }}/>
+      <GeomPattern opacity={.08}/>
+      {/* خط ذهبي أعلى */}
+      <div style={{position:'absolute',top:0,left:0,right:0,height:3,
+        background:`linear-gradient(90deg,transparent,${C.G3},${C.G6},${C.G3},transparent)`}}/>
 
-      <div style={{ maxWidth:900, margin:'0 auto', position:'relative', zIndex:1 }}>
-        <SectionTitle title="البحث في التفسير" subtitle="ابحث بالآية، الموضوع، الكلمة، أو الجذر اللغوي"/>
+      <div style={{maxWidth:880,margin:'0 auto',position:'relative',zIndex:1}}>
+        <SecTitle title="البحث في التفسير" sub="ابحث بالآية، الموضوع، الكلمة، أو الجذر اللغوي"/>
 
-        {/* صندوق البحث — كالجص الأبيض المزيّن */}
+        {/* صندوق البحث — زجاجي ذهبي */}
         <div style={{
-          background:`linear-gradient(160deg, ${C.BG3} 0%, ${C.BG4} 100%)`,
+          background:`rgba(255,220,100,.08)`,
           border:`1.5px solid ${C.BD4}`,
-          borderRadius:24,
-          padding:'28px 30px',
-          boxShadow:`
-            0 8px 32px rgba(0,0,0,0.25),
-            inset 0 1px 0 ${C.G5}22,
-            inset 0 -1px 0 ${C.G2}25
-          `,
-          position:'relative', overflow:'hidden',
+          borderRadius:24,padding:'28px 30px',
+          boxShadow:`0 14px 60px rgba(0,0,0,.55), inset 0 1px 0 ${C.G5}30`,
+          position:'relative',overflow:'hidden',
+          backdropFilter:'blur(12px)',
         }}>
-          {/* تاج ذهبي صغير */}
-          <div style={{ position:'absolute', top:-18, left:'50%', transform:'translateX(-50%)', opacity:0.4 }}>
-            <MoorishArch width={260} height={22} color={C.G4} opacity={1}/>
+          <div style={{position:'absolute',top:-18,left:'50%',transform:'translateX(-50%)',opacity:.55}}>
+            <Arch w={260} h={22} col={C.G4} op={1}/>
           </div>
 
-          {/* فلاتر البحث */}
-          <div style={{ display:'flex', gap:8, marginBottom:18, flexWrap:'wrap' }} dir="rtl">
-            {['الكل','آية','سورة','موضوع','كلمة','جذر'].map((f,i) => {
-              const id = ['all','ayah','surah','topic','word','root'][i];
-              const active = filter === id;
+          <div style={{display:'flex',gap:8,marginBottom:18,flexWrap:'wrap'}} dir="rtl">
+            {['الكل','آية','سورة','موضوع','كلمة','جذر'].map((lbl,i)=>{
+              const id=['all','ayah','surah','topic','word','root'][i];
+              const ac=f===id;
               return (
-                <button key={id} onClick={()=>setFilter(id)} style={{
-                  background: active
-                    ? `linear-gradient(135deg, ${C.G2}, ${C.G5})`
-                    : 'rgba(250,245,232,0.05)',
-                  color: active ? C.DARK : C.TW2,
-                  border:`1px solid ${active ? C.G5 : C.BD2}`,
-                  borderRadius:10, padding:'6px 16px',
-                  fontSize:'0.84rem', fontWeight:700, cursor:'pointer',
-                  fontFamily:'Noto Naskh Arabic,serif', transition:'all 0.18s',
-                  boxShadow: active ? `0 2px 12px ${C.G3}40` : 'none',
-                }}>{f}</button>
+                <button key={id} onClick={()=>setF(id)} style={{
+                  background:ac?`linear-gradient(135deg,${C.G2},${C.G5})`:'rgba(255,220,100,.08)',
+                  color:ac?'#150a00':C.TW2,
+                  border:`1px solid ${ac?C.G5:C.BD2}`,
+                  borderRadius:11,padding:'6px 17px',
+                  fontSize:'.84rem',fontWeight:700,cursor:'pointer',
+                  fontFamily:'Noto Naskh Arabic,serif',transition:'all .18s',
+                  boxShadow:ac?`0 2px 14px ${C.G4}50`:'none',
+                }}>{lbl}</button>
               );
             })}
           </div>
 
-          {/* حقل البحث */}
           <div style={{
-            display:'flex', gap:10, alignItems:'center',
-            background:'rgba(250,245,232,0.04)',
-            border:`1px solid ${C.BD2}`, borderRadius:14, padding:'10px 16px',
+            display:'flex',gap:10,alignItems:'center',
+            background:'rgba(255,220,100,.06)',
+            border:`1px solid ${C.BD3}`,borderRadius:14,padding:'10px 16px',
           }}>
-            <Search size={20} color={C.G4} style={{ flexShrink:0 }}/>
-            <input
-              value={query} onChange={e=>setQuery(e.target.value)}
-              onKeyDown={e=>e.key==='Enter'&&navigate('/part1')}
+            <Search size={22} color={C.G4} style={{flexShrink:0}}/>
+            <input value={q} onChange={e=>setQ(e.target.value)}
+              onKeyDown={e=>e.key==='Enter'&&nav('/part1')}
               placeholder="ابحث في فيوض التفسير... (مثال: الصبر، التوبة، الرزق)"
-              dir="rtl"
-              style={{
-                flex:1, background:'transparent', border:'none', outline:'none',
-                color:C.IVORY, fontSize:'1.02rem',
-                fontFamily:'Noto Naskh Arabic,serif',
-              }}
-            />
-            <button onClick={()=>navigate('/part1')} style={{
-              background:`linear-gradient(135deg, ${C.G2}, ${C.G5})`,
-              color:C.DARK, border:'none', borderRadius:10,
-              padding:'9px 24px', fontSize:'0.92rem', fontWeight:800,
-              fontFamily:'Noto Naskh Arabic,serif', cursor:'pointer', flexShrink:0,
-              boxShadow:`0 4px 16px ${C.G3}45`,
+              dir="rtl" style={{
+                flex:1,background:'transparent',border:'none',outline:'none',
+                color:C.TW,fontSize:'1rem',fontFamily:'Noto Naskh Arabic,serif',
+              }}/>
+            <button onClick={()=>nav('/part1')} style={{
+              background:`linear-gradient(135deg,${C.G2},${C.G5})`,
+              color:'#150a00',border:'none',borderRadius:11,
+              padding:'9px 24px',fontSize:'.92rem',fontWeight:800,
+              fontFamily:'Noto Naskh Arabic,serif',cursor:'pointer',flexShrink:0,
+              boxShadow:`0 4px 16px ${C.G4}55`,
             }}>بحث</button>
           </div>
         </div>
 
-        {/* بطاقات الوصول السريع */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(145px,1fr))', gap:12, marginTop:22 }} dir="rtl">
+        {/* صناديق الوصول السريع — ألوان فاتحة مشبعة */}
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(142px,1fr))',gap:13,marginTop:22}} dir="rtl">
           {[
-            { icon:'🔥', label:'آية اليوم',      bg:C.RUBY,  bd:C.RUBY2 },
-            { icon:'💚', label:'آيات الرحمة',    bg:C.TEAL,  bd:C.TEAL4 },
-            { icon:'🛡️', label:'آيات التوجيه',   bg:C.BLUE,  bd:C.BLUE4 },
-            { icon:'✨', label:'الأبعاد النفسية', bg:C.BG4,   bd:C.G4   },
-            { icon:'📖', label:'التدبر التربوي', bg:C.BG3,   bd:C.G5   },
-            { icon:'🌍', label:'المعاصرة',       bg:C.TEAL0, bd:C.TEAL3 },
-          ].map(c => (
-            <button key={c.label} onClick={()=>navigate('/part1')} style={{
-              background:`linear-gradient(160deg, ${c.bg}ee, ${c.bg}99)`,
-              border:`1px solid ${c.bd}40`,
-              borderRadius:14, padding:'16px 10px', cursor:'pointer',
-              transition:'all 0.22s', textAlign:'center',
-              boxShadow:`0 4px 16px rgba(0,0,0,0.3)`,
+            {icon:'🔥',label:'آية اليوم',      bg:C.ROSE,  bd:C.ROSE3,  tx:C.ROSE4},
+            {icon:'💚',label:'آيات الرحمة',    bg:C.TEAL,  bd:C.TEAL3,  tx:C.TEAL4},
+            {icon:'🛡️',label:'آيات التوجيه',   bg:C.BLUE,  bd:C.BLUE3,  tx:C.BLUE4},
+            {icon:'✨',label:'البعد النفسي',   bg:C.PURP,  bd:C.PURP3,  tx:C.PURP4},
+            {icon:'📖',label:'التدبر التربوي', bg:C.OLIV,  bd:C.OLIV3,  tx:C.OLIV4},
+            {icon:'🌍',label:'المعاصرة',       bg:C.COPP,  bd:C.COPP3,  tx:C.COPP4},
+          ].map(card=>(
+            <button key={card.label} onClick={()=>nav('/part1')} style={{
+              background:`linear-gradient(160deg,${card.bg}e0,${card.bg}99)`,
+              border:`1.5px solid ${card.bd}80`,
+              borderRadius:15,padding:'16px 10px',cursor:'pointer',
+              transition:'all .22s',textAlign:'center',
+              boxShadow:`0 5px 22px rgba(0,0,0,.4)`,
             }}
-            onMouseEnter={e=>{e.currentTarget.style.borderColor=c.bd;e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow=`0 10px 24px rgba(0,0,0,0.4)`;}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${c.bd}40`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 16px rgba(0,0,0,0.3)`;}}>
-              <div style={{ fontSize:'1.5rem', marginBottom:8 }}>{c.icon}</div>
-              <div style={{ color:C.IVORY, fontSize:'0.82rem', fontWeight:700, fontFamily:'Noto Naskh Arabic,serif' }}>{c.label}</div>
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=card.bd;e.currentTarget.style.transform='translateY(-5px)';e.currentTarget.style.boxShadow=`0 14px 32px rgba(0,0,0,.5)`;}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${card.bd}80`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 5px 22px rgba(0,0,0,.4)`;}}>
+              <div style={{fontSize:'1.6rem',marginBottom:8}}>{card.icon}</div>
+              <div style={{color:card.tx,fontSize:'.82rem',fontWeight:700,fontFamily:'Noto Naskh Arabic,serif'}}>{card.label}</div>
             </button>
           ))}
         </div>
@@ -894,97 +651,73 @@ function SearchSection() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   📜 ABOUT — رؤية المشروع بتصميم رواق القصر
-═══════════════════════════════════════════════════════════ */
-function AboutSection() {
-  const cards = [
-    { icon:<Shield size={26}/>, color:C.TEAL2, colorL:C.TEAL4, title:'الأصالة العلمية',     text:'مصادر موثَّقة من أمهات كتب التفسير والعلوم الإسلامية' },
-    { icon:<Layers size={26}/>, color:C.G3,    colorL:C.G6,    title:'العمق التأويلي',      text:'سبعة أبعاد: بياني، تأويلي، روحاني، نفسي، تربوي، معاصر، استشهادي' },
-    { icon:<Eye size={26}/>,    color:C.BLUE2, colorL:C.BLUE4, title:'التدبر والتأمل',      text:'قراءة تدعو القلب إلى التأمل في أعماق المعنى القرآني' },
-    { icon:<Zap size={26}/>,    color:C.RUBY,  colorL:C.RUBY2, title:'المعاصرة والحياة',    text:'ربط الآيات بواقع الإنسان المعاصر وتحدياته الروحية' },
-    { icon:<Brain size={26}/>,  color:C.TEAL,  colorL:C.TEAL3, title:'البعد النفسي',        text:'استلهام الدروس النفسية والعلاجية من آيات القرآن الكريم' },
-    { icon:<Feather size={26}/>,color:C.G2,    colorL:C.G5,    title:'الإرشاد والهداية',   text:'مناهج تربوية مستخرجة من نور القرآن للارتقاء بالنفس' },
+/* ═══════════════════════════════
+   ABOUT — بطاقات ملونة فاتحة مشبعة
+═══════════════════════════════ */
+function About() {
+  const cards=[
+    {icon:<Shield size={24}/>,    bg:C.TEAL,  bd:C.TEAL3,  ic:C.TEAL4,  title:'الأصالة العلمية',    text:'مصادر موثَّقة من أمهات كتب التفسير والعلوم الإسلامية'},
+    {icon:<Layers size={24}/>,    bg:C.G1,    bd:C.G4,     ic:C.G6,     title:'العمق التأويلي',     text:'سبعة أبعاد: بياني، تأويلي، روحاني، نفسي، تربوي، معاصر، استشهادي'},
+    {icon:<Eye size={24}/>,       bg:C.BLUE,  bd:C.BLUE3,  ic:C.BLUE4,  title:'التدبر والتأمل',     text:'قراءة تدعو القلب إلى التأمل في أعماق المعنى القرآني'},
+    {icon:<Zap size={24}/>,       bg:C.ROSE,  bd:C.ROSE3,  ic:C.ROSE4,  title:'المعاصرة والحياة',   text:'ربط الآيات بواقع الإنسان المعاصر وتحدياته الروحية'},
+    {icon:<Brain size={24}/>,     bg:C.PURP,  bd:C.PURP3,  ic:C.PURP4,  title:'البعد النفسي',       text:'استلهام الدروس النفسية والعلاجية من آيات القرآن الكريم'},
+    {icon:<Feather size={24}/>,   bg:C.OLIV,  bd:C.OLIV3,  ic:C.OLIV4,  title:'الإرشاد والهداية',   text:'مناهج تربوية مستخرجة من نور القرآن للارتقاء بالنفس'},
   ];
 
   return (
     <section id="about" style={{
-      position:'relative', overflow:'hidden',
-      padding:'90px 28px',
-      background:`linear-gradient(160deg, ${C.BG2} 0%, ${C.BG3} 50%, ${C.BG4} 100%)`,
+      background:`linear-gradient(160deg,#201000 0%,#281600 50%,#1c0e00 100%)`,
+      padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.12}/>
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:2,
-        background:`linear-gradient(90deg, transparent, ${C.G4}, transparent)` }}/>
+      <GeomPattern opacity={.07}/>
+      <div style={{position:'absolute',top:0,left:0,right:0,height:2,
+        background:`linear-gradient(90deg,transparent,${C.G4},${C.G6},${C.G4},transparent)`}}/>
+      <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
+        <SecTitle title="رؤية المشروع ومنهجيته"
+          sub="مشروع علمي متكامل يُقدّم تفسيراً قرآنياً يخاطب العقل والروح معاً"/>
 
-      <div style={{ maxWidth:1180, margin:'0 auto', position:'relative', zIndex:1 }}>
-        <SectionTitle title="رؤية المشروع ومنهجيته"
-          subtitle="مشروع علمي متكامل يُقدّم تفسيراً قرآنياً يخاطب العقل والروح معاً"/>
-
-        {/* لوحة الرؤية — كالكتابة على جدار المحراب */}
+        {/* بطاقة الرؤية الرئيسية */}
         <div style={{
-          position:'relative',
-          background:`linear-gradient(160deg, ${C.BG3} 0%, ${C.BG4} 100%)`,
-          border:`1.5px solid ${C.BD4}`,
-          borderRadius:24, padding:'36px 44px', marginBottom:42,
-          boxShadow:`
-            0 8px 36px rgba(0,0,0,0.28),
-            inset 0 1px 0 ${C.G5}22,
-            inset 0 0 40px rgba(0,0,0,0.15)
-          `,
-          overflow:'hidden',
+          background:`linear-gradient(160deg,rgba(200,140,0,.14),rgba(240,192,64,.08))`,
+          border:`1.5px solid ${C.BD3}`,borderRadius:24,padding:'34px 44px',marginBottom:42,
+          position:'relative',overflow:'hidden',
+          boxShadow:`0 14px 60px rgba(0,0,0,.48), inset 0 1px 0 ${C.G5}22`,
+          backdropFilter:'blur(8px)',
         }}>
-          {/* قوس معماري في الخلف */}
-          <div style={{ position:'absolute', top:-15, right:'50%', transform:'translateX(50%)', opacity:0.16, pointerEvents:'none' }}>
-            <MoorishArch width={640} height={220} color={C.G5} opacity={1}/>
+          <div style={{position:'absolute',top:-15,right:'50%',transform:'translateX(50%)',opacity:.1}}>
+            <Arch w={650} h={220} col={C.G5} op={1}/>
           </div>
-          {/* تأثير الإضاءة العليا */}
-          <div style={{
-            position:'absolute', top:0, left:0, right:0, height:'40%',
-            background:`linear-gradient(180deg, ${C.G4}18, transparent)`,
-            pointerEvents:'none',
-          }}/>
-
-          <div dir="rtl" style={{ position:'relative', zIndex:1 }}>
-            <h3 style={{
-              fontFamily:'Amiri,serif', fontSize:'1.7rem', fontWeight:700,
-              background:`linear-gradient(135deg, ${C.G4}, ${C.G6}, ${C.G7})`,
-              WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
-              backgroundClip:'text', marginBottom:20,
-            }}>فيوض التأويل المعاصر</h3>
-            <p style={{
-              fontFamily:'Noto Naskh Arabic,serif', fontSize:'1.08rem',
-              color:C.CREAM, lineHeight:2.2,
-              borderRight:`3px solid ${C.G4}`, paddingRight:22,
-              textShadow:'0 1px 6px rgba(0,0,0,0.4)',
-            }}>
+          <div dir="rtl" style={{position:'relative',zIndex:1}}>
+            <h3 style={{fontFamily:'Amiri,serif',fontSize:'1.75rem',fontWeight:700,
+              background:`linear-gradient(135deg,${C.G4},${C.G6},${C.G7})`,
+              WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text',
+              marginBottom:18}}>فيوض التأويل المعاصر</h3>
+            <p style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'1.08rem',
+              color:'rgba(255,248,220,.92)',lineHeight:2.25,
+              borderRight:`3px solid ${C.G4}`,paddingRight:22}}>
               قراءة تفسيرية معاصرة تجمع بين البيان القرآني، والتدبر التربوي، والبصيرة النفسية —
               مشروع يقف عند نهر المعنى ليغترف منه، لا ليختصره.
             </p>
           </div>
         </div>
 
-        {/* البطاقات */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:18 }}>
-          {cards.map(c => (
-            <div key={c.title} style={{
-              background:`linear-gradient(160deg, ${C.BG3}, ${C.BG4})`,
-              border:`1.5px solid ${c.color}50`,
-              borderRadius:18, padding:'26px 22px',
-              transition:'all 0.28s', cursor:'default',
-              boxShadow:`0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 ${C.G4}15`,
+        {/* البطاقات الملونة */}
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(325px,1fr))',gap:18}}>
+          {cards.map(c=>(
+            <div key={c.title} dir="rtl" style={{
+              background:`linear-gradient(160deg,${c.bg}45,${c.bg}22)`,
+              border:`1.5px solid ${c.bd}55`,
+              borderRadius:20,padding:'26px 22px',
+              transition:'all .28s',cursor:'default',
+              boxShadow:`0 5px 26px rgba(0,0,0,.32)`,
             }}
-            dir="rtl"
-            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${c.color}70`;e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow=`0 14px 36px rgba(0,0,0,0.35), 0 0 0 1px ${c.color}20`;}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${c.color}28`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 20px rgba(0,0,0,0.25)`;}}>
-              <div style={{
-                width:52, height:52, borderRadius:14, marginBottom:16,
-                background:`${c.color}35`, border:`1.5px solid ${c.color}65`,
-                display:'flex', alignItems:'center', justifyContent:'center',
-                color:c.colorL,
-              }}>{c.icon}</div>
-              <div style={{ fontFamily:'Noto Naskh Arabic,serif', color:C.IVORY, fontWeight:700, fontSize:'1.02rem', marginBottom:10 }}>{c.title}</div>
-              <div style={{ fontFamily:'Noto Naskh Arabic,serif', color:C.TW2, fontSize:'0.9rem', lineHeight:2 }}>{c.text}</div>
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${c.bd}90`;e.currentTarget.style.transform='translateY(-5px)';e.currentTarget.style.boxShadow=`0 16px 42px rgba(0,0,0,.42),0 0 0 1px ${c.bd}30`;}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${c.bd}55`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 5px 26px rgba(0,0,0,.32)`;}}>
+              <div style={{width:52,height:52,borderRadius:14,marginBottom:16,
+                background:`${c.bg}50`,border:`1.5px solid ${c.bd}70`,
+                display:'flex',alignItems:'center',justifyContent:'center',color:c.ic}}>{c.icon}</div>
+              <div style={{fontFamily:'Noto Naskh Arabic,serif',color:C.TW,fontWeight:700,fontSize:'1.02rem',marginBottom:10}}>{c.title}</div>
+              <div style={{fontFamily:'Noto Naskh Arabic,serif',color:C.TW2,fontSize:'.9rem',lineHeight:2.05}}>{c.text}</div>
             </div>
           ))}
         </div>
@@ -993,112 +726,97 @@ function AboutSection() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   📚 SURAHS — بطاقات السور بتصميم أبواب القصر الإسلامي
-═══════════════════════════════════════════════════════════ */
-function SurahsSection() {
-  const navigate = useNavigate();
-  const parts = [
-    { title:'الجزء الأول', range:'الآيات ١ – ١٠١', count:101, path:'/part1', badge:'متاح', accent:C.TEAL2, light:C.TEAL4,
-      themes:['إيمان','خلق آدم','المنافقون','بنو إسرائيل','القبلة'],
-      desc:'من بداية السورة إلى الحديث عن تحويل القبلة — رحلة الإيمان والاختبار' },
-    { title:'الجزء الثاني', range:'الآيات ١٠٢ – ٢٠٠', count:99, path:'/part2', badge:'متاح', accent:C.G3, light:C.G6,
-      themes:['السحر','الحج','الجهاد','الإنفاق','الإسلام'],
-      desc:'من السحر والبقرة إلى شعائر الحج — قوانين الحضارة الإسلامية' },
-    { title:'الجزء الثالث', range:'الآيات ٢٠١ – ٢٨٦', count:86, path:null, badge:'قريباً', accent:C.BLUE2, light:C.BLUE4,
-      themes:['آية الكرسي','الطلاق','الدَّين','الخوف','الذكر'],
-      desc:'من المكارم والجهاد إلى آية الكرسي والحساب — قمة السورة' },
+/* ═══════════════════════════════
+   SURAHS — بطاقات ملونة أجمل وأكثر إضاءة
+═══════════════════════════════ */
+function Surahs() {
+  const nav=useNavigate();
+  const parts=[
+    {title:'الجزء الأول',range:'الآيات ١ – ١٠١',count:101,path:'/part1',badge:'متاح',
+      bg:C.TEAL,bd:C.TEAL2,ac:C.TEAL3,lt:C.TEAL4,
+      desc:'من بداية السورة حتى تحويل القبلة — رحلة الإيمان والاختبار',
+      themes:['إيمان','خلق آدم','المنافقون','بنو إسرائيل','القبلة']},
+    {title:'الجزء الثاني',range:'الآيات ١٠٢ – ٢٠٠',count:99,path:'/part2',badge:'متاح',
+      bg:C.G1,bd:C.G2,ac:C.G3,lt:C.G5,
+      desc:'من السحر والبقرة إلى شعائر الحج — قوانين الحضارة الإسلامية',
+      themes:['السحر','الحج','الجهاد','الإنفاق','الإسلام']},
+    {title:'الجزء الثالث',range:'الآيات ٢٠١ – ٢٨٦',count:86,path:null,badge:'قريباً',
+      bg:C.BLUE,bd:C.BLUE2,ac:C.BLUE3,lt:C.BLUE4,
+      desc:'من المكارم والجهاد إلى آية الكرسي والحساب — قمة السورة',
+      themes:['آية الكرسي','الطلاق','الدَّين','الخوف','الذكر']},
   ];
 
   return (
     <section id="surahs" style={{
-      background:`linear-gradient(180deg, ${C.BG3} 0%, ${C.BG2} 100%)`,
-      padding:'90px 28px', position:'relative', overflow:'hidden',
+      background:`linear-gradient(180deg,#1c0e00 0%,#281800 50%,#1c0e00 100%)`,
+      padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.15}/>
-      <div style={{ maxWidth:1180, margin:'0 auto', position:'relative', zIndex:1 }}>
-        <SectionTitle title="تصفح سورة البقرة"
-          subtitle="٢٨٦ آية في ثلاثة أجزاء — كل جزء باب من أبواب المعرفة القرآنية"/>
+      <GeomPattern opacity={.07}/>
+      <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
+        <SecTitle title="تصفح سورة البقرة"
+          sub="٢٨٦ آية في ثلاثة أجزاء — كل جزء باب من أبواب المعرفة القرآنية"/>
 
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(350px,1fr))', gap:24 }}>
-          {parts.map(p => (
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(360px,1fr))',gap:24}}>
+          {parts.map(p=>(
             <div key={p.title} style={{
-              background:`linear-gradient(190deg, ${C.BG3}, ${C.BG2})`,
-              border:`1px solid ${C.BD3}`,
-              borderRadius:22, overflow:'hidden', transition:'all 0.3s',
-              boxShadow:`0 6px 24px rgba(0,0,0,0.25)`,
+              background:`linear-gradient(190deg,${p.bg}50,${p.bg}28,#1e1000)`,
+              border:`1.5px solid ${p.bd}60`,
+              borderRadius:24,overflow:'hidden',transition:'all .3s',
+              boxShadow:`0 7px 30px rgba(0,0,0,.42)`,
             }}
-            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${p.accent}65`;e.currentTarget.style.transform='translateY(-6px)';e.currentTarget.style.boxShadow=`0 20px 50px rgba(0,0,0,0.45), 0 0 0 1px ${p.accent}22`;}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=C.BD2;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 6px 24px rgba(0,0,0,0.35)`;}}>
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${p.bd}95`;e.currentTarget.style.transform='translateY(-7px)';e.currentTarget.style.boxShadow=`0 22px 56px rgba(0,0,0,.52),0 0 0 1px ${p.bd}35`;}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${p.bd}60`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 7px 30px rgba(0,0,0,.42)`;}}>
 
-              {/* رأس البطاقة */}
+              {/* رأس ملون */}
               <div style={{
-                background:`linear-gradient(160deg, ${p.accent}50, ${p.accent}28)`,
-                borderBottom:`1px solid ${p.accent}45`,
-                padding:'28px 26px 20px', position:'relative', overflow:'hidden',
+                background:`linear-gradient(160deg,${p.bg}70,${p.bg}45)`,
+                borderBottom:`1px solid ${p.bd}50`,
+                padding:'28px 26px 20px',position:'relative',overflow:'hidden',
               }}>
-                {/* مقرنصات صغيرة */}
-                <div style={{ position:'absolute', top:0, left:0, right:0, opacity:0.55 }}>
-                  <MuqarnasBand height={22}/>
+                <div style={{position:'absolute',top:0,left:0,right:0,opacity:.7}}>
+                  <Muqarnas h={22}/>
                 </div>
-                {/* قوس ركني */}
-                <div style={{ position:'absolute', bottom:-12, left:14, opacity:0.7 }}>
-                  <CornerOrnament size={48} flip/>
+                <div style={{position:'absolute',bottom:-14,left:14,opacity:.8}}>
+                  <Corner size={50} fx/>
                 </div>
-
-                <div dir="rtl" style={{ position:'relative', zIndex:1, paddingTop:10 }}>
+                <div dir="rtl" style={{position:'relative',zIndex:1,paddingTop:10}}>
                   <span style={{
-                    background: p.badge==='متاح'
-                      ? `linear-gradient(135deg, ${p.accent}, ${p.light})`
-                      : 'rgba(100,100,120,0.4)',
-                    color: p.badge==='متاح' ? C.DARK : C.TW3,
-                    fontSize:'0.74rem', fontWeight:800, padding:'3px 14px', borderRadius:20,
-                    fontFamily:'Noto Naskh Arabic,serif', float:'left', marginTop:6,
-                    letterSpacing:'0.02em',
+                    background:p.badge==='متاح'?`linear-gradient(135deg,${p.ac},${p.lt})`:'rgba(100,100,120,.4)',
+                    color:p.badge==='متاح'?'#100800':C.TW3,
+                    fontSize:'.74rem',fontWeight:800,padding:'3px 14px',borderRadius:20,
+                    fontFamily:'Noto Naskh Arabic,serif',float:'left',marginTop:6,
                   }}>{p.badge}</span>
-                  <div style={{ fontFamily:'Amiri,serif', fontSize:'1.7rem', color:p.light, marginBottom:6 }}>{p.title}</div>
-                  <div style={{ fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.87rem', color:C.TW2 }}>{p.range}</div>
-                  <div style={{ display:'flex', alignItems:'baseline', gap:8, marginTop:10 }}>
-                    <span style={{ fontFamily:'Amiri,serif', fontSize:'2.6rem', fontWeight:700, color:p.light, lineHeight:1 }}>{p.count}</span>
-                    <span style={{ fontSize:'0.78rem', color:C.TW3, fontFamily:'Noto Naskh Arabic,serif' }}>آية</span>
+                  <div style={{fontFamily:'Amiri,serif',fontSize:'1.75rem',color:p.lt,marginBottom:6}}>{p.title}</div>
+                  <div style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.87rem',color:C.TW2}}>{p.range}</div>
+                  <div style={{display:'flex',alignItems:'baseline',gap:8,marginTop:10}}>
+                    <span style={{fontFamily:'Amiri,serif',fontSize:'2.7rem',fontWeight:700,color:p.lt,lineHeight:1}}>{p.count}</span>
+                    <span style={{fontSize:'.78rem',color:C.TW3,fontFamily:'Noto Naskh Arabic,serif'}}>آية</span>
                   </div>
                 </div>
               </div>
 
-              {/* جسم البطاقة */}
-              <div style={{ padding:'20px 26px 24px' }} dir="rtl">
-                <p style={{ fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.86rem', color:C.TW3, lineHeight:1.85, marginBottom:14 }}>
-                  {p.desc}
-                </p>
-                <p style={{ fontSize:'0.74rem', color:C.TW4, fontFamily:'Noto Naskh Arabic,serif', marginBottom:10 }}>أبرز المواضيع:</p>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:7, marginBottom:20 }}>
-                  {p.themes.map(t => (
+              {/* الجسم */}
+              <div style={{padding:'20px 26px 24px'}} dir="rtl">
+                <p style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.87rem',color:C.TW3,lineHeight:1.9,marginBottom:14}}>{p.desc}</p>
+                <div style={{display:'flex',flexWrap:'wrap',gap:7,marginBottom:20}}>
+                  {p.themes.map(t=>(
                     <span key={t} style={{
-                      background:`${p.accent}18`, border:`1px solid ${p.accent}32`,
-                      borderRadius:7, padding:'3px 10px', fontSize:'0.76rem',
-                      color:p.light, fontFamily:'Noto Naskh Arabic,serif',
+                      background:`${p.bg}30`,border:`1px solid ${p.bd}45`,
+                      borderRadius:8,padding:'3px 10px',fontSize:'.76rem',
+                      color:p.lt,fontFamily:'Noto Naskh Arabic,serif',
                     }}>{t}</span>
                   ))}
                 </div>
-                <button
-                  onClick={()=>p.path&&navigate(p.path)}
-                  disabled={!p.path}
-                  style={{
-                    width:'100%',
-                    background: p.path
-                      ? `linear-gradient(135deg, ${p.accent}, ${p.light})`
-                      : 'rgba(100,100,120,0.22)',
-                    color: p.path ? C.DARK : C.TW4,
-                    border:'none', borderRadius:12, padding:'12px',
-                    fontSize:'0.93rem', fontWeight:800,
-                    fontFamily:'Noto Naskh Arabic,serif',
-                    cursor: p.path ? 'pointer' : 'not-allowed',
-                    boxShadow: p.path ? `0 5px 18px ${p.accent}45` : 'none',
-                    transition:'all 0.22s',
-                    letterSpacing:'0.01em',
-                  }}>
-                  {p.path ? `اقرأ ${p.title} ←` : 'قريباً...'}
-                </button>
+                <button onClick={()=>p.path&&nav(p.path)} disabled={!p.path} style={{
+                  width:'100%',
+                  background:p.path?`linear-gradient(135deg,${p.ac},${p.lt})`:'rgba(100,100,120,.22)',
+                  color:p.path?'#100800':C.TW4,
+                  border:'none',borderRadius:12,padding:'12px',
+                  fontSize:'.94rem',fontWeight:800,fontFamily:'Noto Naskh Arabic,serif',
+                  cursor:p.path?'pointer':'not-allowed',
+                  boxShadow:p.path?`0 5px 20px ${p.ac}55`:'none',
+                  transition:'all .22s',
+                }}>{p.path?`اقرأ ${p.title} ←`:'قريباً...'}</button>
               </div>
             </div>
           ))}
@@ -1108,53 +826,47 @@ function SurahsSection() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🌐 PATHS — مسارات التأويل بألوان الفسيفساء الإسلامية
-═══════════════════════════════════════════════════════════ */
-function PathsSection() {
-  const items = [
-    { icon:<BookOpen size={24}/>, color:C.TEAL2, light:C.TEAL4, title:'المسار البياني',    sub:'جمال الأسلوب القرآني وفصاحته وبلاغة التعبير' },
-    { icon:<Compass size={24}/>,  color:C.G3,    light:C.G6,    title:'المسار التأويلي',   sub:'عمق المعنى والدلالة والقراءات التفسيرية' },
-    { icon:<Heart size={24}/>,    color:C.RUBY,  light:C.RUBY2, title:'المسار الروحاني',   sub:'الصلة بالله والتزكية والمقامات الروحانية' },
-    { icon:<Brain size={24}/>,    color:C.BLUE2, light:C.BLUE4, title:'المسار النفسي',     sub:'الأثر النفسي والعلاجي في ضوء علم النفس' },
-    { icon:<Feather size={24}/>,  color:C.TEAL,  light:C.TEAL3, title:'المسار التربوي',    sub:'الدروس والقيم التربوية وتزكية النفس' },
-    { icon:<Zap size={24}/>,      color:C.G2,    light:C.G5,    title:'المسار المعاصر',    sub:'ربط الآيات بالحياة المعاصرة والعصر الحديث' },
+/* ═══════════════════════════════
+   PATHS — مسارات بصناديق ملونة أكثر تشبعاً
+═══════════════════════════════ */
+function Paths() {
+  const items=[
+    {icon:<BookOpen size={22}/>, bg:C.TEAL,  bd:C.TEAL2,  lt:C.TEAL4,  title:'المسار البياني',   sub:'جمال الأسلوب القرآني وفصاحته وبلاغة التعبير'},
+    {icon:<Compass size={22}/>,  bg:C.G1,    bd:C.G2,     lt:C.G5,     title:'المسار التأويلي',  sub:'عمق المعنى والدلالة والقراءات التفسيرية'},
+    {icon:<Heart size={22}/>,    bg:C.ROSE,  bd:C.ROSE2,  lt:C.ROSE4,  title:'المسار الروحاني',  sub:'الصلة بالله والتزكية والمقامات الروحانية'},
+    {icon:<Brain size={22}/>,    bg:C.BLUE,  bd:C.BLUE2,  lt:C.BLUE4,  title:'المسار النفسي',    sub:'الأثر النفسي والعلاجي في ضوء علم النفس'},
+    {icon:<Feather size={22}/>,  bg:C.OLIV,  bd:C.OLIV2,  lt:C.OLIV4,  title:'المسار التربوي',   sub:'الدروس والقيم التربوية وتزكية النفس'},
+    {icon:<Zap size={22}/>,      bg:C.COPP,  bd:C.COPP2,  lt:C.COPP4,  title:'المسار المعاصر',   sub:'ربط الآيات بالحياة المعاصرة والعصر الحديث'},
   ];
 
   return (
     <section id="paths" style={{
-      background:`linear-gradient(180deg, ${C.BG2} 0%, ${C.BG3} 100%)`,
-      padding:'90px 28px', position:'relative', overflow:'hidden',
+      background:`linear-gradient(180deg,#281600 0%,#201000 50%,#281600 100%)`,
+      padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.13}/>
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:2,
-        background:`linear-gradient(90deg, transparent, ${C.G4}, transparent)` }}/>
-
-      <div style={{ maxWidth:1180, margin:'0 auto', position:'relative', zIndex:1 }}>
-        <SectionTitle title="مسارات التأويل"
-          subtitle="كل مسار يفتح أفقاً معرفياً في فهم القرآن الكريم"/>
-
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))', gap:16 }}>
-          {items.map(p => (
-            <div key={p.title} style={{
-              background:`linear-gradient(160deg, ${C.BG3}, ${C.BG4})`,
-              border:`1.5px solid ${p.color}50`,
-              borderRadius:18, padding:'24px 20px',
-              display:'flex', alignItems:'flex-start', gap:16,
-              cursor:'pointer', transition:'all 0.27s',
-              boxShadow:`0 4px 18px rgba(0,0,0,0.18), inset 0 1px 0 ${C.G4}12`,
+      <GeomPattern opacity={.06}/>
+      <div style={{position:'absolute',top:0,left:0,right:0,height:2,
+        background:`linear-gradient(90deg,transparent,${C.G4},${C.G6},${C.G4},transparent)`}}/>
+      <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
+        <SecTitle title="مسارات التأويل" sub="كل مسار يفتح أفقاً معرفياً في فهم القرآن الكريم"/>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(305px,1fr))',gap:17}}>
+          {items.map(p=>(
+            <div key={p.title} dir="rtl" style={{
+              background:`linear-gradient(160deg,${p.bg}3c,${p.bg}20)`,
+              border:`1.5px solid ${p.bd}45`,
+              borderRadius:20,padding:'24px 20px',
+              display:'flex',alignItems:'flex-start',gap:15,
+              cursor:'pointer',transition:'all .27s',
+              boxShadow:`0 5px 24px rgba(0,0,0,.30)`,
             }}
-            dir="rtl"
-            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${p.color}80`;e.currentTarget.style.background=`linear-gradient(160deg, ${C.BG4}, ${C.BG3})`;e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow=`0 14px 36px rgba(0,0,0,0.28)`;e.currentTarget.style.borderLeftWidth='3px';}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${p.color}50`;e.currentTarget.style.background=`linear-gradient(160deg, ${C.BG3}, ${C.BG4})`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 18px rgba(0,0,0,0.18)`;e.currentTarget.style.borderLeftWidth='1.5px';}}>
-              <div style={{
-                width:54, height:54, borderRadius:14, flexShrink:0,
-                background:`${p.color}40`, border:`1.5px solid ${p.color}65`,
-                display:'flex', alignItems:'center', justifyContent:'center', color:p.light,
-              }}>{p.icon}</div>
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${p.bd}80`;e.currentTarget.style.background=`linear-gradient(160deg,${p.bg}52,${p.bg}2e)`;e.currentTarget.style.transform='translateY(-5px)';e.currentTarget.style.boxShadow=`0 16px 42px rgba(0,0,0,.38)`;}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${p.bd}45`;e.currentTarget.style.background=`linear-gradient(160deg,${p.bg}3c,${p.bg}20)`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 5px 24px rgba(0,0,0,.30)`;}}>
+              <div style={{width:54,height:54,borderRadius:14,flexShrink:0,
+                background:`${p.bg}45`,border:`1.5px solid ${p.bd}65`,
+                display:'flex',alignItems:'center',justifyContent:'center',color:p.lt}}>{p.icon}</div>
               <div>
-                <div style={{ fontFamily:'Noto Naskh Arabic,serif', fontWeight:700, color:C.IVORY, fontSize:'1rem', marginBottom:7 }}>{p.title}</div>
-                <div style={{ fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.85rem', color:C.TW2, lineHeight:1.85 }}>{p.sub}</div>
+                <div style={{fontFamily:'Noto Naskh Arabic,serif',fontWeight:700,color:C.TW,fontSize:'1rem',marginBottom:7}}>{p.title}</div>
+                <div style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.86rem',color:C.TW2,lineHeight:1.9}}>{p.sub}</div>
               </div>
             </div>
           ))}
@@ -1164,80 +876,69 @@ function PathsSection() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ⭐ FEATURED — مختارات التفسير بتصميم المخطوطة الإسلامية
-═══════════════════════════════════════════════════════════ */
-function FeaturedSection() {
-  const navigate = useNavigate();
-  const items = [
-    { label:'آية اليوم', ayah:'﴿ لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ﴾', ref:'البقرة: ٢٨٦',
-      text:'هذه الآية الخاتمة تُجسِّد قانوناً إلهياً ثابتاً — فلا تكليف يتجاوز الطاقة، ولا ابتلاء يعجز عن الاحتمال.',
-      color:C.G3, colorL:C.G6, icon:<Flame size={17}/> },
-    { label:'وقفة تدبرية', ayah:'﴿ فَإِنِّي قَرِيبٌ أُجِيبُ دَعْوَةَ الدَّاعِ ﴾', ref:'البقرة: ١٨٦',
-      text:'أجاب الله مباشرةً دون واسطة — وفي هذا إيماء عميق أن الدعاء هو اللقاء الحقيقي بلا حجاب.',
-      color:C.TEAL2, colorL:C.TEAL4, icon:<Heart size={17}/> },
-    { label:'فيض تربوي', ayah:'﴿ وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ﴾', ref:'البقرة: ٤٥',
-      text:'الصبر وحده لا يكفي، والصلاة وحدها لا تكفي — لكن اجتماعهما يصنع قدرةً على مواجهة الحياة بثقلها.',
-      color:C.BLUE2, colorL:C.BLUE4, icon:<Sparkles size={17}/> },
+/* ═══════════════════════════════
+   FEATURED — بخلفية الصورة الإسلامية خفيفة أكثر وضوحاً
+═══════════════════════════════ */
+function Featured() {
+  const nav=useNavigate();
+  const items=[
+    {label:'آية اليوم',    ayah:'﴿ لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ﴾',ref:'البقرة: ٢٨٦',
+      text:'قانون إلهي ثابت — فلا تكليف يتجاوز الطاقة، ولا ابتلاء يعجز عن الاحتمال.',
+      bg:C.G1,bd:C.G3,lt:C.G6,icon:<Flame size={16}/>},
+    {label:'وقفة تدبرية', ayah:'﴿ فَإِنِّي قَرِيبٌ أُجِيبُ دَعْوَةَ الدَّاعِ ﴾',ref:'البقرة: ١٨٦',
+      text:'أجاب الله مباشرةً دون واسطة — الدعاء هو اللقاء الحقيقي بلا حجاب.',
+      bg:C.TEAL,bd:C.TEAL2,lt:C.TEAL4,icon:<Heart size={16}/>},
+    {label:'فيض تربوي',   ayah:'﴿ وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ﴾',ref:'البقرة: ٤٥',
+      text:'الصبر والصلاة معاً — اجتماعهما يصنع قدرةً على مواجهة الحياة بثقلها.',
+      bg:C.BLUE,bd:C.BLUE2,lt:C.BLUE4,icon:<Sparkles size={16}/>},
   ];
 
   return (
     <section style={{
-      background:`linear-gradient(160deg, ${C.BG4} 0%, ${C.BG3} 100%)`,
-      padding:'90px 28px', position:'relative', overflow:'hidden',
+      position:'relative',
+      background:`linear-gradient(160deg,#1c0e00 0%,#201200 100%)`,
+      padding:'92px 26px',overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.14}/>
-      <div style={{ maxWidth:1180, margin:'0 auto', position:'relative', zIndex:1 }}>
-        <SectionTitle title="مختارات التفسير"/>
-
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(340px,1fr))', gap:22 }}>
-          {items.map(item => (
-            <div key={item.label} style={{
-              background:`linear-gradient(165deg, ${C.BG3}, ${C.BG4})`,
-              border:`1.5px solid ${item.color}55`,
-              borderRadius:22, padding:'30px 26px',
-              position:'relative', overflow:'hidden', transition:'all 0.3s',
-              boxShadow:`0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 ${C.G4}14`,
+      {/* صورة إسلامية في الخلف — أكثر وضوحاً */}
+      <div style={{
+        position:'absolute',inset:0,
+        backgroundImage:'url(/bg_islamic.jpg)',
+        backgroundSize:'cover',backgroundPosition:'center',
+        opacity:.10,
+      }}/>
+      <GeomPattern opacity={.06}/>
+      <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
+        <SecTitle title="مختارات التفسير"/>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(345px,1fr))',gap:22}}>
+          {items.map(item=>(
+            <div key={item.label} dir="rtl" style={{
+              background:`linear-gradient(165deg,${item.bg}40,#1a1000)`,
+              border:`1.5px solid ${item.bd}45`,
+              borderRadius:24,padding:'30px 26px',
+              position:'relative',overflow:'hidden',transition:'all .3s',
+              boxShadow:`0 7px 30px rgba(0,0,0,.40)`,
             }}
-            dir="rtl"
-            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${item.color}58`;e.currentTarget.style.transform='translateY(-5px)';e.currentTarget.style.boxShadow=`0 18px 42px rgba(0,0,0,0.38)`;}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${item.color}28`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 6px 24px rgba(0,0,0,0.32)`;}}>
-
-              {/* قوس زخرفي خلفي */}
-              <div style={{ position:'absolute', bottom:-32, left:'50%', transform:'translateX(-50%)', opacity:0.12, pointerEvents:'none' }}>
-                <MoorishArch width={320} height={130} color={item.colorL} opacity={1}/>
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${item.bd}78`;e.currentTarget.style.transform='translateY(-6px)';e.currentTarget.style.boxShadow=`0 20px 48px rgba(0,0,0,.48)`;}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${item.bd}45`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 7px 30px rgba(0,0,0,.40)`;}}>
+              <div style={{position:'absolute',bottom:-35,left:'50%',transform:'translateX(-50%)',opacity:.07}}>
+                <Arch w={320} h={130} col={item.lt} op={1}/>
               </div>
-
-              <div style={{
-                display:'inline-flex', alignItems:'center', gap:7,
-                background:`${item.color}1c`, border:`1px solid ${item.color}38`,
-                borderRadius:22, padding:'5px 14px', marginBottom:18,
-                color:item.colorL, fontSize:'0.82rem', fontWeight:700,
-                fontFamily:'Noto Naskh Arabic,serif',
-              }}>
+              <div style={{display:'inline-flex',alignItems:'center',gap:7,
+                background:`${item.bg}35`,border:`1px solid ${item.bd}55`,
+                borderRadius:20,padding:'5px 15px',marginBottom:18,
+                color:item.lt,fontSize:'.83rem',fontWeight:700,fontFamily:'Noto Naskh Arabic,serif'}}>
                 {item.icon} {item.label}
               </div>
-
-              <p style={{
-                fontFamily:'Amiri,serif', fontSize:'1.35rem', color:C.G7,
-                lineHeight:2.0, marginBottom:10,
-                textShadow:`0 0 20px ${C.G4}30`,
-              }}>{item.ayah}</p>
-              <p style={{ fontSize:'0.74rem', color:item.colorL, fontWeight:700, fontFamily:'Noto Naskh Arabic,serif', marginBottom:16 }}>{item.ref}</p>
-
-              <p style={{
-                fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.92rem',
-                color:C.CREAM, lineHeight:2.1, margin:0,
-                borderRight:`2.5px solid ${item.color}50`, paddingRight:14,
-              }}>{item.text}</p>
-
-              <button onClick={()=>navigate('/part1')} style={{
-                marginTop:20, background:'transparent',
-                border:`1px solid ${item.color}38`, borderRadius:9,
-                padding:'8px 18px', color:item.colorL, fontSize:'0.84rem',
-                fontWeight:700, fontFamily:'Noto Naskh Arabic,serif', cursor:'pointer', transition:'all 0.2s',
+              <p style={{fontFamily:'Amiri,serif',fontSize:'1.38rem',color:C.G7,lineHeight:2.05,marginBottom:10,textShadow:`0 0 25px ${C.G4}40`}}>{item.ayah}</p>
+              <p style={{fontSize:'.74rem',color:item.lt,fontWeight:700,fontFamily:'Noto Naskh Arabic,serif',marginBottom:16}}>{item.ref}</p>
+              <p style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.92rem',color:'rgba(255,248,220,.88)',lineHeight:2.15,margin:0,
+                borderRight:`2.5px solid ${item.bd}65`,paddingRight:15}}>{item.text}</p>
+              <button onClick={()=>nav('/part1')} style={{
+                marginTop:20,background:'transparent',border:`1px solid ${item.bd}50`,
+                borderRadius:10,padding:'8px 18px',color:item.lt,fontSize:'.83rem',
+                fontWeight:700,fontFamily:'Noto Naskh Arabic,serif',cursor:'pointer',transition:'all .2s',
               }}
-              onMouseEnter={e=>e.currentTarget.style.background=`${item.color}18`}
+              onMouseEnter={e=>e.currentTarget.style.background=`${item.bg}28`}
               onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                 اقرأ التفسير كاملاً ←
               </button>
@@ -1249,90 +950,73 @@ function FeaturedSection() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🌐 MULTILINGUAL — نافذة معمارية للغات
-═══════════════════════════════════════════════════════════ */
-function MultilingualSection({ lang, onLangChange }) {
-  const samples = {
-    ar:{ title:'فيوض التأويل المعاصر', text:'قراءة تفسيرية معاصرة تجمع بين البيان القرآني والتدبر التربوي والبصيرة النفسية' },
-    en:{ title:'Streams of Contemporary Tafsir', text:'A contemporary exegetical reading combining Quranic eloquence, pedagogical contemplation, and spiritual insight' },
-    ur:{ title:'عصری تفسیر کے فیوض', text:'ایک جدید تفسیری مطالعہ جو قرآنی بیان، تربیتی تدبر اور نفسیاتی بصیرت کو یکجا کرتا ہے' },
-    id:{ title:'Tafsir Kontemporer', text:'Tafsir Quran kontemporer yang memadukan keindahan bayan, kontemplasi pedagogis, dan wawasan spiritual' },
-    tr:{ title:'Çağdaş Tefsir Kaynakları', text:'Kuranın beyan güzelliğini, terbiyevi tefekkürü ve ruhsal kavrayışı bir araya getiren çağdaş bir tefsir' },
+/* ═══════════════════════════════
+   MULTILINGUAL
+═══════════════════════════════ */
+function Multilingual({ lang, onLangChange }) {
+  const samples={
+    ar:{title:'فيوض التأويل المعاصر',text:'قراءة تفسيرية معاصرة تجمع بين البيان القرآني والتدبر التربوي والبصيرة النفسية'},
+    en:{title:'Streams of Contemporary Tafsir',text:'A contemporary exegetical reading combining Quranic eloquence, pedagogical contemplation, and spiritual insight'},
+    ur:{title:'عصری تفسیر کے فیوض',text:'ایک جدید تفسیری مطالعہ جو قرآنی بیان، تربیتی تدبر اور نفسیاتی بصیرت کو یکجا کرتا ہے'},
+    id:{title:'Tafsir Kontemporer',text:'Tafsir Quran kontemporer yang memadukan keindahan bayan, kontemplasi pedagogis, dan wawasan spiritual'},
+    tr:{title:'Çağdaş Tefsir Kaynakları',text:'Kuranın beyan güzelliğini, terbiyevi tefekkürü ve ruhsal kavrayışı bir araya getiren çağdaş bir tefsir'},
   };
-  const cur = samples[lang] || samples.ar;
-  const dir = ['ar','ur'].includes(lang) ? 'rtl' : 'ltr';
+  const cur=samples[lang]||samples.ar;
+  const dir=['ar','ur'].includes(lang)?'rtl':'ltr';
 
   return (
     <section style={{
-      background:`linear-gradient(135deg, ${C.BG2} 0%, ${C.BG3} 50%, ${C.BG2} 100%)`,
-      padding:'90px 28px', position:'relative', overflow:'hidden',
+      background:`linear-gradient(135deg,#1a0c00 0%,#241400 50%,#1a0c00 100%)`,
+      padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.18}/>
-      <div style={{
-        position:'absolute', inset:0,
-        background:`radial-gradient(ellipse 60% 50% at 50% 50%, ${C.G2}10 0%, transparent 65%)`,
-        pointerEvents:'none',
-      }}/>
+      <GeomPattern opacity={.09}/>
+      <div style={{position:'absolute',inset:0,
+        background:`radial-gradient(ellipse 60% 50% at 50% 50%,rgba(210,150,0,.16) 0%,transparent 65%)`,
+        pointerEvents:'none'}}/>
+      <div style={{maxWidth:940,margin:'0 auto',position:'relative',zIndex:1}}>
+        <SecTitle title="تجربة متعددة اللغات" sub="القرآن يخاطب العالم — اقرأ التفسير بلغتك"/>
 
-      <div style={{ maxWidth:950, margin:'0 auto', position:'relative', zIndex:1 }}>
-        <SectionTitle title="تجربة متعددة اللغات"
-          subtitle="القرآن يخاطب العالم — اقرأ التفسير بلغتك"/>
-
-        {/* أزرار اللغات الكبيرة */}
-        <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap', marginBottom:38 }}>
-          {LANGUAGES.map(l => (
+        <div style={{display:'flex',gap:12,justifyContent:'center',flexWrap:'wrap',marginBottom:38}}>
+          {LANGS.map(l=>(
             <button key={l.code} onClick={()=>onLangChange(l.code)} style={{
-              background: lang===l.code
-                ? `linear-gradient(135deg, ${C.G2}, ${C.G4}, ${C.G5})`
-                : `rgba(250,245,232,0.05)`,
-              color: lang===l.code ? C.DARK : C.TW2,
-              border:`1.5px solid ${lang===l.code ? C.G5 : C.BD2}`,
-              borderRadius:14, padding:'11px 22px',
-              fontSize:'0.92rem', fontWeight:700, cursor:'pointer',
-              fontFamily: ['ar','ur'].includes(l.code) ? 'Noto Naskh Arabic,serif':'Inter,sans-serif',
-              transition:'all 0.22s', display:'flex', alignItems:'center', gap:9,
-              boxShadow: lang===l.code ? `0 6px 20px ${C.G3}50` : '0 2px 8px rgba(0,0,0,0.25)',
-              backdropFilter: lang===l.code ? 'none' : 'blur(8px)',
+              background:lang===l.code?`linear-gradient(135deg,${C.G2},${C.G4},${C.G5})`:'rgba(255,220,100,.07)',
+              color:lang===l.code?'#150a00':C.TW2,
+              border:`1.5px solid ${lang===l.code?C.G5:C.BD2}`,
+              borderRadius:14,padding:'11px 22px',
+              fontSize:'.92rem',fontWeight:700,cursor:'pointer',
+              fontFamily:['ar','ur'].includes(l.code)?'Noto Naskh Arabic,serif':'Inter,sans-serif',
+              transition:'all .22s',display:'flex',alignItems:'center',gap:8,
+              boxShadow:lang===l.code?`0 6px 22px ${C.G4}58`:'0 2px 10px rgba(0,0,0,.30)',
+              backdropFilter:lang===l.code?'none':'blur(8px)',
             }}
             onMouseEnter={e=>{if(lang!==l.code){e.currentTarget.style.borderColor=C.G4;e.currentTarget.style.color=C.G6;e.currentTarget.style.background=C.GLOW2;}}}
-            onMouseLeave={e=>{if(lang!==l.code){e.currentTarget.style.borderColor=C.BD2;e.currentTarget.style.color=C.TW2;e.currentTarget.style.background='rgba(250,245,232,0.05)';}}}
-            >
+            onMouseLeave={e=>{if(lang!==l.code){e.currentTarget.style.borderColor=C.BD2;e.currentTarget.style.color=C.TW2;e.currentTarget.style.background='rgba(255,220,100,.07)';}}}>
               <span style={{fontSize:'1.15rem'}}>{l.flag}</span>
               <span>{l.label}</span>
             </button>
           ))}
         </div>
 
-        {/* نافذة العرض المعمارية */}
         <div style={{
           position:'relative',
-          background:`linear-gradient(160deg, ${C.BG3} 0%, ${C.BG4} 100%)`,
+          background:`rgba(210,150,0,.12)`,
           border:`1.5px solid ${C.BD4}`,
           borderRadius:'0 0 22px 22px',
-          padding:'44px 48px 40px',
-          boxShadow:`
-            0 8px 36px rgba(0,0,0,0.24),
-            inset 0 1px 0 ${C.G5}22
-          `,
+          padding:'44px 50px 42px',
+          boxShadow:`0 14px 55px rgba(0,0,0,.52), inset 0 1px 0 ${C.G5}28`,
+          backdropFilter:'blur(10px)',
         }}>
-          {/* قوس مغربي علوي */}
-          <div style={{ position:'absolute', top:-44, left:'50%', transform:'translateX(-50%)', width:'85%' }}>
-            <MoorishArch width={700} height={48} color={C.G4} opacity={0.65}/>
+          <div style={{position:'absolute',top:-46,left:'50%',transform:'translateX(-50%)',width:'84%'}}>
+            <Arch w={700} h={50} col={C.G4} op={.75}/>
           </div>
-
-          <div dir={dir} style={{ transition:'all 0.35s' }}>
-            <h3 style={{
-              fontFamily: dir==='rtl' ? 'Amiri,serif' : 'Playfair Display,serif',
-              fontSize:'2.1rem', fontWeight:700, marginBottom:18,
-              background:`linear-gradient(135deg, ${C.G4}, ${C.G6}, ${C.G7})`,
-              WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
-              filter:`drop-shadow(0 0 20px ${C.G3}30)`,
-            }}>{cur.title}</h3>
-            <p style={{
-              fontFamily: dir==='rtl' ? 'Noto Naskh Arabic,serif' : 'Inter,sans-serif',
-              fontSize:'1.05rem', color:C.CREAM, lineHeight:2.2,
-            }}>{cur.text}</p>
+          <div dir={dir} style={{transition:'all .35s'}}>
+            <h3 style={{fontFamily:dir==='rtl'?'Amiri,serif':'Playfair Display,serif',
+              fontSize:'2.1rem',fontWeight:700,marginBottom:18,
+              background:`linear-gradient(135deg,${C.G4},${C.G6},${C.G7})`,
+              WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text',
+              filter:`drop-shadow(0 0 22px ${C.G3}38)`}}>{cur.title}</h3>
+            <p style={{fontFamily:dir==='rtl'?'Noto Naskh Arabic,serif':'Inter,sans-serif',
+              fontSize:'1.06rem',color:'rgba(255,248,220,.90)',lineHeight:2.25}}>{cur.text}</p>
           </div>
         </div>
       </div>
@@ -1340,57 +1024,50 @@ function MultilingualSection({ lang, onLangChange }) {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ⚙️ FEATURES — خصائص المنصة
-═══════════════════════════════════════════════════════════ */
-function FeaturesSection() {
-  const items = [
-    { icon:<Search size={22}/>,     color:C.TEAL2, light:C.TEAL4, title:'البحث الذكي',        text:'بحث بالآية والكلمة والموضوع والجذر اللغوي', badge:'متاح' },
-    { icon:<Layers size={22}/>,     color:C.G3,    light:C.G6,    title:'مقارنة الآيات',      text:'مقارنة التفسيرات وربط الآيات ذات الموضوع الواحد', badge:'قريباً' },
-    { icon:<Map size={22}/>,        color:C.BLUE2, light:C.BLUE4, title:'خرائط المعرفة',      text:'خرائط ذهنية للمواضيع القرآنية وترابطها', badge:'قريباً' },
-    { icon:<Volume2 size={22}/>,    color:C.RUBY,  light:C.RUBY2, title:'التفسير الصوتي',     text:'الاستماع للتفسير بأصوات عالية الجودة', badge:'قريباً' },
-    { icon:<BookMarked size={22}/>, color:C.G2,    light:C.G5,    title:'المسارات الموضوعية', text:'تصفح التفسير حسب المواضيع والأبعاد', badge:'متاح' },
-    { icon:<Globe size={22}/>,      color:C.TEAL,  light:C.TEAL3, title:'خمس لغات',           text:'العربية والإنجليزية والأردو والإندونيسية والتركية', badge:'متاح' },
+/* ═══════════════════════════════
+   FEATURES
+═══════════════════════════════ */
+function Features() {
+  const items=[
+    {icon:<Search size={22}/>,     bg:C.TEAL, bd:C.TEAL2,lt:C.TEAL4,title:'البحث الذكي',        text:'بحث بالآية والكلمة والموضوع والجذر اللغوي',    badge:'متاح'},
+    {icon:<Layers size={22}/>,     bg:C.G1,   bd:C.G2,   lt:C.G5,   title:'مقارنة الآيات',      text:'مقارنة التفسيرات وربط الآيات ذات الموضوع الواحد', badge:'قريباً'},
+    {icon:<Map size={22}/>,        bg:C.BLUE, bd:C.BLUE2,lt:C.BLUE4,title:'خرائط المعرفة',      text:'خرائط ذهنية للمواضيع القرآنية وترابطها',      badge:'قريباً'},
+    {icon:<Volume2 size={22}/>,    bg:C.ROSE, bd:C.ROSE2,lt:C.ROSE4,title:'التفسير الصوتي',     text:'الاستماع للتفسير بأصوات عالية الجودة',         badge:'قريباً'},
+    {icon:<BookMarked size={22}/>, bg:C.OLIV, bd:C.OLIV2,lt:C.OLIV4,title:'المسارات الموضوعية', text:'تصفح التفسير حسب المواضيع والأبعاد',           badge:'متاح'},
+    {icon:<Globe size={22}/>,      bg:C.PURP, bd:C.PURP2,lt:C.PURP4,title:'خمس لغات',           text:'العربية والإنجليزية والأردو والإندونيسية والتركية',badge:'متاح'},
   ];
 
   return (
     <section id="features" style={{
-      background:`linear-gradient(180deg, ${C.BG3} 0%, ${C.BG4} 100%)`,
-      padding:'90px 28px', position:'relative', overflow:'hidden',
+      background:`linear-gradient(180deg,#200e00 0%,#2a1600 50%,#200e00 100%)`,
+      padding:'92px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.13}/>
-      <div style={{ maxWidth:1180, margin:'0 auto', position:'relative', zIndex:1 }}>
-        <SectionTitle title="خصائص المنصة"/>
-
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:18 }}>
-          {items.map(f => (
-            <div key={f.title} style={{
-              background:`linear-gradient(160deg, ${f.color}14, ${C.CARD})`,
-              border:`1px solid ${f.color}22`,
-              borderRadius:18, padding:'28px 24px', position:'relative',
-              transition:'all 0.27s',
-              boxShadow:`0 4px 18px rgba(0,0,0,0.25)`,
+      <GeomPattern opacity={.06}/>
+      <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
+        <SecTitle title="خصائص المنصة"/>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(325px,1fr))',gap:18}}>
+          {items.map(f=>(
+            <div key={f.title} dir="rtl" style={{
+              background:`linear-gradient(160deg,${f.bg}32,#1a1000)`,
+              border:`1.5px solid ${f.bd}38`,
+              borderRadius:20,padding:'28px 24px',position:'relative',
+              transition:'all .27s',boxShadow:`0 5px 24px rgba(0,0,0,.32)`,
             }}
-            dir="rtl"
-            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${f.color}80`;e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow=`0 14px 34px rgba(0,0,0,0.28)`;e.currentTarget.style.background=`linear-gradient(160deg, ${C.BG4}, ${C.BG3})`;;}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${f.color}48`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 18px rgba(0,0,0,0.18)`;e.currentTarget.style.background=`linear-gradient(160deg, ${C.BG3}, ${C.BG4})`;}}>            
-              {/* شارة الحالة */}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${f.bd}75`;e.currentTarget.style.transform='translateY(-5px)';e.currentTarget.style.boxShadow=`0 16px 40px rgba(0,0,0,.40)`;}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${f.bd}38`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 5px 24px rgba(0,0,0,.32)`;}}>
               <span style={{
-                position:'absolute', top:14, left:14,
-                background: f.badge==='متاح' ? `${C.TEAL2}45` : `${C.G3}38`,
-                color: f.badge==='متاح' ? C.TEAL4 : C.G5,
-                border:`1px solid ${f.badge==='متاح' ? C.TEAL3 : C.G4}32`,
-                borderRadius:20, padding:'3px 10px', fontSize:'0.7rem', fontWeight:700,
+                position:'absolute',top:14,left:14,
+                background:f.badge==='متاح'?`${f.bg}40`:`${C.G1}30`,
+                color:f.badge==='متاح'?f.lt:C.G5,
+                border:`1px solid ${f.badge==='متاح'?f.bd:C.G2}45`,
+                borderRadius:20,padding:'2px 10px',fontSize:'.70rem',fontWeight:700,
                 fontFamily:'Noto Naskh Arabic,serif',
               }}>{f.badge}</span>
-              {/* أيقونة */}
-              <div style={{
-                width:54, height:54, borderRadius:14, marginBottom:16,
-                background:`${f.color}40`, border:`1.5px solid ${f.color}65`,
-                display:'flex', alignItems:'center', justifyContent:'center', color:f.light,
-              }}>{f.icon}</div>
-              <div style={{ fontFamily:'Noto Naskh Arabic,serif', fontWeight:700, color:C.IVORY, fontSize:'1rem', marginBottom:10 }}>{f.title}</div>
-              <div style={{ fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.88rem', color:C.TW2, lineHeight:2 }}>{f.text}</div>
+              <div style={{width:54,height:54,borderRadius:14,marginBottom:16,
+                background:`${f.bg}32`,border:`1.5px solid ${f.bd}55`,
+                display:'flex',alignItems:'center',justifyContent:'center',color:f.lt}}>{f.icon}</div>
+              <div style={{fontFamily:'Noto Naskh Arabic,serif',fontWeight:700,color:C.TW,fontSize:'1.01rem',marginBottom:10}}>{f.title}</div>
+              <div style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.88rem',color:C.TW2,lineHeight:2.05}}>{f.text}</div>
             </div>
           ))}
         </div>
@@ -1399,58 +1076,49 @@ function FeaturesSection() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   📧 NEWSLETTER — الاشتراك
-═══════════════════════════════════════════════════════════ */
-function NewsletterSection() {
-  const [email, setEmail] = useState('');
-  const [done, setDone] = useState(false);
-
+/* ═══════════════════════════════
+   NEWSLETTER
+═══════════════════════════════ */
+function Newsletter() {
+  const [em,setEm]=useState('');
+  const [ok,setOk]=useState(false);
   return (
     <section style={{
-      background:`linear-gradient(180deg, ${C.BG4} 0%, ${C.BG3} 100%)`,
-      padding:'80px 28px', position:'relative', overflow:'hidden',
+      background:`linear-gradient(180deg,#281600 0%,#1e1000 100%)`,
+      padding:'82px 26px',position:'relative',overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.15}/>
-      <div style={{
-        position:'absolute', inset:0,
-        background:`radial-gradient(ellipse at 50% 50%, ${C.G2}10 0%, transparent 60%)`,
-        pointerEvents:'none',
-      }}/>
-
-      <div style={{ maxWidth:600, margin:'0 auto', textAlign:'center', position:'relative', zIndex:1 }} dir="rtl">
-        <OrnamentalDivider/>
-        <h2 style={{
-          fontFamily:'Amiri,serif', fontSize:'clamp(1.7rem,3vw,2.3rem)',
-          background:`linear-gradient(135deg, ${C.G4}, ${C.G6}, ${C.G7})`,
-          WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
-          backgroundClip:'text', margin:'10px 0 14px',
-        }}>تابع الإضافات الجديدة</h2>
-        <p style={{ fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.95rem', color:C.TW2, lineHeight:2, marginBottom:30 }}>
+      <GeomPattern opacity={.07}/>
+      <div style={{position:'absolute',inset:0,
+        background:`radial-gradient(ellipse at 50% 50%,rgba(210,150,0,.15) 0%,transparent 60%)`,pointerEvents:'none'}}/>
+      <div style={{maxWidth:600,margin:'0 auto',textAlign:'center',position:'relative',zIndex:1}} dir="rtl">
+        <Divider/>
+        <h2 style={{fontFamily:'Amiri,serif',fontSize:'clamp(1.75rem,3vw,2.35rem)',
+          background:`linear-gradient(135deg,${C.G4},${C.G6},${C.G7})`,
+          WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text',
+          margin:'10px 0 14px'}}>تابع الإضافات الجديدة</h2>
+        <p style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.95rem',color:C.TW2,lineHeight:2.1,marginBottom:30}}>
           اشترك ليصلك كل جديد — آيات وتفسيرات وسور جديدة
         </p>
-
-        {done ? (
-          <div style={{ background:`${C.TEAL}22`, border:`1px solid ${C.TEAL4}45`, borderRadius:14, padding:'16px 28px', color:C.TEAL4, fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.95rem' }}>
+        {ok?(
+          <div style={{background:`${C.TEAL}35`,border:`1px solid ${C.TEAL4}60`,borderRadius:14,
+            padding:'16px 28px',color:C.TEAL4,fontFamily:'Noto Naskh Arabic,serif',fontSize:'.95rem'}}>
             ✅ شكراً! تم تسجيل اشتراكك
           </div>
-        ) : (
-          <div style={{ display:'flex', gap:12 }}>
-            <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
-              placeholder="بريدك الإلكتروني" dir="rtl"
-              style={{
-                flex:1, background:'rgba(250,245,232,0.05)',
-                border:`1.5px solid ${C.BD2}`, borderRadius:14,
-                padding:'13px 18px', color:C.IVORY, fontSize:'0.92rem',
-                fontFamily:'Noto Naskh Arabic,serif', outline:'none',
+        ):(
+          <div style={{display:'flex',gap:12}}>
+            <input type="email" value={em} onChange={e=>setEm(e.target.value)}
+              placeholder="بريدك الإلكتروني" dir="rtl" style={{
+                flex:1,background:'rgba(255,220,100,.07)',
+                border:`1.5px solid ${C.BD2}`,borderRadius:14,
+                padding:'13px 18px',color:C.TW,fontSize:'.92rem',
+                fontFamily:'Noto Naskh Arabic,serif',outline:'none',
               }}/>
-            <button onClick={()=>email&&setDone(true)} style={{
-              background:`linear-gradient(135deg, ${C.G2}, ${C.G5})`,
-              color:C.DARK, border:'none', borderRadius:14,
-              padding:'13px 26px', fontSize:'0.92rem', fontWeight:800,
-              fontFamily:'Noto Naskh Arabic,serif', cursor:'pointer',
-              whiteSpace:'nowrap', flexShrink:0,
-              boxShadow:`0 5px 18px ${C.G3}45`,
+            <button onClick={()=>em&&setOk(true)} style={{
+              background:`linear-gradient(135deg,${C.G2},${C.G5})`,
+              color:'#150a00',border:'none',borderRadius:14,
+              padding:'13px 26px',fontSize:'.92rem',fontWeight:800,
+              fontFamily:'Noto Naskh Arabic,serif',cursor:'pointer',
+              whiteSpace:'nowrap',flexShrink:0,boxShadow:`0 5px 20px ${C.G4}55`,
             }}>اشترك</button>
           </div>
         )}
@@ -1459,98 +1127,78 @@ function NewsletterSection() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🏰 FOOTER — ذيل الصفحة بطراز القصر الإسلامي
-═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════
+   FOOTER
+═══════════════════════════════ */
 function Footer() {
-  const navigate = useNavigate();
+  const nav=useNavigate();
   return (
     <footer style={{
-      background:`linear-gradient(180deg, ${C.BG4} 0%, ${C.BG2} 100%)`,
-      borderTop:`1px solid ${C.BD3}`, padding:'60px 28px 32px',
-      position:'relative', overflow:'hidden',
+      background:`linear-gradient(180deg,#1e1000,#150a00)`,
+      borderTop:`1px solid ${C.BD3}`,padding:'60px 26px 32px',
+      position:'relative',overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.20}/>
-
-      {/* مقرنصات الأعلى */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, opacity:0.45 }}>
-        <MuqarnasBand height={32}/>
+      <GeomPattern opacity={.05}/>
+      <div style={{position:'absolute',top:0,left:0,right:0}}>
+        <Muqarnas h={32}/>
       </div>
+      <div style={{position:'absolute',top:0,left:0,right:0,height:2,
+        background:`linear-gradient(90deg,transparent,${C.G3},${C.G6},${C.G3},transparent)`}}/>
 
-      {/* خط ذهبي علوي */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:2,
-        background:`linear-gradient(90deg, transparent 0%, ${C.G3} 20%, ${C.G6} 50%, ${C.G3} 80%, transparent 100%)` }}/>
-
-      <div style={{ maxWidth:1180, margin:'0 auto', position:'relative', zIndex:1 }}>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:40, marginBottom:40 }} dir="rtl">
-
-          {/* العلامة التجارية */}
+      <div style={{maxWidth:1180,margin:'0 auto',position:'relative',zIndex:1}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:40,marginBottom:40}} dir="rtl">
           <div>
-            <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-start', gap:14, marginBottom:16 }}>
-              <div style={{
-                width:96, height:96, borderRadius:'50% 50% 16px 16px',
-                border:`1.5px solid ${C.G4}65`,
-                overflow:'hidden', background:C.BG0,
-                boxShadow:`0 0 24px ${C.G3}22`,
-              }}>
-                <img src="/logo.png" alt="Logo" style={{ width:'100%', height:'100%', objectFit:'contain', padding:5 }}/>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',gap:13,marginBottom:16}}>
+              <div style={{width:94,height:94,borderRadius:'50% 50% 14px 14px',
+                border:`1.5px solid ${C.G4}75`,overflow:'hidden',background:'rgba(10,5,0,.9)',
+                boxShadow:`0 0 26px ${C.G4}32`}}>
+                <img src="/logo.png" alt="Logo" style={{width:'100%',height:'100%',objectFit:'contain',padding:6}}/>
               </div>
-              <div style={{
-                fontFamily:'Amiri,serif', fontSize:'1.15rem',
-                background:`linear-gradient(135deg, ${C.G4}, ${C.G6})`,
-                WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
-                fontWeight:700,
-              }}>فيوض التأويل المعاصر</div>
+              <div style={{fontFamily:'Amiri,serif',fontSize:'1.15rem',fontWeight:700,
+                background:`linear-gradient(135deg,${C.G4},${C.G6})`,
+                WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
+                فيوض التأويل المعاصر
+              </div>
             </div>
-            <p style={{ fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.82rem', color:C.TW4, lineHeight:2 }}>
+            <p style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.83rem',color:C.TW4,lineHeight:2.1}}>
               مشروع تفسيري قرآني معاصر يقدم سورة البقرة بأسلوب متعدد الأبعاد
             </p>
           </div>
 
-          {/* روابط سريعة */}
           <div>
-            <h4 style={{ fontFamily:'Noto Naskh Arabic,serif', color:C.G5, fontSize:'0.92rem', fontWeight:700, marginBottom:16 }}>روابط سريعة</h4>
-            {[
-              { label:'الجزء الأول', fn:()=>navigate('/part1') },
-              { label:'الجزء الثاني', fn:()=>navigate('/part2') },
-              { label:'عن المشروع', fn:()=>document.getElementById('about')?.scrollIntoView({behavior:'smooth'}) },
-              { label:'البحث في التفسير', fn:()=>document.getElementById('search-sec')?.scrollIntoView({behavior:'smooth'}) },
-            ].map(l => (
-              <div key={l.label} style={{ marginBottom:10 }}>
-                <button onClick={l.fn} style={{
-                  background:'none', border:'none', color:C.TW2, fontSize:'0.85rem',
-                  fontFamily:'Noto Naskh Arabic,serif', cursor:'pointer', padding:0, transition:'color 0.2s',
-                }}
+            <h4 style={{fontFamily:'Noto Naskh Arabic,serif',color:C.G5,fontSize:'.92rem',fontWeight:700,marginBottom:16}}>روابط سريعة</h4>
+            {[['الجزء الأول',()=>nav('/part1')],['الجزء الثاني',()=>nav('/part2')],
+              ['عن المشروع',()=>document.getElementById('about')?.scrollIntoView({behavior:'smooth'})],
+              ['البحث في التفسير',()=>document.getElementById('search-sec')?.scrollIntoView({behavior:'smooth'})]
+            ].map(([l,fn])=>(
+              <div key={l} style={{marginBottom:10}}>
+                <button onClick={fn} style={{background:'none',border:'none',color:C.TW2,
+                  fontSize:'.85rem',fontFamily:'Noto Naskh Arabic,serif',cursor:'pointer',padding:0,transition:'color .2s'}}
                 onMouseEnter={e=>e.currentTarget.style.color=C.G5}
-                onMouseLeave={e=>e.currentTarget.style.color=C.TW2}>
-                  ← {l.label}
-                </button>
+                onMouseLeave={e=>e.currentTarget.style.color=C.TW2}>← {l}</button>
               </div>
             ))}
           </div>
 
-          {/* اللغات */}
           <div>
-            <h4 style={{ fontFamily:'Noto Naskh Arabic,serif', color:C.G5, fontSize:'0.92rem', fontWeight:700, marginBottom:16 }}>اللغات</h4>
-            {LANGUAGES.map(l => (
-              <div key={l.code} style={{ marginBottom:8, fontSize:'0.84rem', color:C.TW3,
-                fontFamily:['ar','ur'].includes(l.code)?'Noto Naskh Arabic,serif':'Inter,sans-serif' }}>
+            <h4 style={{fontFamily:'Noto Naskh Arabic,serif',color:C.G5,fontSize:'.92rem',fontWeight:700,marginBottom:16}}>اللغات</h4>
+            {LANGS.map(l=>(
+              <div key={l.code} style={{marginBottom:9,fontSize:'.84rem',color:C.TW3,
+                fontFamily:['ar','ur'].includes(l.code)?'Noto Naskh Arabic,serif':'Inter,sans-serif'}}>
                 {l.flag} {l.label}
               </div>
             ))}
           </div>
 
-          {/* تواصل */}
           <div>
-            <h4 style={{ fontFamily:'Noto Naskh Arabic,serif', color:C.G5, fontSize:'0.92rem', fontWeight:700, marginBottom:16 }}>تواصل معنا</h4>
-            <p style={{ fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.82rem', color:C.TW4, lineHeight:2 }}>
+            <h4 style={{fontFamily:'Noto Naskh Arabic,serif',color:C.G5,fontSize:'.92rem',fontWeight:700,marginBottom:16}}>تواصل معنا</h4>
+            <p style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.83rem',color:C.TW4,lineHeight:2.1}}>
               للتواصل والملاحظات العلمية حول المشروع
             </p>
             <a href="mailto:info@fuyud-tafsir.com" style={{
-              display:'inline-flex', alignItems:'center', gap:7,
-              color:C.G5, fontSize:'0.82rem', fontFamily:'Inter,sans-serif',
-              textDecoration:'none', marginTop:10, transition:'color 0.2s',
-            }}
+              display:'inline-flex',alignItems:'center',gap:6,
+              color:C.G5,fontSize:'.83rem',fontFamily:'Inter,sans-serif',
+              textDecoration:'none',marginTop:10,transition:'color .2s'}}
             onMouseEnter={e=>e.currentTarget.style.color=C.G7}
             onMouseLeave={e=>e.currentTarget.style.color=C.G5}>
               <Mail size={14}/> info@fuyud-tafsir.com
@@ -1558,15 +1206,16 @@ function Footer() {
           </div>
         </div>
 
-        <OrnamentalDivider/>
+        <Divider/>
 
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:14 }} dir="rtl">
-          <p style={{ fontFamily:'Noto Naskh Arabic,serif', fontSize:'0.78rem', color:C.TW4, margin:0 }}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:13}} dir="rtl">
+          <p style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'.78rem',color:C.TW4,margin:0}}>
             © ١٤٤٦ هـ | فيوض التأويل المعاصر — جميع الحقوق محفوظة
           </p>
-          <div style={{ display:'flex', gap:22 }}>
+          <div style={{display:'flex',gap:22}}>
             {['سياسة الخصوصية','شروط الاستخدام'].map(t=>(
-              <span key={t} style={{ fontSize:'0.75rem', color:C.TW4, fontFamily:'Noto Naskh Arabic,serif', cursor:'pointer', transition:'color 0.2s' }}
+              <span key={t} style={{fontSize:'.75rem',color:C.TW4,fontFamily:'Noto Naskh Arabic,serif',
+                cursor:'pointer',transition:'color .2s'}}
               onMouseEnter={e=>e.currentTarget.style.color=C.G5}
               onMouseLeave={e=>e.currentTarget.style.color=C.TW4}>{t}</span>
             ))}
@@ -1577,37 +1226,37 @@ function Footer() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   🏠 MAIN HOMEPAGE
-═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════
+   MAIN
+═══════════════════════════════ */
 export default function HomePage({ lang, onLangChange }) {
   return (
-    <div style={{ background:C.BG1, minHeight:'100vh', direction:'rtl' }}>
+    <div style={{background:'#1a1000',minHeight:'100vh',direction:'rtl'}}>
       <style>{`
-        @keyframes heroGlow {
-          0%, 100% { opacity:0.35; transform:scale(1); }
-          50%       { opacity:0.65; transform:scale(1.08); }
+        @keyframes glow {
+          0%,100%{opacity:.35;transform:scale(1)}
+          50%{opacity:.70;transform:scale(1.10)}
         }
-        .nav-desktop { display:flex; }
-        @media(max-width:768px){ .nav-desktop{display:none!important;} }
-        * { box-sizing:border-box; margin:0; padding:0; }
-        html { scroll-behavior:smooth; }
-        ::-webkit-scrollbar { width:8px; background:${C.BG1}; }
-        ::-webkit-scrollbar-thumb { background:${C.G2}; border-radius:8px; }
-        ::-webkit-scrollbar-thumb:hover { background:${C.G4}; }
-        ::selection { background:${C.G3}55; color:${C.IVORY}; }
+        .nav-desktop{display:flex}
+        @media(max-width:768px){.nav-desktop{display:none!important}}
+        *{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth}
+        ::-webkit-scrollbar{width:8px;background:#150a00}
+        ::-webkit-scrollbar-thumb{background:${C.G2};border-radius:8px}
+        ::-webkit-scrollbar-thumb:hover{background:${C.G4}}
+        ::selection{background:${C.G3}60;color:#fff8e8}
       `}</style>
 
       <Header lang={lang} onLangChange={onLangChange}/>
-      <HeroSection/>
+      <Hero/>
       <SearchSection/>
-      <AboutSection/>
-      <SurahsSection/>
-      <PathsSection/>
-      <FeaturedSection/>
-      <MultilingualSection lang={lang} onLangChange={onLangChange}/>
-      <FeaturesSection/>
-      <NewsletterSection/>
+      <About/>
+      <Surahs/>
+      <Paths/>
+      <Featured/>
+      <Multilingual lang={lang} onLangChange={onLangChange}/>
+      <Features/>
+      <Newsletter/>
       <Footer/>
     </div>
   );
