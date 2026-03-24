@@ -8,78 +8,77 @@ import {
 } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════
-   🎨 PALETTE — مستلهم من الفن المعماري الإسلامي العربي
-   المحراب المذهب · الجص الأبيض · الفسيفساء الفيروزية
-   قصر الحمراء · مسجد الشاه · المسجد الكبير في قرطبة
+   🎨 PALETTE — ذهبي دافئ مشرق · مستلهم من داخل قصر الحمراء
+   بنية ذهبية · عاجي ناصع · فيروزي زمردي · نحاسي دافئ
 ═══════════════════════════════════════════════════════════ */
 const C = {
-  /* ── خلفيات داكنة ذهبية دافئة (مستلهمة من الخشب المنقوش والرخام الداكن) */
-  BG0:    '#06040a',   /* أسود بنفسجي عميق جداً */
-  BG1:    '#0c0800',   /* أسود ذهبي دافئ */
-  BG2:    '#130d02',   /* بني ذهبي عميق */
-  BG3:    '#1b1204',   /* كهرماني ليلي */
-  BG4:    '#231806',   /* كهرماني داكن */
-  CARD:   '#100900',   /* بطاقة داكنة */
-  CARD2:  '#170d01',   /* بطاقة ثانوية */
+  /* ── خلفيات بنية ذهبية دافئة — متوسطة الإضاءة كجدران الحمراء */
+  BG0:    '#1c1200',   /* بني ذهبي عميق */
+  BG1:    '#241800',   /* بني كهرماني */
+  BG2:    '#2e2004',   /* كهرماني دافئ */
+  BG3:    '#382808',   /* كهرماني متوسط */
+  BG4:    '#42300c',   /* عنبري دافئ */
+  CARD:   '#362802',   /* بطاقة ذهبية */
+  CARD2:  '#3e2e04',   /* بطاقة ثانوية */
 
-  /* ── ذهب معدني متعدد الدرجات (مستلهم من المحاريب والتيجان الذهبية) */
-  G1:     '#6b4f06',   /* ذهب قديم داكن */
-  G2:     '#9a7312',   /* ذهب عتيق */
-  G3:     '#c0911c',   /* ذهب كلاسيكي */
-  G4:     '#d4a843',   /* ذهب معدني */
-  G5:     '#e8c060',   /* ذهب مضيء */
-  G6:     '#f2d07a',   /* ذهب فاتح */
-  G7:     '#fbe9b0',   /* ذهب كريمي */
+  /* ── ذهب نحاسي لامع متعدد الدرجات */
+  G1:     '#8a6a10',   /* ذهب نحاسي داكن */
+  G2:     '#b08820',   /* ذهب نحاسي */
+  G3:     '#cfa030',   /* ذهب كلاسيكي */
+  G4:     '#e0b84a',   /* ذهب لامع */
+  G5:     '#f0cc68',   /* ذهب مضيء */
+  G6:     '#f8dc88',   /* ذهب فاتح */
+  G7:     '#fdeeb8',   /* ذهب كريمي */
 
-  /* ── ألوان فاتحة (الجص الأبيض والرخام الذي يزيّن قصور الأندلس والمساجد) */
-  IVORY:  '#faf5e8',   /* عاجي نقي */
-  CREAM:  '#f0e8cc',   /* كريمي دافئ */
-  PLASTER:'#e4d9b8',   /* لون الجص القديم */
-  WARM:   '#cfc0a0',   /* دافئ خافت */
-  PARCHM: '#b8a882',   /* لون المخطوطات القديمة */
+  /* ── ألوان فاتحة دافئة — جص أبيض ورخام أندلسي */
+  IVORY:  '#fdf8ec',   /* عاجي ناصع */
+  CREAM:  '#f5ecd0',   /* كريمي دافئ */
+  PLASTER:'#ece0b8',   /* جص قديم */
+  WARM:   '#d8c898',   /* دافئ خافت */
+  PARCHM: '#c4b080',   /* مخطوط عتيق */
 
-  /* ── فيروزي كالفسيفساء الإسلامية */
-  TEAL0:  '#0a3a32',   /* فيروزي عميق جداً */
-  TEAL:   '#12584a',   /* فيروزي داكن */
-  TEAL2:  '#1a7858',   /* فيروزي كلاسيكي */
-  TEAL3:  '#28a07a',   /* فيروزي فاتح */
-  TEAL4:  '#4dc89a',   /* فيروزي لامع */
+  /* ── فيروزي زمردي — من بلاط الحمراء */
+  TEAL0:  '#0d4a3c',   /* زمردي عميق */
+  TEAL:   '#186850',   /* فيروزي كلاسيكي */
+  TEAL2:  '#228c6c',   /* فيروزي متوسط */
+  TEAL3:  '#34b488',   /* فيروزي مضيء */
+  TEAL4:  '#5ad4a8',   /* زمردي لامع */
 
-  /* ── أزرق كحلي أندلسي (من فسيفساء قصر الحمراء) */
-  NAVY:   '#0a1428',   /* كحلي ليلي */
-  BLUE:   '#162044',   /* كحلي غامق */
-  BLUE2:  '#224878',   /* أزرق أندلسي */
-  BLUE3:  '#3874b8',   /* أزرق فاتح */
-  BLUE4:  '#74aade',   /* أزرق سماوي */
+  /* ── أزرق ملكي أندلسي */
+  NAVY:   '#162444',   /* كحلي ملكي */
+  BLUE:   '#1e3460',   /* أزرق ملكي */
+  BLUE2:  '#2e5890',   /* أزرق أندلسي */
+  BLUE3:  '#4880c8',   /* أزرق فاتح */
+  BLUE4:  '#80b0e8',   /* أزرق سماوي */
 
-  /* ── أحمر ياقوتي (من الزجاج الملون في المساجد) */
-  RUBY0:  '#3a0808',   /* ياقوتي داكن جداً */
-  RUBY:   '#680c0c',   /* ياقوتي */
-  RUBY2:  '#c43030',   /* ياقوتي فاتح */
+  /* ── أحمر ياقوتي دافئ */
+  RUBY0:  '#4a1010',   /* ياقوتي غامق */
+  RUBY:   '#8c1818',   /* ياقوتي دافئ */
+  RUBY2:  '#d84040',   /* ياقوتي لامع */
 
-  /* ── أبيض فاتح للنص على الخلفيات الداكنة */
-  TW:     '#faf5e8',   /* أبيض دافئ */
-  TW2:    'rgba(250,245,232,0.80)',
-  TW3:    'rgba(250,245,232,0.55)',
-  TW4:    'rgba(250,245,232,0.32)',
-  TW5:    'rgba(250,245,232,0.16)',
+  /* ── نصوص فاتحة */
+  TW:     '#fdf8ec',
+  TW2:    'rgba(253,248,236,0.85)',
+  TW3:    'rgba(253,248,236,0.60)',
+  TW4:    'rgba(253,248,236,0.38)',
+  TW5:    'rgba(253,248,236,0.18)',
 
-  /* ── نص داكن على الخلفيات الفاتحة */
-  DARK:   '#1a1200',
-  DARK2:  '#2c1e04',
+  /* ── نص داكن على الفاتح */
+  DARK:   '#1c1200',
+  DARK2:  '#2e1e00',
 
   /* ── حدود ذهبية */
-  BD1:    'rgba(212,168,67,0.12)',
-  BD2:    'rgba(212,168,67,0.28)',
-  BD3:    'rgba(212,168,67,0.52)',
-  BD4:    'rgba(212,168,67,0.78)',
-  BD5:    'rgba(212,168,67,0.95)',
+  BD1:    'rgba(224,184,74,0.15)',
+  BD2:    'rgba(224,184,74,0.32)',
+  BD3:    'rgba(224,184,74,0.55)',
+  BD4:    'rgba(224,184,74,0.80)',
+  BD5:    'rgba(224,184,74,0.96)',
 
-  /* ── توهجات وبريق */
-  GLOW:   'rgba(212,168,67,0.10)',
-  GLOW2:  'rgba(212,168,67,0.22)',
-  GLOW3:  'rgba(212,168,67,0.40)',
-  TGLOW:  'rgba(40,160,122,0.15)',
+  /* ── توهجات */
+  GLOW:   'rgba(224,184,74,0.12)',
+  GLOW2:  'rgba(224,184,74,0.26)',
+  GLOW3:  'rgba(224,184,74,0.45)',
+  TGLOW:  'rgba(52,180,136,0.18)',
 };
 
 const LANGUAGES = [
@@ -148,15 +147,15 @@ function MuqarnasBand({ height = 48, flipped = false }) {
             <g key={i}>
               {/* القوس الخارجي */}
               <path d={`M${x},${height} L${x},${height*0.55} Q${cx},${-height*0.1} ${x+uw},${height*0.55} L${x+uw},${height}`}
-                fill={C.BG2} stroke={C.G4} strokeWidth="0.6" opacity="0.5"/>
+                fill={C.BG3} stroke={C.G4} strokeWidth="1" opacity="0.85"/>
               {/* القوس الداخلي الصغير */}
               <path d={`M${x+8},${height} L${x+8},${height*0.65} Q${cx},${height*0.15} ${x+uw-8},${height*0.65} L${x+uw-8},${height}`}
-                fill="none" stroke={C.G5} strokeWidth="0.4" opacity="0.55"/>
+                fill="none" stroke={C.G6} strokeWidth="0.6" opacity="0.7"/>
               {/* نقطة الذروة */}
-              <circle cx={cx} cy={height*0.12} r="2" fill={C.G5} fillOpacity="0.7"/>
+              <circle cx={cx} cy={height*0.12} r="2.5" fill={C.G5} fillOpacity="0.9"/>
               {/* خط أفقي رابط */}
               <line x1={x} y1={height*0.55} x2={x+uw} y2={height*0.55}
-                stroke={C.G3} strokeWidth="0.3" opacity="0.3"/>
+                stroke={C.G4} strokeWidth="0.5" opacity="0.5"/>
             </g>
           );
         })}
@@ -359,7 +358,7 @@ function Header({ lang, onLangChange }) {
 
       {/* شريط اللغات — كالكتابة الكوفية على إفريز المسجد */}
       <div style={{
-        background:`linear-gradient(180deg, ${C.BG1}, ${C.BG2})`,
+        background:`linear-gradient(180deg, ${C.BG2}, ${C.BG3})`,
         borderBottom:`1px solid ${C.BD3}`,
         padding:'8px 20px',
         display:'flex', justifyContent:'center', alignItems:'center',
@@ -367,7 +366,7 @@ function Header({ lang, onLangChange }) {
         position:'relative', overflow:'hidden',
       }}>
         {/* نمط خفي */}
-        <GiridPattern opacity={0.04}/>
+        <GiridPattern opacity={0.20}/>
         <Globe size={15} color={C.G4} style={{ marginLeft:4, opacity:0.7, flexShrink:0 }}/>
         {LANGUAGES.map(l => (
           <button key={l.code} onClick={() => onLangChange(l.code)} style={{
@@ -396,11 +395,11 @@ function Header({ lang, onLangChange }) {
       {/* الهيدر الرئيسي */}
       <header style={{
         background: scrolled
-          ? `linear-gradient(180deg, ${C.BG0}fa, ${C.BG1}f5)`
-          : `linear-gradient(180deg, ${C.BG1}ec, ${C.BG2}e5)`,
+          ? `linear-gradient(180deg, ${C.BG1}f8, ${C.BG2}f4)`
+          : `linear-gradient(180deg, ${C.BG2}ee, ${C.BG3}e8)`,
         backdropFilter:'blur(24px)',
         borderBottom:`1px solid ${scrolled ? C.BD4 : C.BD2}`,
-        boxShadow: scrolled ? `0 6px 40px rgba(0,0,0,0.7), 0 0 0 1px ${C.BD1}` : 'none',
+        boxShadow: scrolled ? `0 4px 30px rgba(0,0,0,0.5), 0 0 0 1px ${C.BD2}` : 'none',
         transition:'all 0.35s',
       }}>
         {/* شريط ذهبي أعلى الهيدر */}
@@ -514,14 +513,14 @@ function HeroSection() {
       alignItems:'center', justifyContent:'center',
       overflow:'hidden',
       background:`
-        radial-gradient(ellipse 100% 80% at 50% 110%, ${C.G2}22 0%, transparent 55%),
-        radial-gradient(ellipse 70% 50% at 50% -10%, ${C.TEAL}14 0%, transparent 45%),
-        radial-gradient(ellipse 40% 30% at 20% 50%, ${C.BLUE}12 0%, transparent 40%),
-        radial-gradient(ellipse 40% 30% at 80% 50%, ${C.NAVY}12 0%, transparent 40%),
-        linear-gradient(180deg, ${C.BG0} 0%, ${C.BG1} 45%, ${C.BG2} 75%, ${C.BG3} 100%)
+        radial-gradient(ellipse 90% 70% at 50% 100%, ${C.G3}35 0%, transparent 55%),
+        radial-gradient(ellipse 60% 45% at 50% 0%,   ${C.TEAL2}18 0%, transparent 50%),
+        radial-gradient(ellipse 35% 30% at 15% 50%,  ${C.BLUE2}14 0%, transparent 40%),
+        radial-gradient(ellipse 35% 30% at 85% 50%,  ${C.G2}16 0%, transparent 40%),
+        linear-gradient(180deg, ${C.BG1} 0%, ${C.BG2} 40%, ${C.BG3} 75%, ${C.BG4} 100%)
       `,
     }}>
-      <GiridPattern opacity={0.10}/>
+      <GiridPattern opacity={0.20}/>
 
       {/* مقرنصات الأعلى */}
       <div style={{ position:'absolute', top:0, left:0, right:0, zIndex:3 }}>
@@ -792,7 +791,7 @@ function SearchSection() {
       background:`linear-gradient(180deg, ${C.BG3} 0%, ${C.BG2} 100%)`,
       padding:'90px 28px', position:'relative', overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.05}/>
+      <GiridPattern opacity={0.13}/>
       <div style={{ position:'absolute', top:0, left:0, right:0, height:3,
         background:`linear-gradient(90deg, transparent, ${C.G3}, ${C.G6}, ${C.G3}, transparent)` }}/>
 
@@ -801,16 +800,14 @@ function SearchSection() {
 
         {/* صندوق البحث — كالجص الأبيض المزيّن */}
         <div style={{
-          background:`linear-gradient(160deg,
-            rgba(250,245,232,0.06) 0%,
-            rgba(250,245,232,0.03) 100%)`,
+          background:`linear-gradient(160deg, ${C.BG3} 0%, ${C.BG4} 100%)`,
           border:`1.5px solid ${C.BD4}`,
           borderRadius:24,
           padding:'28px 30px',
           boxShadow:`
-            0 12px 50px rgba(0,0,0,0.5),
-            inset 0 1px 0 ${C.G5}18,
-            inset 0 -1px 0 ${C.G1}30
+            0 8px 32px rgba(0,0,0,0.25),
+            inset 0 1px 0 ${C.G5}22,
+            inset 0 -1px 0 ${C.G2}25
           `,
           position:'relative', overflow:'hidden',
         }}>
@@ -914,9 +911,9 @@ function AboutSection() {
     <section id="about" style={{
       position:'relative', overflow:'hidden',
       padding:'90px 28px',
-      background:`linear-gradient(160deg, ${C.BG4} 0%, ${C.BG3} 50%, ${C.BG2} 100%)`,
+      background:`linear-gradient(160deg, ${C.BG2} 0%, ${C.BG3} 50%, ${C.BG4} 100%)`,
     }}>
-      <GiridPattern opacity={0.045}/>
+      <GiridPattern opacity={0.12}/>
       <div style={{ position:'absolute', top:0, left:0, right:0, height:2,
         background:`linear-gradient(90deg, transparent, ${C.G4}, transparent)` }}/>
 
@@ -927,26 +924,24 @@ function AboutSection() {
         {/* لوحة الرؤية — كالكتابة على جدار المحراب */}
         <div style={{
           position:'relative',
-          background:`linear-gradient(160deg,
-            rgba(250,245,232,0.065) 0%,
-            rgba(212,168,67,0.04) 100%)`,
-          border:`1px solid ${C.BD3}`,
+          background:`linear-gradient(160deg, ${C.BG3} 0%, ${C.BG4} 100%)`,
+          border:`1.5px solid ${C.BD4}`,
           borderRadius:24, padding:'36px 44px', marginBottom:42,
           boxShadow:`
-            0 12px 50px rgba(0,0,0,0.4),
-            inset 0 1px 0 ${C.G5}18,
-            inset 0 0 60px rgba(0,0,0,0.25)
+            0 8px 36px rgba(0,0,0,0.28),
+            inset 0 1px 0 ${C.G5}22,
+            inset 0 0 40px rgba(0,0,0,0.15)
           `,
           overflow:'hidden',
         }}>
           {/* قوس معماري في الخلف */}
-          <div style={{ position:'absolute', top:-15, right:'50%', transform:'translateX(50%)', opacity:0.07, pointerEvents:'none' }}>
+          <div style={{ position:'absolute', top:-15, right:'50%', transform:'translateX(50%)', opacity:0.16, pointerEvents:'none' }}>
             <MoorishArch width={640} height={220} color={C.G5} opacity={1}/>
           </div>
           {/* تأثير الإضاءة العليا */}
           <div style={{
             position:'absolute', top:0, left:0, right:0, height:'40%',
-            background:`linear-gradient(180deg, ${C.G3}08, transparent)`,
+            background:`linear-gradient(180deg, ${C.G4}18, transparent)`,
             pointerEvents:'none',
           }}/>
 
@@ -973,18 +968,18 @@ function AboutSection() {
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:18 }}>
           {cards.map(c => (
             <div key={c.title} style={{
-              background:`linear-gradient(160deg, ${c.color}18, ${c.color}08)`,
-              border:`1px solid ${c.color}28`,
+              background:`linear-gradient(160deg, ${C.BG3}, ${C.BG4})`,
+              border:`1.5px solid ${c.color}50`,
               borderRadius:18, padding:'26px 22px',
               transition:'all 0.28s', cursor:'default',
-              boxShadow:`0 4px 20px rgba(0,0,0,0.25)`,
+              boxShadow:`0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 ${C.G4}15`,
             }}
             dir="rtl"
             onMouseEnter={e=>{e.currentTarget.style.borderColor=`${c.color}70`;e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow=`0 14px 36px rgba(0,0,0,0.35), 0 0 0 1px ${c.color}20`;}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor=`${c.color}28`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 20px rgba(0,0,0,0.25)`;}}>
               <div style={{
                 width:52, height:52, borderRadius:14, marginBottom:16,
-                background:`${c.color}22`, border:`1px solid ${c.color}45`,
+                background:`${c.color}35`, border:`1.5px solid ${c.color}65`,
                 display:'flex', alignItems:'center', justifyContent:'center',
                 color:c.colorL,
               }}>{c.icon}</div>
@@ -1020,7 +1015,7 @@ function SurahsSection() {
       background:`linear-gradient(180deg, ${C.BG3} 0%, ${C.BG2} 100%)`,
       padding:'90px 28px', position:'relative', overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.06}/>
+      <GiridPattern opacity={0.15}/>
       <div style={{ maxWidth:1180, margin:'0 auto', position:'relative', zIndex:1 }}>
         <SectionTitle title="تصفح سورة البقرة"
           subtitle="٢٨٦ آية في ثلاثة أجزاء — كل جزء باب من أبواب المعرفة القرآنية"/>
@@ -1028,18 +1023,18 @@ function SurahsSection() {
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(350px,1fr))', gap:24 }}>
           {parts.map(p => (
             <div key={p.title} style={{
-              background:`linear-gradient(190deg, ${C.CARD2}, ${C.CARD})`,
-              border:`1px solid ${C.BD2}`,
+              background:`linear-gradient(190deg, ${C.BG3}, ${C.BG2})`,
+              border:`1px solid ${C.BD3}`,
               borderRadius:22, overflow:'hidden', transition:'all 0.3s',
-              boxShadow:`0 6px 24px rgba(0,0,0,0.35)`,
+              boxShadow:`0 6px 24px rgba(0,0,0,0.25)`,
             }}
             onMouseEnter={e=>{e.currentTarget.style.borderColor=`${p.accent}65`;e.currentTarget.style.transform='translateY(-6px)';e.currentTarget.style.boxShadow=`0 20px 50px rgba(0,0,0,0.45), 0 0 0 1px ${p.accent}22`;}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor=C.BD2;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 6px 24px rgba(0,0,0,0.35)`;}}>
 
               {/* رأس البطاقة */}
               <div style={{
-                background:`linear-gradient(160deg, ${p.accent}35, ${p.accent}18)`,
-                borderBottom:`1px solid ${p.accent}30`,
+                background:`linear-gradient(160deg, ${p.accent}50, ${p.accent}28)`,
+                borderBottom:`1px solid ${p.accent}45`,
                 padding:'28px 26px 20px', position:'relative', overflow:'hidden',
               }}>
                 {/* مقرنصات صغيرة */}
@@ -1131,7 +1126,7 @@ function PathsSection() {
       background:`linear-gradient(180deg, ${C.BG2} 0%, ${C.BG3} 100%)`,
       padding:'90px 28px', position:'relative', overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.05}/>
+      <GiridPattern opacity={0.13}/>
       <div style={{ position:'absolute', top:0, left:0, right:0, height:2,
         background:`linear-gradient(90deg, transparent, ${C.G4}, transparent)` }}/>
 
@@ -1142,19 +1137,19 @@ function PathsSection() {
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))', gap:16 }}>
           {items.map(p => (
             <div key={p.title} style={{
-              background:`linear-gradient(160deg, ${p.color}1e, ${p.color}0a)`,
-              border:`1px solid ${p.color}28`,
+              background:`linear-gradient(160deg, ${C.BG3}, ${C.BG4})`,
+              border:`1.5px solid ${p.color}50`,
               borderRadius:18, padding:'24px 20px',
               display:'flex', alignItems:'flex-start', gap:16,
               cursor:'pointer', transition:'all 0.27s',
-              boxShadow:`0 4px 18px rgba(0,0,0,0.22)`,
+              boxShadow:`0 4px 18px rgba(0,0,0,0.18), inset 0 1px 0 ${C.G4}12`,
             }}
             dir="rtl"
-            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${p.color}65`;e.currentTarget.style.background=`linear-gradient(160deg, ${p.color}28, ${p.color}14)`;e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow=`0 14px 36px rgba(0,0,0,0.32)`;}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${p.color}28`;e.currentTarget.style.background=`linear-gradient(160deg, ${p.color}1e, ${p.color}0a)`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 18px rgba(0,0,0,0.22)`;}}>
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${p.color}80`;e.currentTarget.style.background=`linear-gradient(160deg, ${C.BG4}, ${C.BG3})`;e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow=`0 14px 36px rgba(0,0,0,0.28)`;e.currentTarget.style.borderLeftWidth='3px';}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${p.color}50`;e.currentTarget.style.background=`linear-gradient(160deg, ${C.BG3}, ${C.BG4})`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 18px rgba(0,0,0,0.18)`;e.currentTarget.style.borderLeftWidth='1.5px';}}>
               <div style={{
                 width:54, height:54, borderRadius:14, flexShrink:0,
-                background:`${p.color}22`, border:`1.5px solid ${p.color}42`,
+                background:`${p.color}40`, border:`1.5px solid ${p.color}65`,
                 display:'flex', alignItems:'center', justifyContent:'center', color:p.light,
               }}>{p.icon}</div>
               <div>
@@ -1188,28 +1183,28 @@ function FeaturedSection() {
 
   return (
     <section style={{
-      background:`linear-gradient(160deg, ${C.BG3} 0%, ${C.BG4} 100%)`,
+      background:`linear-gradient(160deg, ${C.BG4} 0%, ${C.BG3} 100%)`,
       padding:'90px 28px', position:'relative', overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.055}/>
+      <GiridPattern opacity={0.14}/>
       <div style={{ maxWidth:1180, margin:'0 auto', position:'relative', zIndex:1 }}>
         <SectionTitle title="مختارات التفسير"/>
 
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(340px,1fr))', gap:22 }}>
           {items.map(item => (
             <div key={item.label} style={{
-              background:`linear-gradient(165deg, ${item.color}14, ${C.CARD})`,
-              border:`1px solid ${item.color}28`,
+              background:`linear-gradient(165deg, ${C.BG3}, ${C.BG4})`,
+              border:`1.5px solid ${item.color}55`,
               borderRadius:22, padding:'30px 26px',
               position:'relative', overflow:'hidden', transition:'all 0.3s',
-              boxShadow:`0 6px 24px rgba(0,0,0,0.32)`,
+              boxShadow:`0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 ${C.G4}14`,
             }}
             dir="rtl"
             onMouseEnter={e=>{e.currentTarget.style.borderColor=`${item.color}58`;e.currentTarget.style.transform='translateY(-5px)';e.currentTarget.style.boxShadow=`0 18px 42px rgba(0,0,0,0.38)`;}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor=`${item.color}28`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 6px 24px rgba(0,0,0,0.32)`;}}>
 
               {/* قوس زخرفي خلفي */}
-              <div style={{ position:'absolute', bottom:-32, left:'50%', transform:'translateX(-50%)', opacity:0.06, pointerEvents:'none' }}>
+              <div style={{ position:'absolute', bottom:-32, left:'50%', transform:'translateX(-50%)', opacity:0.12, pointerEvents:'none' }}>
                 <MoorishArch width={320} height={130} color={item.colorL} opacity={1}/>
               </div>
 
@@ -1270,10 +1265,10 @@ function MultilingualSection({ lang, onLangChange }) {
 
   return (
     <section style={{
-      background:`linear-gradient(135deg, ${C.BG0} 0%, ${C.BG1} 50%, ${C.BG0} 100%)`,
+      background:`linear-gradient(135deg, ${C.BG2} 0%, ${C.BG3} 50%, ${C.BG2} 100%)`,
       padding:'90px 28px', position:'relative', overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.08}/>
+      <GiridPattern opacity={0.18}/>
       <div style={{
         position:'absolute', inset:0,
         background:`radial-gradient(ellipse 60% 50% at 50% 50%, ${C.G2}10 0%, transparent 65%)`,
@@ -1312,16 +1307,13 @@ function MultilingualSection({ lang, onLangChange }) {
         {/* نافذة العرض المعمارية */}
         <div style={{
           position:'relative',
-          background:`linear-gradient(160deg,
-            rgba(250,245,232,0.065),
-            rgba(212,168,67,0.04) 100%)`,
-          border:`1px solid ${C.BD4}`,
+          background:`linear-gradient(160deg, ${C.BG3} 0%, ${C.BG4} 100%)`,
+          border:`1.5px solid ${C.BD4}`,
           borderRadius:'0 0 22px 22px',
           padding:'44px 48px 40px',
           boxShadow:`
-            0 12px 50px rgba(0,0,0,0.45),
-            inset 0 1px 0 ${C.G5}20,
-            inset 0 0 40px rgba(0,0,0,0.2)
+            0 8px 36px rgba(0,0,0,0.24),
+            inset 0 1px 0 ${C.G5}22
           `,
         }}>
           {/* قوس مغربي علوي */}
@@ -1363,10 +1355,10 @@ function FeaturesSection() {
 
   return (
     <section id="features" style={{
-      background:`linear-gradient(180deg, ${C.BG4} 0%, ${C.BG3} 100%)`,
+      background:`linear-gradient(180deg, ${C.BG3} 0%, ${C.BG4} 100%)`,
       padding:'90px 28px', position:'relative', overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.05}/>
+      <GiridPattern opacity={0.13}/>
       <div style={{ maxWidth:1180, margin:'0 auto', position:'relative', zIndex:1 }}>
         <SectionTitle title="خصائص المنصة"/>
 
@@ -1380,12 +1372,12 @@ function FeaturesSection() {
               boxShadow:`0 4px 18px rgba(0,0,0,0.25)`,
             }}
             dir="rtl"
-            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${f.color}58`;e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow=`0 14px 34px rgba(0,0,0,0.32)`;}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${f.color}22`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 18px rgba(0,0,0,0.25)`;}}>
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=`${f.color}80`;e.currentTarget.style.transform='translateY(-4px)';e.currentTarget.style.boxShadow=`0 14px 34px rgba(0,0,0,0.28)`;e.currentTarget.style.background=`linear-gradient(160deg, ${C.BG4}, ${C.BG3})`;;}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=`${f.color}48`;e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow=`0 4px 18px rgba(0,0,0,0.18)`;e.currentTarget.style.background=`linear-gradient(160deg, ${C.BG3}, ${C.BG4})`;}}>            
               {/* شارة الحالة */}
               <span style={{
                 position:'absolute', top:14, left:14,
-                background: f.badge==='متاح' ? `${C.TEAL2}28` : `${C.G3}22`,
+                background: f.badge==='متاح' ? `${C.TEAL2}45` : `${C.G3}38`,
                 color: f.badge==='متاح' ? C.TEAL4 : C.G5,
                 border:`1px solid ${f.badge==='متاح' ? C.TEAL3 : C.G4}32`,
                 borderRadius:20, padding:'3px 10px', fontSize:'0.7rem', fontWeight:700,
@@ -1394,7 +1386,7 @@ function FeaturesSection() {
               {/* أيقونة */}
               <div style={{
                 width:54, height:54, borderRadius:14, marginBottom:16,
-                background:`${f.color}20`, border:`1.5px solid ${f.color}38`,
+                background:`${f.color}40`, border:`1.5px solid ${f.color}65`,
                 display:'flex', alignItems:'center', justifyContent:'center', color:f.light,
               }}>{f.icon}</div>
               <div style={{ fontFamily:'Noto Naskh Arabic,serif', fontWeight:700, color:C.IVORY, fontSize:'1rem', marginBottom:10 }}>{f.title}</div>
@@ -1416,10 +1408,10 @@ function NewsletterSection() {
 
   return (
     <section style={{
-      background:`linear-gradient(180deg, ${C.BG3} 0%, ${C.BG2} 100%)`,
+      background:`linear-gradient(180deg, ${C.BG4} 0%, ${C.BG3} 100%)`,
       padding:'80px 28px', position:'relative', overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.06}/>
+      <GiridPattern opacity={0.15}/>
       <div style={{
         position:'absolute', inset:0,
         background:`radial-gradient(ellipse at 50% 50%, ${C.G2}10 0%, transparent 60%)`,
@@ -1474,11 +1466,11 @@ function Footer() {
   const navigate = useNavigate();
   return (
     <footer style={{
-      background:`linear-gradient(180deg, ${C.BG2} 0%, ${C.BG0} 100%)`,
+      background:`linear-gradient(180deg, ${C.BG4} 0%, ${C.BG2} 100%)`,
       borderTop:`1px solid ${C.BD3}`, padding:'60px 28px 32px',
       position:'relative', overflow:'hidden',
     }}>
-      <GiridPattern opacity={0.04}/>
+      <GiridPattern opacity={0.20}/>
 
       {/* مقرنصات الأعلى */}
       <div style={{ position:'absolute', top:0, left:0, right:0, opacity:0.45 }}>
