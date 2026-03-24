@@ -10,7 +10,8 @@ import TRANSLATIONS from '../i18n';
 import { THEMES } from '../themes';
 
 /* ─── Language Route Map ─────────────────────── */
-const LANG_ROUTES = { ar:'/', en:'/en', ur:'/ur', id:'/id', tr:'/tr' };
+const LANG_ROUTES        = { ar:'/', en:'/en', ur:'/ur', id:'/id', tr:'/tr' };
+const SURAH_INDEX_ROUTES = { ar:'/surahs', en:'/en/surahs', ur:'/ur/surahs', id:'/id/surahs', tr:'/tr/surahs' };
 
 const LANGS = [
   { code:'ar', label:'العربية', flag:'🇸🇦', dir:'rtl' },
@@ -258,7 +259,7 @@ function Header() {
             ))}
           </nav>
 
-          <button onClick={()=>nav('/surahs')} style={{
+          <button onClick={()=>nav(SURAH_INDEX_ROUTES[lang]||'/surahs')} style={{
             background:`linear-gradient(135deg,${C.G2},${C.G4},${C.G5})`,
             color:'#2a1000',border:'none',borderRadius:11,
             padding:'11px 24px',fontSize:'.93rem',fontWeight:800,
@@ -449,8 +450,8 @@ function Hero() {
         {/* أزرار */}
         <div style={{display:'flex',gap:12,justifyContent:'center',flexWrap:'wrap',marginBottom:52}}>
           {[
-            {label:t.btnBrowse,  pri:true,  to:'/surahs'},
-            {label:t.btnSurahs,  pri:false, to:'/surahs'},
+            {label:t.btnBrowse,  pri:true,  to:SURAH_INDEX_ROUTES[lang]||'/surahs'},
+            {label:t.btnSurahs,  pri:false, to:SURAH_INDEX_ROUTES[lang]||'/surahs'},
             {label:t.btnSearch,  pri:false, href:'#search-sec'},
             {label:t.btnAbout,   pri:false, href:'#about'},
           ].map((b,i)=><HBtn key={i} {...b} dark/>)}
@@ -603,13 +604,13 @@ function SearchSection() {
           }}>
             <Search size={22} color={C.G3} style={{flexShrink:0}}/>
             <input value={q} onChange={e=>setQ(e.target.value)}
-              onKeyDown={e=>e.key==='Enter'&&nav('/surahs')}
+              onKeyDown={e=>e.key==='Enter'&&nav(SURAH_INDEX_ROUTES[lang]||'/surahs')}
               placeholder={t.searchPlaceholder}
               dir={t.dir} style={{
                 flex:1,background:'transparent',border:'none',outline:'none',
                 color:C.TXT,fontSize:'1rem',fontFamily:fontBody,
               }}/>
-            <button onClick={()=>nav('/surahs')} style={{
+            <button onClick={()=>nav(SURAH_INDEX_ROUTES[lang]||'/surahs')} style={{
               background:`linear-gradient(135deg,${C.G3},${C.G5})`,
               color:'#2a1000',border:'none',borderRadius:11,
               padding:'9px 24px',fontSize:'.92rem',fontWeight:800,
@@ -621,7 +622,7 @@ function SearchSection() {
 
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(142px,1fr))',gap:13,marginTop:22}} dir={t.dir}>
           {quickBtns.map(card=>(
-            <button key={card.label} onClick={()=>nav('/surahs')} style={{
+            <button key={card.label} onClick={()=>nav(SURAH_INDEX_ROUTES[lang]||'/surahs')} style={{
               background:`linear-gradient(160deg,${card.bg},${card.bg}cc)`,
               border:`1.5px solid ${card.bd}90`,
               borderRadius:15,padding:'16px 10px',cursor:'pointer',

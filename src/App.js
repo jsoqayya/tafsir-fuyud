@@ -241,10 +241,12 @@ export default function App() {
       <Route path="/id" element={<HomePage lang="id" />} />
       <Route path="/tr" element={<HomePage lang="tr" />} />
 
-      {/* ─── فهرس السور ─── */}
-      <Route path="/surahs" element={
-        <SurahIndex lang={language} onLangChange={setLanguage} />
-      } />
+      {/* ─── فهرس السور — مسار لكل لغة ─── */}
+      <Route path="/surahs"    element={<SurahIndex lang="ar" />} />
+      <Route path="/en/surahs" element={<SurahIndex lang="en" />} />
+      <Route path="/ur/surahs" element={<SurahIndex lang="ur" />} />
+      <Route path="/id/surahs" element={<SurahIndex lang="id" />} />
+      <Route path="/tr/surahs" element={<SurahIndex lang="tr" />} />
 
       {/* ─── صفحات التفسير ─── */}
       <Route path="/part1" element={
