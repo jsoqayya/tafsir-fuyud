@@ -487,14 +487,15 @@ function Hero() {
         }}>فيوض التأويل المعاصر</h1>
 
         <div style={{margin:'6px 0 20px'}}>
-          <span style={{fontFamily:'Amiri,serif',fontSize:'clamp(1.15rem,2.5vw,1.8rem)',
-            color:C.TEAL4,fontWeight:600,textShadow:`0 0 25px ${C.TEAL3}80, 0 2px 6px rgba(0,0,0,.6)`}}>
-            تفسير سورة البقرة
-          </span>
-          <span style={{color:'rgba(255,255,255,.45)',margin:'0 12px'}}>·</span>
-          <span style={{fontFamily:'Noto Naskh Arabic,serif',fontSize:'clamp(.9rem,1.6vw,1.1rem)',
-            color:'rgba(255,248,220,.80)',textShadow:'0 1px 6px rgba(0,0,0,.6)'}}>
-            قراءة معاصرة متعددة اللغات
+          <span style={{
+            fontFamily:'Georgia, "Times New Roman", serif',
+            fontSize:'clamp(0.95rem,1.8vw,1.25rem)',
+            color:'rgba(255,248,220,0.78)',
+            fontStyle:'italic',
+            letterSpacing:'0.04em',
+            textShadow:'0 1px 8px rgba(0,0,0,0.55)',
+          }}>
+            Fuyud Al-Ta'wil Al-Mu'asir
           </span>
         </div>
 
