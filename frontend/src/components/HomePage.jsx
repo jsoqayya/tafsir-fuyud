@@ -13,29 +13,29 @@ import {
 ══════════════════════════════════════════════════════════ */
 const COLORS = {
   // Olive-Sage Green Tones (darker, richer, more elegant)
-  BG:        '#3a4a2a',      // Darkest olive
-  BG2:       '#4a5a3a',      // Deep olive
-  BG3:       '#576847',      // Primary olive
-  BG4:       '#687858',      // Medium olive-sage
-  CARD:      '#465538',      // Card background
-  CARD2:     '#526545',      // Card hover
-  BORDER:    'rgba(180,148,60,0.22)',
-  BORDER2:   'rgba(180,148,60,0.40)',
+  BG:        '#2a3a1a',      // Darkest olive
+  BG2:       '#3a4a2a',      // Deep olive
+  BG3:       '#4a5a3a',      // Primary olive
+  BG4:       '#5a6a4a',      // Medium olive-sage
+  CARD:      '#3a4a2a',      // Card background
+  CARD2:     '#4a5a3a',      // Card hover
+  BORDER:    'rgba(160,130,50,0.25)',
+  BORDER2:   'rgba(160,130,50,0.45)',
   // Warm Ivory/Cream
   IVORY:     '#f5f0e6',
   CREAM:     '#ebe5d8',
   CREAM2:    '#e0d8c8',
-  // Matte Gold Accents (refined, noble)
-  GOLD:      '#b8a050',
-  GOLD2:     '#c9b060',
-  GOLD3:     '#dac578',
-  GOLD_DIM:  'rgba(185,160,80,0.15)',
-  GOLD_MID:  'rgba(185,160,80,0.30)',
-  GOLD_TXT:  'rgba(218,197,120,0.95)',
+  // Darker Matte Gold Accents
+  GOLD:      '#8a7030',      // Darker gold
+  GOLD2:     '#a08040',      // Medium dark gold
+  GOLD3:     '#b89050',      // Warm gold
+  GOLD_DIM:  'rgba(160,128,64,0.18)',
+  GOLD_MID:  'rgba(160,128,64,0.35)',
+  GOLD_TXT:  'rgba(184,144,80,0.95)',
   // Andalusian Mosaic Blue
   BLUE:      '#2d5a7b',
   BLUE2:     '#4a7a9b',
-  BLUE_DIM:  'rgba(45,90,123,0.25)',
+  BLUE_DIM:  'rgba(45,90,123,0.20)',
   // Text
   TXT:       '#f5f0e6',
   TXT2:      'rgba(245,240,230,0.80)',
@@ -43,6 +43,14 @@ const COLORS = {
   // Accent
   TEAL:      '#5a7a6a',
   TEAL2:     '#6a8a7a',
+};
+
+// Background images for mosque silhouettes
+const MOSQUE_IMAGES = {
+  sunset: 'https://images.pexels.com/photos/2236674/pexels-photo-2236674.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+  golden: 'https://images.pexels.com/photos/161276/moscow-cathedral-mosque-prospekt-mira-ramadan-sky-161276.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+  dome: 'https://images.pexels.com/photos/161404/dome-gold-arabic-cathedral-161404.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+  pattern: 'https://images.pexels.com/photos/19038943/pexels-photo-19038943.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
 };
 
 const LANGUAGES = [
@@ -356,245 +364,159 @@ function Header({ lang, onLangChange }) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   PREMIUM ISLAMIC ARCHITECTURAL SILHOUETTES
+   PREMIUM BACKGROUND WITH REAL MOSQUE IMAGES
 ══════════════════════════════════════════════════════════ */
 
-// Grand Mosque - LEFT SIDE with detailed minarets, dome, arches
-function GrandMosqueLeft() {
+// Left Side - Beautiful Mosque Image
+function MosqueImageLeft() {
   return (
-    <svg 
-      style={{
+    <div style={{
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      width: '50%',
+      height: '100%',
+      overflow: 'hidden',
+      pointerEvents: 'none',
+    }}>
+      <div style={{
         position: 'absolute',
-        left: '-3%',
-        top: '0',
-        width: '55%',
-        height: '100%',
-        opacity: 0.2,
-        pointerEvents: 'none',
-      }}
-      viewBox="0 0 600 800" 
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMinYMid slice"
-    >
-      <defs>
-        <linearGradient id="fadeL" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#f5f0e6" stopOpacity="1" />
-          <stop offset="50%" stopColor="#f5f0e6" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#f5f0e6" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <g fill="url(#fadeL)">
-        {/* Tall Left Minaret */}
-        <rect x="25" y="80" width="60" height="680" />
-        <rect x="10" y="180" width="90" height="14" rx="3" />
-        <rect x="10" y="350" width="90" height="14" rx="3" />
-        <rect x="10" y="520" width="90" height="14" rx="3" />
-        <ellipse cx="55" cy="80" rx="40" ry="35" />
-        <rect x="42" y="30" width="26" height="50" />
-        <ellipse cx="55" cy="25" rx="18" ry="14" />
-        <path d="M55 -5 C45 10 45 22 55 18 C65 22 65 10 55 -5" />
-        
-        {/* Main Central Dome */}
-        <ellipse cx="280" cy="190" rx="160" ry="140" />
-        <rect x="120" y="190" width="320" height="90" />
-        <ellipse cx="280" cy="55" rx="20" ry="32" />
-        <rect x="268" y="28" width="24" height="27" />
-        <ellipse cx="280" cy="22" rx="14" ry="11" />
-        <path d="M280 -8 C268 8 268 20 280 15 C292 20 292 8 280 -8" />
-        
-        {/* Building Body */}
-        <rect x="95" y="280" width="370" height="480" />
-        
-        {/* Secondary Domes */}
-        <ellipse cx="160" cy="255" rx="60" ry="50" />
-        <ellipse cx="400" cy="255" rx="60" ry="50" />
-        <ellipse cx="115" cy="315" rx="40" ry="32" />
-        <ellipse cx="445" cy="315" rx="40" ry="32" />
-        
-        {/* Right Minaret */}
-        <rect x="490" y="140" width="50" height="620" />
-        <rect x="478" y="240" width="74" height="12" rx="2" />
-        <rect x="478" y="400" width="74" height="12" rx="2" />
-        <ellipse cx="515" cy="140" rx="32" ry="28" />
-        <rect x="502" y="100" width="26" height="40" />
-        <ellipse cx="515" cy="95" rx="16" ry="13" />
-        <path d="M515 68 C505 82 505 92 515 88 C525 92 525 82 515 68" />
-        
-        {/* Horseshoe Arches */}
-        <path d="M140 600 Q195 490 250 600 L250 760 L140 760 Z" />
-        <path d="M265 600 Q320 490 375 600 L375 760 L265 760 Z" />
-        <path d="M390 600 Q445 490 500 600 L500 760 L390 760 Z" />
-        
-        {/* Arch Inner Details */}
-        <path d="M158 610 Q195 520 232 610" fill="none" stroke="#f5f0e6" strokeWidth="2" opacity="0.5"/>
-        <path d="M283 610 Q320 520 357 610" fill="none" stroke="#f5f0e6" strokeWidth="2" opacity="0.5"/>
-        <path d="M408 610 Q445 520 482 610" fill="none" stroke="#f5f0e6" strokeWidth="2" opacity="0.5"/>
-        
-        {/* Decorative Windows */}
-        <ellipse cx="195" cy="420" rx="28" ry="45" fillOpacity="0.4" />
-        <ellipse cx="280" cy="420" rx="28" ry="45" fillOpacity="0.4" />
-        <ellipse cx="365" cy="420" rx="28" ry="45" fillOpacity="0.4" />
-        
-        {/* Geometric Band */}
-        <rect x="95" y="555" width="370" height="30" fillOpacity="0.5" />
-      </g>
-    </svg>
-  );
-}
-
-// Andalusian Palace - RIGHT SIDE
-function AndalusianPalaceRight() {
-  return (
-    <svg 
-      style={{
-        position: 'absolute',
-        right: '-3%',
-        top: '0',
-        width: '52%',
-        height: '100%',
-        opacity: 0.17,
-        pointerEvents: 'none',
-      }}
-      viewBox="0 0 550 800" 
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMaxYMid slice"
-    >
-      <defs>
-        <linearGradient id="fadeR" x1="100%" y1="0%" x2="0%" y2="0%">
-          <stop offset="0%" stopColor="#f5f0e6" stopOpacity="1" />
-          <stop offset="50%" stopColor="#f5f0e6" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#f5f0e6" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <g fill="url(#fadeR)">
-        {/* Tall Elegant Minaret */}
-        <rect x="455" y="45" width="65" height="720" />
-        <rect x="438" y="145" width="100" height="16" rx="4" />
-        <rect x="438" y="300" width="100" height="16" rx="4" />
-        <rect x="438" y="455" width="100" height="16" rx="4" />
-        <ellipse cx="487" cy="45" rx="45" ry="40" />
-        <rect x="470" y="-10" width="34" height="55" />
-        <ellipse cx="487" cy="-15" rx="24" ry="20" />
-        <path d="M487 -50 C473 -30 473 -18 487 -22 C501 -18 501 -30 487 -50" />
-        
-        {/* Alhambra Pavilion */}
-        <ellipse cx="280" cy="175" rx="130" ry="110" />
-        <rect x="150" y="175" width="260" height="380" />
-        <ellipse cx="280" cy="70" rx="18" ry="28" />
-        <rect x="270" y="45" width="20" height="25" />
-        
-        {/* Secondary Structure */}
-        <ellipse cx="110" cy="250" rx="80" ry="65" />
-        <rect x="30" y="250" width="160" height="310" />
-        
-        {/* Large Horseshoe Arches */}
-        <path d="M45 420 Q125 280 205 420 L205 560 L45 560 Z" />
-        <path d="M220 450 Q300 310 380 450 L380 560 L220 560 Z" />
-        
-        {/* Arch Decorations */}
-        <circle cx="125" cy="365" r="15" fillOpacity="0.4" />
-        <circle cx="300" cy="395" r="15" fillOpacity="0.4" />
-        <path d="M65 420 L85 395 L105 420 L125 395 L145 420 L165 395 L185 420" 
-              fill="none" stroke="url(#fadeR)" strokeWidth="2" />
-        
-        {/* Pointed Arch Windows */}
-        <path d="M80 580 Q120 520 160 580 L160 700 L80 700 Z" />
-        <path d="M230 580 Q270 520 310 580 L310 700 L230 700 Z" />
-        <path d="M380 580 Q420 520 460 580 L460 700 L380 700 Z" />
-        
-        {/* Colonnade */}
-        <rect x="68" y="700" width="18" height="100" />
-        <rect x="148" y="700" width="18" height="100" />
-        <rect x="248" y="700" width="18" height="100" />
-        <rect x="328" y="700" width="18" height="100" />
-        <rect x="398" y="700" width="18" height="100" />
-        <rect x="478" y="700" width="18" height="100" />
-        
-        {/* Decorative Band */}
-        <rect x="30" y="545" width="380" height="25" fillOpacity="0.5" />
-        
-        {/* Small Dome */}
-        <ellipse cx="390" cy="220" rx="50" ry="40" />
-      </g>
-    </svg>
-  );
-}
-
-// Top Arches Border
-function TopArchesBorder() {
-  return (
-    <svg 
-      style={{
-        position: 'absolute',
-        top: 0, left: 0, right: 0,
-        height: '220px',
+        inset: 0,
+        backgroundImage: `url(${MOSQUE_IMAGES.sunset})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center right',
         opacity: 0.15,
-        pointerEvents: 'none',
-      }}
-      viewBox="0 0 1600 200" 
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMin slice"
-    >
-      <defs>
-        <linearGradient id="topFade" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#f5f0e6" stopOpacity="1" />
-          <stop offset="100%" stopColor="#f5f0e6" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <g stroke="url(#topFade)" fill="none" strokeWidth="3">
-        {[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(i => (
-          <g key={i}>
-            <path d={`M${i*100} 200 Q${i*100+50} 50 ${i*100+100} 200`} />
-            <path d={`M${i*100+18} 200 Q${i*100+50} 85 ${i*100+82} 200`} strokeWidth="1.5" opacity="0.5"/>
-            <circle cx={i*100+50} cy="115" r="10" fill="url(#topFade)" fillOpacity="0.25" />
-          </g>
-        ))}
-      </g>
-    </svg>
+        filter: 'sepia(30%) hue-rotate(60deg) saturate(80%)',
+      }} />
+      {/* Fade to center */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: `linear-gradient(to right, transparent 0%, transparent 30%, ${COLORS.BG} 100%)`,
+      }} />
+      {/* Fade to bottom */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: `linear-gradient(to bottom, transparent 0%, transparent 60%, ${COLORS.BG} 100%)`,
+      }} />
+    </div>
   );
 }
 
-// Blue Mosaic Strip
+// Right Side - Golden Dome Image
+function MosqueImageRight() {
+  return (
+    <div style={{
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      width: '50%',
+      height: '100%',
+      overflow: 'hidden',
+      pointerEvents: 'none',
+    }}>
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `url(${MOSQUE_IMAGES.golden})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center left',
+        opacity: 0.12,
+        filter: 'sepia(30%) hue-rotate(60deg) saturate(80%)',
+      }} />
+      {/* Fade to center */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: `linear-gradient(to left, transparent 0%, transparent 30%, ${COLORS.BG} 100%)`,
+      }} />
+      {/* Fade to bottom */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: `linear-gradient(to bottom, transparent 0%, transparent 60%, ${COLORS.BG} 100%)`,
+      }} />
+    </div>
+  );
+}
+
+// Top Decorative Pattern
+function TopPatternOverlay() {
+  return (
+    <div style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '250px',
+      overflow: 'hidden',
+      pointerEvents: 'none',
+    }}>
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `url(${MOSQUE_IMAGES.pattern})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        opacity: 0.08,
+        filter: 'sepia(40%) hue-rotate(50deg)',
+      }} />
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: `linear-gradient(to bottom, transparent 0%, ${COLORS.BG} 100%)`,
+      }} />
+    </div>
+  );
+}
+
+// Blue Mosaic Strip with Real Pattern
 function BlueMosaicStrip({ position = 'left' }) {
   const isLeft = position === 'left';
   return (
     <div style={{
       position: 'absolute',
       [isLeft ? 'left' : 'right']: 0,
-      top: '8%',
-      width: '90px',
-      height: '84%',
+      top: '5%',
+      width: '100px',
+      height: '90%',
       pointerEvents: 'none',
-      background: isLeft 
-        ? 'linear-gradient(to right, rgba(45,90,123,0.55), transparent)'
-        : 'linear-gradient(to left, rgba(45,90,123,0.55), transparent)',
+      overflow: 'hidden',
     }}>
-      <svg width="100%" height="100%" viewBox="0 0 90 700" style={{ opacity: 0.75 }}>
-        {[...Array(17)].map((_, i) => (
-          <g key={i} transform={`translate(0, ${i * 41})`}>
-            <polygon points="45,0 90,20.5 45,41 0,20.5" fill="#2d5a7b" fillOpacity="0.45" />
-            <polygon points="45,10 72,20.5 45,31 18,20.5" fill="#c9b060" fillOpacity="0.35" />
-            <polygon points="45,16 56,20.5 45,25 34,20.5" fill="#2d5a7b" fillOpacity="0.55" />
-            <circle cx="45" cy="20.5" r="4" fill="#dac578" fillOpacity="0.5" />
-          </g>
-        ))}
-      </svg>
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `url(${MOSQUE_IMAGES.dome})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        opacity: 0.2,
+        filter: 'sepia(20%) hue-rotate(180deg) saturate(150%)',
+      }} />
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: isLeft 
+          ? `linear-gradient(to right, ${COLORS.BLUE}60 0%, ${COLORS.BLUE}30 50%, transparent 100%)`
+          : `linear-gradient(to left, ${COLORS.BLUE}60 0%, ${COLORS.BLUE}30 50%, transparent 100%)`,
+      }} />
     </div>
   );
 }
 
-// Gold Vertical Accent
+// Dark Gold Vertical Accent
 function GoldVerticalAccent({ position = 'left' }) {
   return (
     <div style={{
       position: 'absolute',
-      [position]: '90px',
+      [position]: '100px',
       top: '3%',
-      width: '3px',
+      width: '4px',
       height: '94%',
-      background: 'linear-gradient(to bottom, transparent 0%, #c9b060 15%, #dac578 50%, #c9b060 85%, transparent 100%)',
-      opacity: 0.6,
+      background: `linear-gradient(to bottom, transparent 0%, ${COLORS.GOLD} 15%, ${COLORS.GOLD2} 50%, ${COLORS.GOLD} 85%, transparent 100%)`,
+      opacity: 0.7,
       pointerEvents: 'none',
+      boxShadow: `0 0 15px ${COLORS.GOLD}50`,
     }} />
   );
 }
@@ -614,16 +536,16 @@ function HeroSection({ onNavigate }) {
       justifyContent: 'center',
       overflow: 'hidden',
       background: `
-        radial-gradient(ellipse at 50% 35%, ${COLORS.BG4}60 0%, transparent 45%),
-        radial-gradient(ellipse at 15% 85%, ${COLORS.BLUE_DIM} 0%, transparent 35%),
-        radial-gradient(ellipse at 85% 85%, ${COLORS.BLUE_DIM} 0%, transparent 35%),
-        linear-gradient(165deg, ${COLORS.BG} 0%, ${COLORS.BG2} 18%, ${COLORS.BG3} 40%, ${COLORS.BG4} 55%, ${COLORS.BG3} 68%, ${COLORS.BG2} 82%, ${COLORS.BG} 100%)
+        radial-gradient(ellipse at 50% 40%, ${COLORS.BG4}50 0%, transparent 40%),
+        radial-gradient(ellipse at 15% 80%, ${COLORS.BLUE_DIM} 0%, transparent 30%),
+        radial-gradient(ellipse at 85% 80%, ${COLORS.BLUE_DIM} 0%, transparent 30%),
+        linear-gradient(170deg, ${COLORS.BG} 0%, ${COLORS.BG2} 20%, ${COLORS.BG3} 45%, ${COLORS.BG4} 60%, ${COLORS.BG3} 75%, ${COLORS.BG2} 90%, ${COLORS.BG} 100%)
       `,
     }}>
-      {/* === ARCHITECTURAL BACKGROUNDS === */}
-      <GrandMosqueLeft />
-      <AndalusianPalaceRight />
-      <TopArchesBorder />
+      {/* === REAL MOSQUE IMAGES BACKGROUND === */}
+      <MosqueImageLeft />
+      <MosqueImageRight />
+      <TopPatternOverlay />
       
       {/* === MOSAIC & GOLD ACCENTS === */}
       <BlueMosaicStrip position="left" />
@@ -631,106 +553,143 @@ function HeroSection({ onNavigate }) {
       <GoldVerticalAccent position="left" />
       <GoldVerticalAccent position="right" />
       
-      {/* === GOLD BORDERS === */}
+      {/* === DARK GOLD BORDERS === */}
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, height: '5px',
-        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}70 12%, ${COLORS.GOLD2} 50%, ${COLORS.GOLD}70 88%, transparent)`,
+        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}90 10%, ${COLORS.GOLD2} 50%, ${COLORS.GOLD}90 90%, transparent)`,
+        boxShadow: `0 2px 20px ${COLORS.GOLD}40`,
       }} />
       <div style={{
         position: 'absolute', bottom: 0, left: 0, right: 0, height: '5px',
-        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}70 12%, ${COLORS.GOLD2} 50%, ${COLORS.GOLD}70 88%, transparent)`,
+        background: `linear-gradient(90deg, transparent, ${COLORS.GOLD}90 10%, ${COLORS.GOLD2} 50%, ${COLORS.GOLD}90 90%, transparent)`,
+        boxShadow: `0 -2px 20px ${COLORS.GOLD}40`,
       }} />
       
       {/* === BOTTOM FADE === */}
       <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: '220px',
-        background: `linear-gradient(to top, ${COLORS.BG}95, transparent)`,
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: '250px',
+        background: `linear-gradient(to top, ${COLORS.BG} 0%, ${COLORS.BG}80 50%, transparent 100%)`,
         pointerEvents: 'none',
       }} />
 
-      <GeometricPattern opacity={0.025} />
+      <GeometricPattern opacity={0.02} />
 
-      {/* === CORNER STARS === */}
-      <div style={{ position: 'absolute', top: 28, right: 28 }}>
-        <IslamicStar size={90} color={COLORS.GOLD} opacity={0.35} rotate={0} />
+      {/* === CORNER STARS (Darker Gold) === */}
+      <div style={{ position: 'absolute', top: 30, right: 30 }}>
+        <IslamicStar size={100} color={COLORS.GOLD2} opacity={0.4} rotate={0} />
       </div>
-      <div style={{ position: 'absolute', top: 28, left: 28 }}>
-        <IslamicStar size={90} color={COLORS.GOLD} opacity={0.35} rotate={22.5} />
+      <div style={{ position: 'absolute', top: 30, left: 30 }}>
+        <IslamicStar size={100} color={COLORS.GOLD2} opacity={0.4} rotate={22.5} />
       </div>
-      <div style={{ position: 'absolute', bottom: 90, right: 28 }}>
-        <IslamicStar size={65} color={COLORS.GOLD2} opacity={0.28} rotate={45} />
+      <div style={{ position: 'absolute', bottom: 100, right: 30 }}>
+        <IslamicStar size={70} color={COLORS.GOLD3} opacity={0.3} rotate={45} />
       </div>
-      <div style={{ position: 'absolute', bottom: 90, left: 28 }}>
-        <IslamicStar size={65} color={COLORS.GOLD2} opacity={0.28} rotate={-22.5} />
+      <div style={{ position: 'absolute', bottom: 100, left: 30 }}>
+        <IslamicStar size={70} color={COLORS.GOLD3} opacity={0.3} rotate={-22.5} />
       </div>
 
-      {/* === CENTRAL GLOW === */}
+      {/* === CENTRAL GLOW (Darker Gold) === */}
       <div style={{
-        position: 'absolute', top: '38%', left: '50%', transform: 'translate(-50%, -50%)',
-        width: 650, height: 650, borderRadius: '50%',
-        background: `radial-gradient(circle, ${COLORS.GOLD_MID} 0%, ${COLORS.GOLD_DIM} 35%, transparent 60%)`,
+        position: 'absolute', top: '40%', left: '50%', transform: 'translate(-50%, -50%)',
+        width: 700, height: 700, borderRadius: '50%',
+        background: `radial-gradient(circle, ${COLORS.GOLD_MID} 0%, ${COLORS.GOLD_DIM} 40%, transparent 65%)`,
         pointerEvents: 'none',
-        filter: 'blur(60px)',
+        filter: 'blur(70px)',
       }} />
 
       {/* === CONTENT === */}
-      <div style={{ textAlign: 'center', maxWidth: 950, padding: '50px 24px', position: 'relative', zIndex: 10 }} dir="rtl">
+      <div style={{ textAlign: 'center', maxWidth: 1000, padding: '40px 24px', position: 'relative', zIndex: 10 }} dir="rtl">
 
-        {/* === LOGO === */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
+        {/* === LARGE LOGO (Fills the frame) === */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 30 }}>
           <div style={{
-            width: 380, height: 380,
-            borderRadius: 30,
+            width: 420, height: 420,
+            borderRadius: 20,
             overflow: 'hidden',
-            background: 'transparent',
+            background: `linear-gradient(145deg, ${COLORS.BG2}80, ${COLORS.BG}90)`,
             position: 'relative',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            backdropFilter: 'blur(10px)',
           }}>
+            {/* Thick dark gold border */}
             <div style={{
               position: 'absolute', inset: 0,
-              border: `4px solid ${COLORS.GOLD}65`,
-              borderRadius: 30,
-              boxShadow: `0 0 140px ${COLORS.GOLD}40, inset 0 0 120px ${COLORS.GOLD}25, 0 0 0 10px ${COLORS.GOLD}18`,
+              border: `5px solid ${COLORS.GOLD}`,
+              borderRadius: 20,
+              boxShadow: `
+                0 0 80px ${COLORS.GOLD}50, 
+                inset 0 0 60px ${COLORS.GOLD}30,
+                0 0 0 12px ${COLORS.GOLD}25
+              `,
             }} />
-            <div style={{ position: 'absolute', top: 14, right: 14 }}>
-              <IslamicStar size={45} color={COLORS.GOLD2} opacity={0.65} rotate={0} />
+            {/* Corner stars */}
+            <div style={{ position: 'absolute', top: 15, right: 15 }}>
+              <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.7} rotate={0} />
             </div>
-            <div style={{ position: 'absolute', top: 14, left: 14 }}>
-              <IslamicStar size={45} color={COLORS.GOLD2} opacity={0.65} rotate={22.5} />
+            <div style={{ position: 'absolute', top: 15, left: 15 }}>
+              <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.7} rotate={22.5} />
             </div>
-            <div style={{ position: 'absolute', bottom: 14, right: 14 }}>
-              <IslamicStar size={45} color={COLORS.GOLD2} opacity={0.65} rotate={22.5} />
+            <div style={{ position: 'absolute', bottom: 15, right: 15 }}>
+              <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.7} rotate={22.5} />
             </div>
-            <div style={{ position: 'absolute', bottom: 14, left: 14 }}>
-              <IslamicStar size={45} color={COLORS.GOLD2} opacity={0.65} rotate={0} />
+            <div style={{ position: 'absolute', bottom: 15, left: 15 }}>
+              <IslamicStar size={50} color={COLORS.GOLD2} opacity={0.7} rotate={0} />
             </div>
+            {/* Logo Image - FULL SIZE */}
             <img
               src="/logo_calligraphy.png"
               alt="فيوض التأويل المعاصر"
               style={{
-                width: '88%', height: '88%',
+                width: '98%', height: '98%',
                 objectFit: 'contain',
-                filter: 'drop-shadow(0 0 60px rgba(185,160,80,0.45))',
+                filter: 'drop-shadow(0 0 40px rgba(160,128,64,0.5))',
               }}
             />
           </div>
+        </div>
+
+        {/* === TITLE WITH ENGLISH === */}
+        <div style={{ marginBottom: 20 }}>
+          <h1 style={{
+            fontFamily: 'Amiri, serif',
+            fontSize: 'clamp(2.8rem, 7vw, 4.5rem)',
+            color: COLORS.GOLD3,
+            margin: '0 0 8px',
+            fontWeight: 700,
+            textShadow: `0 3px 15px ${COLORS.BG}, 0 0 40px ${COLORS.GOLD}40`,
+            letterSpacing: '0.02em',
+          }}>
+            فيوض التأويل المعاصر
+          </h1>
+          <p style={{
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 'clamp(1rem, 2.5vw, 1.4rem)',
+            color: COLORS.GOLD2,
+            margin: 0,
+            fontWeight: 500,
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            opacity: 0.9,
+          }}>
+            Fuyud Al-Ta'wil Al-Mu'asir
+          </p>
         </div>
 
         {/* Basmala */}
         <div style={{
           display: 'inline-block',
           background: `linear-gradient(135deg, ${COLORS.GOLD_DIM}, ${COLORS.GOLD_MID})`,
-          border: `1.5px solid ${COLORS.GOLD}40`,
+          border: `2px solid ${COLORS.GOLD}50`,
           borderRadius: 16,
-          padding: '14px 36px',
-          marginBottom: 28,
-          boxShadow: `0 0 50px ${COLORS.GOLD}12, inset 0 1px 0 ${COLORS.GOLD}40`,
+          padding: '16px 40px',
+          marginBottom: 24,
+          boxShadow: `0 0 60px ${COLORS.GOLD}20, inset 0 1px 0 ${COLORS.GOLD}50`,
         }}>
           <p style={{
             fontFamily: 'Amiri, serif',
-            fontSize: 'clamp(1.4rem, 3vw, 2rem)',
+            fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
             color: COLORS.GOLD3,
             margin: 0,
             letterSpacing: '0.08em',
@@ -739,21 +698,8 @@ function HeroSection({ onNavigate }) {
           </p>
         </div>
 
-        {/* Site Title */}
-        <h1 style={{
-          fontFamily: 'Amiri, serif',
-          fontSize: 'clamp(2.4rem, 6vw, 4.2rem)',
-          color: COLORS.GOLD2,
-          margin: '0 0 8px',
-          fontWeight: 700,
-          lineHeight: 1.2,
-          textShadow: `0 0 60px ${COLORS.GOLD}25`,
-          letterSpacing: '0.03em',
-        }}>
-          فيوض التأويل المعاصر
-        </h1>
-
-        <div style={{ margin: '0 0 20px' }}>
+        {/* Subtitle */}
+        <div style={{ margin: '0 0 16px' }}>
           <span style={{
             display: 'inline-block',
             background: `linear-gradient(135deg, ${COLORS.GOLD}, ${COLORS.GOLD3})`,
@@ -761,21 +707,21 @@ function HeroSection({ onNavigate }) {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             fontFamily: 'Amiri, serif',
-            fontSize: 'clamp(1.1rem, 2.5vw, 1.6rem)',
+            fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)',
             fontWeight: 600,
           }}>
             تفسير سورة البقرة
           </span>
         </div>
 
-        {/* Subtitle */}
+        {/* Description */}
         <p style={{
           fontFamily: 'Noto Naskh Arabic, serif',
-          fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+          fontSize: 'clamp(1rem, 2vw, 1.25rem)',
           color: COLORS.TXT2,
           lineHeight: 2,
-          maxWidth: 600,
-          margin: '0 auto 36px',
+          maxWidth: 650,
+          margin: '0 auto 40px',
         }}>
           قراءة تفسيرية معاصرة تجمع بين البيان القرآني والتدبر التربوي والبصيرة النفسية،
           بلغة قريبة من الإنسان المعاصر
