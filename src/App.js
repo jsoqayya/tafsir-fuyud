@@ -10,16 +10,30 @@ import tafsirData from './data/tafsirData.json';
 import tafsirData2 from './data/tafsirData2.json';
 
 /* ────────────────────────────────────────────
-   قائمة التنقل العلوية بين الأجزاء
+   Part navigation bar (language-aware)
 ──────────────────────────────────────────── */
-function PartNav({ darkMode }) {
+const PART_LABELS = {
+  ar: { p1: 'الجزء الأول', p2: 'الجزء الثاني' },
+  en: { p1: 'Part One',   p2: 'Part Two'   },
+  ur: { p1: 'پہلا حصہ',   p2: 'دوسرا حصہ'  },
+  id: { p1: 'Bagian Satu', p2: 'Bagian Dua' },
+  tr: { p1: 'Birinci Bölüm', p2: 'İkinci Bölüm' },
+};
+
+function PartNav({ darkMode, language }) {
+  const lang = language || 'ar';
+  const labels = PART_LABELS[lang] || PART_LABELS.ar;
+  const prefix = lang === 'ar' ? '' : `/${lang}`;
+  const isRTL  = lang === 'ar' || lang === 'ur';
+
   const parts = [
-    { to: '/part1', label: 'الجزء الأول',  range: '١ – ١٠١'  },
-    { to: '/part2', label: 'الجزء الثاني', range: '١٠٢ – ٢٠٠' },
+    { to: `${prefix}/part1`, label: labels.p1, range: lang === 'ar' ? '١ – ١٠١' : '1 – 101' },
+    { to: `${prefix}/part2`, label: labels.p2, range: lang === 'ar' ? '١٠٢ – ٢٠٠' : '102 – 200' },
   ];
+
   return (
     <div
-      dir="rtl"
+      dir={isRTL ? 'rtl' : 'ltr'}
       className={`flex justify-center gap-2 py-3 px-4 border-b ${
         darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-100'
       }`}
@@ -37,7 +51,7 @@ function PartNav({ darkMode }) {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`
           }
-          style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
+          style={{ fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif' }}
         >
           <span className="text-sm">{p.label}</span>
           <span className="opacity-80 text-[10px] mt-0.5">{p.range}</span>
@@ -48,8 +62,20 @@ function PartNav({ darkMode }) {
 }
 
 /* ────────────────────────────────────────────
-   الهيدر العلوي لصفحات التفسير
+   Tafsir page header (language-aware)
 ──────────────────────────────────────────── */
+const TAFSIR_HOME_ROUTES = { ar: '/', en: '/en', ur: '/ur', id: '/id', tr: '/tr' };
+const TAFSIR_SITE_TITLE = {
+  ar: 'فيوض التأويل المعاصر',
+  en: "Fuyud Al-Ta'wil Al-Mu'asir",
+  ur: 'فیوض التاویل المعاصر',
+  id: "Fuyud Al-Ta'wil Al-Mu'asir",
+  tr: "Fuyud Et-Te'vil El-Muasır",
+};
+const TAFSIR_SURAH_LABEL = {
+  ar: 'سورة البقرة', en: 'Surah Al-Baqarah', ur: 'سورۃ البقرہ', id: 'Surah Al-Baqarah', tr: 'Bakara Suresi',
+};
+
 function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
   const LANGUAGES = [
     { code: 'ar', label: 'العربية' },
@@ -59,14 +85,26 @@ function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
     { code: 'tr', label: 'Türkçe' },
   ];
   const navigate = useNavigate();
+  const lang = language || 'ar';
+  const isRTL = lang === 'ar' || lang === 'ur';
+
+  const handleLangChange = (code) => {
+    onLanguageChange(code);
+    // Navigate to same part in new language
+    const currentPath = window.location.pathname;
+    const isPart2 = currentPath.includes('part2');
+    const prefix = code === 'ar' ? '' : `/${code}`;
+    navigate(`${prefix}/${isPart2 ? 'part2' : 'part1'}`);
+  };
+
   return (
     <header className={`sticky top-0 z-50 backdrop-blur-sm shadow-sm border-b ${
       darkMode ? 'bg-gray-900/95 border-gray-700' : 'bg-white/95 border-gray-100'
     }`}>
       <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3" dir="rtl">
+        <div className="flex items-center gap-3" dir={isRTL ? 'rtl' : 'ltr'}>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(TAFSIR_HOME_ROUTES[lang] || '/')}
             className={`w-10 h-10 rounded-xl overflow-hidden border-2 flex items-center justify-center shadow-md ${
               darkMode ? 'border-emerald-700 bg-gray-800' : 'border-emerald-200 bg-white'
             }`}
@@ -76,12 +114,15 @@ function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
           <div>
             <h1
               className={`text-sm font-bold leading-tight ${darkMode ? 'text-white' : 'text-gray-800'}`}
-              style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
+              style={{ fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif' }}
             >
-              فيوض التأويل المعاصر
+              {TAFSIR_SITE_TITLE[lang] || TAFSIR_SITE_TITLE.ar}
             </h1>
-            <p className="text-xs text-emerald-600 font-medium" style={{ fontFamily: 'Noto Naskh Arabic, serif' }}>
-              سورة البقرة
+            <p
+              className="text-xs text-emerald-600 font-medium"
+              style={{ fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif' }}
+            >
+              {TAFSIR_SURAH_LABEL[lang] || TAFSIR_SURAH_LABEL.ar}
             </p>
           </div>
         </div>
@@ -91,23 +132,23 @@ function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
             className={`p-2 rounded-lg transition-colors ${
               darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-500'
             }`}
-            title="تبديل المظهر"
+            title="Toggle dark mode"
           >
             {darkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
           <div className={`flex items-center gap-1 rounded-xl p-1 ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
             <Globe size={14} className="text-gray-400 ml-1" />
-            {LANGUAGES.map((lang) => (
+            {LANGUAGES.map((l) => (
               <button
-                key={lang.code}
-                onClick={() => onLanguageChange(lang.code)}
+                key={l.code}
+                onClick={() => handleLangChange(l.code)}
                 className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-200 ${
-                  language === lang.code
+                  lang === l.code
                     ? 'bg-white text-emerald-700 shadow-sm'
                     : darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                {lang.label}
+                {l.label}
               </button>
             ))}
           </div>
@@ -118,32 +159,51 @@ function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
 }
 
 /* ────────────────────────────────────────────
-   صفحة عرض الآيات
+   Tafsir page content (language-aware)
 ──────────────────────────────────────────── */
+const PAGE_UI = {
+  ar: { surahWord: 'سورة', ayahWord: 'آية', noResult: 'لا نتائج مطابقة', footer: 'فيوض التأويل المعاصر • جميع الحقوق محفوظة' },
+  en: { surahWord: 'Surah', ayahWord: 'verses', noResult: 'No matching results', footer: "Fuyud Al-Ta'wil Al-Mu'asir • All rights reserved" },
+  ur: { surahWord: 'سورۃ', ayahWord: 'آیات', noResult: 'کوئی نتیجہ نہیں', footer: 'فیوض التاویل المعاصر • جملہ حقوق محفوظ' },
+  id: { surahWord: 'Surah', ayahWord: 'ayat', noResult: 'Tidak ada hasil', footer: "Fuyud Al-Ta'wil Al-Mu'asir • Hak cipta dilindungi" },
+  tr: { surahWord: 'Sure', ayahWord: 'ayet', noResult: 'Sonuç bulunamadı', footer: "Fuyud Et-Te'vil El-Muasır • Tüm hakları saklıdır" },
+};
+
 function TafsirPage({ data, language, darkMode }) {
   const [searchQuery, setSearchQuery] = useState('');
   const { ayahs, introduction, surah } = data;
+  const lang = language || 'ar';
+  const isRTL = lang === 'ar' || lang === 'ur';
+  const ui = PAGE_UI[lang] || PAGE_UI.ar;
 
   const filteredAyahs = useMemo(() => {
     if (!searchQuery.trim()) return ayahs;
     const q = searchQuery.toLowerCase();
     return ayahs.filter((ayah) => {
       const text = (ayah.ayah_text || '').toLowerCase();
-      const fuyudText = Object.values(ayah.fuyud || {}).join(' ').toLowerCase();
+      // Search in selected language fuyud text
+      const fuyudText = Object.values(ayah.fuyud || {}).map(v =>
+        typeof v === 'object' ? (v[lang] || v.ar || '') : (v || '')
+      ).join(' ').toLowerCase();
       return text.includes(q) || fuyudText.includes(q);
     });
-  }, [ayahs, searchQuery]);
+  }, [ayahs, searchQuery, lang]);
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-8">
       <div className="text-center mb-8 py-6" dir="rtl">
         <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md mb-3">
-          <span>سورة</span>
-          <span className="text-lg font-bold" style={{ fontFamily: 'Amiri, serif' }}>البقرة</span>
+          <span style={{ fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif' }}>
+            {TAFSIR_SURAH_LABEL[lang]}
+          </span>
           <span className="opacity-70">•</span>
-          <span>{surah.total_ayahs} آية</span>
+          <span style={{ fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif' }}>
+            {surah.total_ayahs} {ui.ayahWord}
+          </span>
           <span className="opacity-70">•</span>
-          <span>{surah.ayah_range || `${ayahs[0]?.id}–${ayahs[ayahs.length-1]?.id}`}</span>
+          <span style={{ fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif' }}>
+            {surah.ayah_range || `${ayahs[0]?.id}–${ayahs[ayahs.length-1]?.id}`}
+          </span>
         </div>
         <h2
           className={`text-2xl font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-800'}`}
@@ -165,16 +225,15 @@ function TafsirPage({ data, language, darkMode }) {
       {searchQuery && (
         <p
           className={`text-sm mb-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
-          style={{ fontFamily: 'Noto Naskh Arabic, serif' }}
-          dir="rtl"
+          style={{ fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif', direction: isRTL ? 'rtl' : 'ltr' }}
         >
-          {filteredAyahs.length === 0 ? 'لا نتائج مطابقة' : `${filteredAyahs.length} آية مطابقة`}
+          {filteredAyahs.length === 0 ? ui.noResult : `${filteredAyahs.length} ${ui.ayahWord}`}
         </p>
       )}
 
       <div>
         {filteredAyahs.map((ayah) => (
-          <AyahCard key={ayah.id} ayah={ayah} language={language} darkMode={darkMode} />
+          <AyahCard key={ayah.id} ayah={ayah} language={lang} darkMode={darkMode} />
         ))}
       </div>
 
@@ -182,10 +241,13 @@ function TafsirPage({ data, language, darkMode }) {
         className={`text-center py-8 mt-8 border-t ${
           darkMode ? 'border-gray-700 text-gray-500' : 'border-gray-200 text-gray-400'
         }`}
-        dir="rtl"
+        dir={isRTL ? 'rtl' : 'ltr'}
       >
-        <p className="text-sm" style={{ fontFamily: 'Noto Naskh Arabic, serif' }}>
-          فيوض التأويل المعاصر • جميع الحقوق محفوظة
+        <p
+          className="text-sm"
+          style={{ fontFamily: isRTL ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif' }}
+        >
+          {ui.footer}
         </p>
       </footer>
     </main>
@@ -193,18 +255,23 @@ function TafsirPage({ data, language, darkMode }) {
 }
 
 /* ────────────────────────────────────────────
-   غلاف صفحة التفسير
+   TafsirLayout wrapper
 ──────────────────────────────────────────── */
 function TafsirLayout({ data, language, onLanguageChange, darkMode, onToggleDark }) {
+  const isRTL = language === 'ar' || language === 'ur';
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-[#f8f9fa]'}`}>
+    <div
+      className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-[#f8f9fa]'}`}
+      dir={isRTL ? 'rtl' : 'ltr'}
+      lang={language}
+    >
       <TafsirHeader
         language={language}
         onLanguageChange={onLanguageChange}
         darkMode={darkMode}
         onToggleDark={onToggleDark}
       />
-      <PartNav darkMode={darkMode} />
+      <PartNav darkMode={darkMode} language={language} />
       <TafsirPage data={data} language={language} darkMode={darkMode} />
     </div>
   );
@@ -248,42 +315,64 @@ export default function App() {
       <Route path="/id/surahs" element={<SurahIndex lang="id" />} />
       <Route path="/tr/surahs" element={<SurahIndex lang="tr" />} />
 
-      {/* ─── صفحات التفسير ─── */}
+      {/* ─── صفحات التفسير — Arabic (default) ─── */}
       <Route path="/part1" element={
-        <TafsirLayout
-          data={tafsirData}
-          language={language}
-          onLanguageChange={setLanguage}
-          darkMode={darkMode}
-          onToggleDark={() => setDarkMode(!darkMode)}
-        />
+        <TafsirLayout data={tafsirData} language={language} onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
       <Route path="/part2" element={
-        <TafsirLayout
-          data={tafsirData2}
-          language={language}
-          onLanguageChange={setLanguage}
-          darkMode={darkMode}
-          onToggleDark={() => setDarkMode(!darkMode)}
-        />
+        <TafsirLayout data={tafsirData2} language={language} onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
+
+      {/* ─── صفحات التفسير — English ─── */}
+      <Route path="/en/part1" element={
+        <TafsirLayout data={tafsirData} language="en" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+      <Route path="/en/part2" element={
+        <TafsirLayout data={tafsirData2} language="en" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+
+      {/* ─── صفحات التفسير — Urdu ─── */}
+      <Route path="/ur/part1" element={
+        <TafsirLayout data={tafsirData} language="ur" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+      <Route path="/ur/part2" element={
+        <TafsirLayout data={tafsirData2} language="ur" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+
+      {/* ─── صفحات التفسير — Indonesian ─── */}
+      <Route path="/id/part1" element={
+        <TafsirLayout data={tafsirData} language="id" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+      <Route path="/id/part2" element={
+        <TafsirLayout data={tafsirData2} language="id" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+
+      {/* ─── صفحات التفسير — Turkish ─── */}
+      <Route path="/tr/part1" element={
+        <TafsirLayout data={tafsirData} language="tr" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+      <Route path="/tr/part2" element={
+        <TafsirLayout data={tafsirData2} language="tr" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+
+      {/* ─── Legacy routes ─── */}
       <Route path="/ar/baqarah/1" element={
-        <TafsirLayout
-          data={tafsirData}
-          language={language}
-          onLanguageChange={setLanguage}
-          darkMode={darkMode}
-          onToggleDark={() => setDarkMode(!darkMode)}
-        />
+        <TafsirLayout data={tafsirData} language={language} onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
       <Route path="/ar/baqarah/2" element={
-        <TafsirLayout
-          data={tafsirData2}
-          language={language}
-          onLanguageChange={setLanguage}
-          darkMode={darkMode}
-          onToggleDark={() => setDarkMode(!darkMode)}
-        />
+        <TafsirLayout data={tafsirData2} language={language} onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
     </Routes>
   );
