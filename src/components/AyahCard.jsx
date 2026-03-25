@@ -212,6 +212,24 @@ function FaydBox({ config, text, darkMode, lang }) {
   );
 }
 
+// ===== Translation source badge label =====
+const TRANSLATION_SOURCE = {
+  ar: 'المعنى — Saheeh International',
+  en: 'Meaning — Saheeh International',
+  ur: 'معنی — Saheeh International',
+  id: 'Makna — Saheeh International',
+  tr: 'Anlam — Saheeh International',
+};
+
+// ===== Fuyud expand button label =====
+const EXPAND_LABEL = {
+  ar: '✦ اقرأ الفيوض التفسيرية',
+  en: '✦ Read Interpretive Insights',
+  ur: '✦ تفسیری فیوض پڑھیں',
+  id: '✦ Baca Wawasan Tafsir',
+  tr: '✦ Tefsir Feyzlerini Oku',
+};
+
 // ===== Main AyahCard =====
 export default function AyahCard({ ayah, language, darkMode }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -221,25 +239,26 @@ export default function AyahCard({ ayah, language, darkMode }) {
   const dir  = isRTL(lang) ? 'rtl' : 'ltr';
   const themeLabel = theme.labels?.[lang] || theme.labels?.ar || '';
 
-  // Show verse translation for non-Arabic languages
-  const verseTranslation = lang !== 'ar'
-    ? extractText(ayah.ayah_translations, lang)
+  // Sahih International EN translation shown for all languages
+  const sahihEN = ayah.ayah_translations?.en || null;
+
+  // For RTL languages also show native translation if available (ur/id/tr)
+  const nativeTrans = (lang !== 'ar' && lang !== 'en')
+    ? (ayah.ayah_translations?.[lang] || null)
     : null;
 
   return (
     <div
-      className={`rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden mb-4 
+      className={`rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden mb-5
         ${darkMode ? `bg-gray-800 ${theme.darkBorder}` : `bg-white ${theme.border}`}
         border border-transparent hover:-translate-y-0.5`}
     >
-      {/* Card header — click to toggle */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-5 flex items-start justify-between gap-4 group"
-        style={{ textAlign: isRTL(lang) ? 'right' : 'left' }}
-      >
+      {/* ── Card header: ayah number + Arabic text ── */}
+      <div className="p-5 flex items-start gap-4">
+
+        {/* Number + theme badge */}
         <div className="flex flex-col items-center gap-2 shrink-0">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm ${theme.headerBg}`}>
+          <div className={`w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm shadow ${theme.headerBg}`}>
             {ayah.id}
           </div>
           <span
@@ -250,40 +269,91 @@ export default function AyahCard({ ayah, language, darkMode }) {
           </span>
         </div>
 
+        {/* Arabic verse — always RTL */}
         <div className="flex-1" dir="rtl">
-          {/* Arabic verse text always RTL */}
           <p
-            className={`leading-[2.8rem] text-xl font-bold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}
+            className={`leading-[3rem] text-xl font-bold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}
             style={{ fontFamily: 'Amiri, serif', textAlign: 'right', direction: 'rtl' }}
           >
             {displayText}
           </p>
+        </div>
+      </div>
 
-          {/* Verse translation (non-Arabic languages) */}
-          {verseTranslation && (
+      {/* ── Sahih International translation box ── */}
+      {sahihEN && (
+        <div
+          className={`mx-5 mb-4 rounded-xl px-4 py-3 border-l-4 ${
+            darkMode
+              ? 'bg-emerald-900/30 border-emerald-500 text-emerald-100'
+              : 'bg-emerald-50 border-emerald-400 text-emerald-900'
+          }`}
+          dir="ltr"
+        >
+          {/* Source label */}
+          <p
+            className={`text-[10px] font-semibold uppercase tracking-wider mb-1.5 ${
+              darkMode ? 'text-emerald-400' : 'text-emerald-600'
+            }`}
+            style={{ fontFamily: 'Inter, sans-serif' }}
+          >
+            {TRANSLATION_SOURCE[lang] || TRANSLATION_SOURCE.en}
+          </p>
+          {/* Translation text */}
+          <p
+            className={`text-sm leading-relaxed italic ${
+              darkMode ? 'text-emerald-50' : 'text-gray-700'
+            }`}
+            style={{ fontFamily: 'Georgia, serif', textAlign: 'left' }}
+          >
+            "{sahihEN}"
+          </p>
+
+          {/* Native translation (Urdu/Indonesian/Turkish) if available */}
+          {nativeTrans && (
             <p
-              className={`text-sm mt-2 italic ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}
+              className={`text-sm mt-2 pt-2 border-t ${
+                darkMode ? 'border-emerald-700 text-emerald-200' : 'border-emerald-200 text-gray-600'
+              }`}
               style={{
-                fontFamily: lang === 'ur' ? 'Noto Naskh Arabic, serif' : 'Georgia, serif',
+                fontFamily: lang === 'ur' ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif',
                 direction: isRTL(lang) ? 'rtl' : 'ltr',
                 textAlign: isRTL(lang) ? 'right' : 'left',
-                lineHeight: '1.7',
+                lineHeight: '1.8',
               }}
             >
-              {verseTranslation}
+              {nativeTrans}
             </p>
           )}
         </div>
+      )}
 
-        <div className={`shrink-0 mt-1 p-1.5 rounded-full transition-all ${isOpen ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'}`}>
-          {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+      {/* ── Expand / Collapse Fuyud button ── */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full flex items-center justify-between px-5 py-3 border-t text-sm font-semibold transition-all duration-200 ${
+          isOpen
+            ? darkMode
+              ? 'bg-gray-700 border-gray-600 text-emerald-300'
+              : 'bg-emerald-50 border-emerald-100 text-emerald-700'
+            : darkMode
+              ? 'bg-gray-800 border-gray-700 text-gray-400 hover:text-gray-200 hover:bg-gray-700'
+              : 'bg-gray-50 border-gray-100 text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+        }`}
+        dir={dir}
+      >
+        <span style={{ fontFamily: isRTL(lang) ? 'Noto Naskh Arabic, serif' : 'Inter, sans-serif' }}>
+          {EXPAND_LABEL[lang] || EXPAND_LABEL.en}
+        </span>
+        <div className={`p-1 rounded-full transition-all ${isOpen ? 'bg-emerald-100 text-emerald-600' : ''}`}>
+          {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </div>
       </button>
 
-      {/* Fuyud sections */}
+      {/* ── Fuyud sections ── */}
       {isOpen && (
         <div
-          className={`border-t px-5 pb-5 pt-4 ${darkMode ? 'border-gray-700 bg-gray-800/80' : 'border-gray-100 bg-gray-50/60'}`}
+          className={`px-5 pb-5 pt-4 ${darkMode ? 'bg-gray-800/80' : 'bg-gray-50/60'}`}
           dir={dir}
         >
           <h3
