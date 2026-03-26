@@ -50,7 +50,7 @@ const en = {
   aboutVisionText: "A contemporary exegetical reading uniting Quranic eloquence, educational contemplation, and psychological insight — a project that stands at the river of meaning to draw from it, not to condense it.",
   cards: [
     { title: 'Academic Authenticity', text: 'Sources verified from the foremost books of Tafsir and Islamic sciences' },
-    { title: 'Interpretive Depth',    text: 'Seven dimensions: rhetorical, interpretive, spiritual, psychological, educational, contemporary, testimonial' },
+    { title: 'Interpretive Depth',    text: 'Seven outpourings: rhetorical, interpretive, spiritual, psychological, pedagogical, contemporary, and contextual' },
     { title: 'Contemplation',         text: 'A reading that invites the heart to reflect on the depths of Quranic meaning' },
     { title: 'Contemporary Life',     text: "Connecting verses to modern human reality and today's spiritual challenges" },
     { title: 'Psychological Insight', text: 'Drawing psychological and therapeutic lessons from Quranic verses' },
@@ -73,12 +73,12 @@ const en = {
   pathsTitle: 'Tafsir Paths',
   pathsSub: 'Each path opens a new horizon of knowledge in understanding the Holy Quran',
   paths: [
-    { title:'Rhetorical Path',    sub:'The beauty, eloquence and expressiveness of Quranic style' },
-    { title:'Interpretive Path',  sub:'Depth of meaning, semantics and exegetical readings' },
-    { title:'Spiritual Path',     sub:'Connection with God, purification and spiritual stations' },
-    { title:'Psychological Path', sub:'Psychological and therapeutic impact through modern psychology' },
-    { title:'Educational Path',   sub:'Lessons, values and self-purification from the Quran' },
-    { title:'Contemporary Path',  sub:'Connecting verses to modern life and contemporary challenges' },
+    { title:'Rhetorical Outpourings',    sub:'The beauty, eloquence and expressiveness of Quranic style' },
+    { title:'Interpretive Outpourings',  sub:'Depth of meaning, semantics and exegetical readings' },
+    { title:'Spiritual Outpourings',     sub:'Connection with God, purification and spiritual stations' },
+    { title:'Psychological Outpourings', sub:'Psychological and therapeutic impact through modern psychology' },
+    { title:'Pedagogical Outpourings',   sub:'Lessons, values and self-purification from the Quran' },
+    { title:'Contemporary Outpourings',  sub:'Connecting verses to modern life and contemporary challenges' },
   ],
 
   /* Featured */

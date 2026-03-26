@@ -36,18 +36,18 @@ const THEME_CONFIG = {
 // ===== Fuyud section labels (multilingual) =====
 const FUYUD_LABELS = {
   context:  { ar: 'السياق العام',              en: 'General Context',              ur: 'عمومی سیاق',               id: 'Konteks Umum',               tr: 'Genel Bağlam' },
-  bayani:   { ar: 'الفيوض البيانية',           en: 'Rhetorical Insights',          ur: 'بیانی فیوض',               id: 'Wawasan Retorika',           tr: 'Beyan Feyzleri' },
-  taweeli:  { ar: 'الفيوض التأويلية والتدبرية', en: 'Interpretive & Reflective Insights', ur: 'تاویلی و تدبری فیوض',  id: 'Wawasan Tafsir & Tadabbur', tr: 'Te\'vil & Tedebbür Feyzleri' },
-  ruhani:   { ar: 'الفيوض الروحانية',          en: 'Spiritual Insights',           ur: 'روحانی فیوض',              id: 'Wawasan Spiritual',          tr: 'Manevi Feyzler' },
-  nafsi:    { ar: 'الفيوض النفسية',            en: 'Psychological Insights',       ur: 'نفسیاتی فیوض',             id: 'Wawasan Psikologis',         tr: 'Psikolojik Feyzler' },
-  tarbawi:  { ar: 'الفيوض التربوية',           en: 'Educational Insights',         ur: 'تربوی فیوض',               id: 'Wawasan Pendidikan',         tr: 'Eğitsel Feyzler' },
-  muasir:   { ar: 'الفيوض المعاصرة',           en: 'Contemporary Insights',        ur: 'معاصر فیوض',               id: 'Wawasan Kontemporer',        tr: 'Çağdaş Feyzler' },
+  bayani:   { ar: 'الفيوض البيانية',           en: 'Rhetorical Outpourings',               ur: 'بیانی فیوض',               id: 'Wawasan Retorika',           tr: 'Beyan Feyzleri' },
+  taweeli:  { ar: 'الفيوض التأويلية والتدبرية', en: 'Interpretive and Reflective Outpourings', ur: 'تاویلی و تدبری فیوض',  id: 'Wawasan Tafsir & Tadabbur', tr: 'Te\'vil & Tedebbür Feyzleri' },
+  ruhani:   { ar: 'الفيوض الروحانية',          en: 'Spiritual Outpourings',                ur: 'روحانی فیوض',              id: 'Wawasan Spiritual',          tr: 'Manevi Feyzler' },
+  nafsi:    { ar: 'الفيوض النفسية',            en: 'Psychological Outpourings',            ur: 'نفسیاتی فیوض',             id: 'Wawasan Psikologis',         tr: 'Psikolojik Feyzler' },
+  tarbawi:  { ar: 'الفيوض التربوية',           en: 'Pedagogical Outpourings',              ur: 'تربوی فیوض',               id: 'Wawasan Pendidikan',         tr: 'Eğitsel Feyzler' },
+  muasir:   { ar: 'الفيوض المعاصرة',           en: 'Contemporary Outpourings',             ur: 'معاصر فیوض',               id: 'Wawasan Kontemporer',        tr: 'Çağdaş Feyzler' },
 };
 
 // ===== Section header title =====
 const FUYUD_TITLE = {
   ar: '✦ فيوض التفسير ✦',
-  en: '✦ Interpretive Insights ✦',
+  en: '✦ Outpourings of Tafsir ✦',
   ur: '✦ تفسیری فیوض ✦',
   id: '✦ Wawasan Tafsir ✦',
   tr: '✦ Tefsir Feyzleri ✦',
@@ -224,7 +224,7 @@ const TRANSLATION_SOURCE = {
 // ===== Fuyud expand button label =====
 const EXPAND_LABEL = {
   ar: '✦ اقرأ الفيوض التفسيرية',
-  en: '✦ Read Interpretive Insights',
+  en: '✦ Read the Outpourings',
   ur: '✦ تفسیری فیوض پڑھیں',
   id: '✦ Baca Wawasan Tafsir',
   tr: '✦ Tefsir Feyzlerini Oku',
