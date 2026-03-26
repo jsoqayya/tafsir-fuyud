@@ -65,6 +65,48 @@
       }
     },
     {
+      "id": 2,
+      "header": "2. ﴿ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ﴾",
+      "ayah_text": "﴿ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ﴾",
+      "theme": "general",
+      "fuyud": {
+        "context": {
+          "ar": "",
+          "en": ""
+        },
+        "bayani": {
+          "ar": "",
+          "en": ""
+        },
+        "taweeli": {
+          "ar": "",
+          "en": ""
+        },
+        "ruhani": {
+          "ar": "",
+          "en": ""
+        },
+        "nafsi": {
+          "ar": "",
+          "en": ""
+        },
+        "tarbawi": {
+          "ar": "",
+          "en": ""
+        },
+        "muasir": {
+          "ar": "",
+          "en": ""
+        }
+      },
+      "ayah_translations": {
+        "en": "This is the Book about which there is no doubt, a guidance for those conscious of Allāh.",
+        "ur": "یہ وہ کتاب ہے جس میں کوئی شک نہیں، متقین کے لیے ہدایت ہے۔",
+        "id": "Kitab (Al-Qur'an) ini tidak ada keraguan padanya; petunjuk bagi mereka yang bertakwa.",
+        "tr": "Bu, kendisinde şüphe olmayan kitaptır; Allah'a karşı gelmekten sakınanlar için bir yol göstericidir."
+      }
+    },
+    {
       "id": 3,
       "header": "3. ﴿ٱلَّذِينَ يُؤۡمِنُونَ بِٱلۡغَيۡبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقۡنَٰهُمۡ يُنفِقُونَ﴾",
       "ayah_text": "﴿ٱلَّذِينَ يُؤۡمِنُونَ بِٱلۡغَيۡبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقۡنَٰهُمۡ يُنفِقُونَ﴾",

@@ -1773,6 +1773,48 @@
       }
     },
     {
+      "id": 130,
+      "header": "130. ﴿وَمَن يَرْغَبُ عَن مِّلَّةِ إِبْرَاهِيمَ إِلَّا مَن سَفِهَ نَفْسَهُ ۚ وَلَقَدِ اصْطَفَيْنَاهُ فِي الدُّنْيَا ۖ وَإِنَّهُ فِي الْآخِرَةِ لَمِنَ الصَّالِحِينَ﴾",
+      "ayah_text": "﴿وَمَن يَرْغَبُ عَن مِّلَّةِ إِبْرَاهِيمَ إِلَّا مَن سَفِهَ نَفْسَهُ ۚ وَلَقَدِ اصْطَفَيْنَاهُ فِي الدُّنْيَا ۖ وَإِنَّهُ فِي الْآخِرَةِ لَمِنَ الصَّالِحِينَ﴾",
+      "theme": "general",
+      "fuyud": {
+        "context": {
+          "ar": "",
+          "en": ""
+        },
+        "bayani": {
+          "ar": "",
+          "en": ""
+        },
+        "taweeli": {
+          "ar": "",
+          "en": ""
+        },
+        "ruhani": {
+          "ar": "",
+          "en": ""
+        },
+        "nafsi": {
+          "ar": "",
+          "en": ""
+        },
+        "tarbawi": {
+          "ar": "",
+          "en": ""
+        },
+        "muasir": {
+          "ar": "",
+          "en": ""
+        }
+      },
+      "ayah_translations": {
+        "en": "And who would be averse to the religion of Abraham except one who makes a fool of himself. And We had chosen him in this world, and indeed he, in the Hereafter, will be among the righteous.",
+        "ur": "اور ابراہیم کی ملت سے کون منہ موڑتا ہے مگر وہ جو اپنے آپ کو احمق بنائے، اور بے شک ہم نے انہیں دنیا میں منتخب کیا اور وہ آخرت میں یقیناً صالحین میں سے ہیں۔",
+        "id": "Dan tidak ada yang membenci agama Ibrahim, melainkan orang yang memperbodoh dirinya sendiri. Dan sungguh, Kami telah memilihnya di dunia dan sesungguhnya di akhirat dia termasuk orang-orang saleh.",
+        "tr": "İbrahim'in milletinden, kendini bilmezden başka kim yüz çevirir? Andolsun, Biz onu dünyada seçtik ve şüphesiz o ahirette de salihler arasındadır."
+      }
+    },
+    {
       "id": 131,
       "header": "131. ﴿إِذْ قَالَ لَهُ رَبُّهُ أَسْلِمْ ۖ قَالَ أَسْلَمْتُ لِرَبِّ الْعَالَمِينَ﴾",
       "ayah_text": "﴿إِذْ قَالَ لَهُ رَبُّهُ أَسْلِمْ ۖ قَالَ أَسْلَمْتُ لِرَبِّ الْعَالَمِينَ﴾",
@@ -1896,6 +1938,48 @@
         "ur": "",
         "id": "",
         "tr": ""
+      }
+    },
+    {
+      "id": 133,
+      "header": "133. ﴿أَمْ كُنتُمْ شُهَدَاءَ إِذْ حَضَرَ يَعْقُوبَ الْمَوْتُ إِذْ قَالَ لِبَنِيهِ مَا تَعْبُدُونَ مِن بَعْدِي قَالُوا نَعْبُدُ إِلَٰهَكَ وَإِلَٰهَ آبَائِكَ إِبْرَاهِيمَ وَإِسْمَاعِيلَ وَإِسْحَاقَ إِلَٰهًا وَاحِدًا وَنَحْنُ لَهُ مُسْلِمُونَ﴾",
+      "ayah_text": "﴿أَمْ كُنتُمْ شُهَدَاءَ إِذْ حَضَرَ يَعْقُوبَ الْمَوْتُ إِذْ قَالَ لِبَنِيهِ مَا تَعْبُدُونَ مِن بَعْدِي قَالُوا نَعْبُدُ إِلَٰهَكَ وَإِلَٰهَ آبَائِكَ إِبْرَاهِيمَ وَإِسْمَاعِيلَ وَإِسْحَاقَ إِلَٰهًا وَاحِدًا وَنَحْنُ لَهُ مُسْلِمُونَ﴾",
+      "theme": "general",
+      "fuyud": {
+        "context": {
+          "ar": "",
+          "en": ""
+        },
+        "bayani": {
+          "ar": "",
+          "en": ""
+        },
+        "taweeli": {
+          "ar": "",
+          "en": ""
+        },
+        "ruhani": {
+          "ar": "",
+          "en": ""
+        },
+        "nafsi": {
+          "ar": "",
+          "en": ""
+        },
+        "tarbawi": {
+          "ar": "",
+          "en": ""
+        },
+        "muasir": {
+          "ar": "",
+          "en": ""
+        }
+      },
+      "ayah_translations": {
+        "en": "Or were you witnesses when death approached Jacob, when he said to his sons, \"What will you worship after me?\" They said, \"We will worship your God and the God of your fathers, Abraham and Ishmael and Isaac - one God. And we are Muslims [in submission] to Him.\"",
+        "ur": "کیا تم اس وقت موجود تھے جب یعقوب کو موت آئی جب انہوں نے اپنے بیٹوں سے کہا: میرے بعد تم کس کی عبادت کرو گے؟ انہوں نے کہا: ہم آپ کے اور آپ کے آباؤ اجداد ابراہیم، اسماعیل اور اسحاق کے معبود ایک اللہ کی عبادت کریں گے اور ہم اسی کے فرماں بردار ہیں۔",
+        "id": "Apakah kamu hadir ketika maut datang kepada Ya'qub, ketika dia berkata kepada anak-anaknya, 'Apa yang kamu sembah sepeninggalku?' Mereka menjawab, 'Kami akan menyembah Tuhanmu dan Tuhan nenek moyangmu Ibrahim, Ismail, dan Ishak, (yaitu) Tuhan Yang Maha Esa dan kami hanya tunduk patuh kepada-Nya.'",
+        "tr": "Yoksa siz, Yakub'a ölüm geldiğinde orada mıydınız? O zaman oğullarına, 'Benden sonra kime ibadet edeceksiniz?' demişti. Onlar da 'Senin ilahına ve ataların İbrahim, İsmail ve İshak'ın ilahına, tek ilaha ibadet edeceğiz ve biz ona teslim olmuşuz.' demişlerdi."
       }
     },
     {
@@ -2337,6 +2421,48 @@
         "ur": "",
         "id": "",
         "tr": ""
+      }
+    },
+    {
+      "id": 141,
+      "header": "141. ﴿تِلْكَ أُمَّةٌ قَدْ خَلَتْ ۖ لَهَا مَا كَسَبَتْ وَلَكُم مَّا كَسَبْتُمْ ۖ وَلَا تُسْأَلُونَ عَمَّا كَانُوا يَعْمَلُونَ﴾",
+      "ayah_text": "﴿تِلْكَ أُمَّةٌ قَدْ خَلَتْ ۖ لَهَا مَا كَسَبَتْ وَلَكُم مَّا كَسَبْتُمْ ۖ وَلَا تُسْأَلُونَ عَمَّا كَانُوا يَعْمَلُونَ﴾",
+      "theme": "general",
+      "fuyud": {
+        "context": {
+          "ar": "",
+          "en": ""
+        },
+        "bayani": {
+          "ar": "",
+          "en": ""
+        },
+        "taweeli": {
+          "ar": "",
+          "en": ""
+        },
+        "ruhani": {
+          "ar": "",
+          "en": ""
+        },
+        "nafsi": {
+          "ar": "",
+          "en": ""
+        },
+        "tarbawi": {
+          "ar": "",
+          "en": ""
+        },
+        "muasir": {
+          "ar": "",
+          "en": ""
+        }
+      },
+      "ayah_translations": {
+        "en": "That was a nation which has passed on. It will have [the consequence of] what it earned, and you will have what you have earned. And you will not be asked about what they used to do.",
+        "ur": "یہ وہ امت تھی جو گزر گئی، اس نے جو کمایا وہ اسی کے لیے ہے اور تم نے جو کمایا وہ تمہارے لیے ہے، اور تم سے ان کے اعمال کے بارے میں نہیں پوچھا جائے گا۔",
+        "id": "Itulah umat yang telah lalu; baginya apa yang telah diusahakannya dan bagimu apa yang sudah kamu usahakan, dan kamu tidak akan diminta pertanggungjawaban tentang apa yang dahulu mereka kerjakan.",
+        "tr": "İşte onlar gelip geçmiş bir ümmettir. Onların kazandıkları kendilerinin, sizin kazandıklarınız sizindir. Siz onların yaptıklarından sorulmayacaksınız."
       }
     },
     {
@@ -5739,6 +5865,48 @@
         "ur": "",
         "id": "",
         "tr": ""
+      }
+    },
+    {
+      "id": 196,
+      "header": "196. ﴿وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ ۚ فَإِنْ أُحْصِرْتُمْ فَمَا اسْتَيْسَرَ مِنَ الْهَدْيِ ۖ وَلَا تَحْلِقُوا رُءُوسَكُمْ حَتَّىٰ يَبْلُغَ الْهَدْيُ مَحِلَّهُ ۚ فَمَن كَانَ مِنكُم مَّرِيضًا أَوْ بِهِ أَذًى مِّن رَّأْسِهِ فَفِدْيَةٌ مِّن صِيَامٍ أَوْ صَدَقَةٍ أَوْ نُسُكٍ ۚ فَإِذَا أَمِنتُمْ فَمَن تَمَتَّعَ بِالْعُمْرَةِ إِلَى الْحَجِّ فَمَا اسْتَيْسَرَ مِنَ الْهَدْيِ ۚ فَمَن لَّمْ يَجِدْ فَصِيَامُ ثَلَاثَةِ أَيَّامٍ فِي الْحَجِّ وَسَبْعَةٍ إِذَا رَجَعْتُمْ ۗ تِلْكَ عَشَرَةٌ كَامِلَةٌ ۗ ذَٰلِكَ لِمَن لَّمْ يَكُنْ أَهْلُهُ حَاضِرِي الْمَسْجِدِ الْحَرَامِ ۚ وَاتَّقُوا اللَّهَ وَاعْلَمُوا أَنَّ اللَّهَ شَدِيدُ الْعِقَابِ﴾",
+      "ayah_text": "﴿وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ﴾",
+      "theme": "general",
+      "fuyud": {
+        "context": {
+          "ar": "",
+          "en": ""
+        },
+        "bayani": {
+          "ar": "",
+          "en": ""
+        },
+        "taweeli": {
+          "ar": "",
+          "en": ""
+        },
+        "ruhani": {
+          "ar": "",
+          "en": ""
+        },
+        "nafsi": {
+          "ar": "",
+          "en": ""
+        },
+        "tarbawi": {
+          "ar": "",
+          "en": ""
+        },
+        "muasir": {
+          "ar": "",
+          "en": ""
+        }
+      },
+      "ayah_translations": {
+        "en": "And complete the Hajj and 'umrah for Allāh. But if you are prevented, then [offer] what can be obtained with ease of sacrificial animals. And do not shave your heads until the sacrificial animal has reached its place of slaughter. And whoever among you is ill or has an ailment of the head [making shaving necessary must offer] a ransom of fasting [three days] or charity or sacrifice. And when you are secure, then whoever performs 'umrah [during the Hajj months] followed by Hajj [offers] what can be obtained with ease of sacrificial animals. And whoever cannot find [or afford such an animal] - then a fast of three days during Hajj and of seven when you have returned [home]. Those are ten complete [days]. This is for those whose family is not in the area of al-Masjid al-Ḥarām. And fear Allāh and know that Allāh is severe in penalty.",
+        "ur": "اور اللہ کے لیے حج اور عمرہ پورے کرو، اور اگر روک دیے جاؤ تو جو قربانی میسر ہو پیش کرو، اور اپنے سر نہ منڈواؤ جب تک قربانی اپنی جگہ نہ پہنچ جائے۔",
+        "id": "Dan sempurnakanlah ibadah haji dan umrah karena Allah. Jika kamu terkepung (oleh musuh), maka (sembelihlah) hadyu (hewan kurban) yang mudah didapat.",
+        "tr": "Haccı ve umreyi Allah için tamamlayın. Eğer engellenirseniz, kolayınıza gelen kurbanı gönderin."
       }
     },
     {
