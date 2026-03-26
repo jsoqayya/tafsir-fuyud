@@ -113,7 +113,7 @@ function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
               darkMode ? 'border-emerald-700 bg-gray-800' : 'border-emerald-200 bg-white'
             }`}
           >
-            <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+            <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="Logo" className="w-full h-full object-contain" />
           </button>
           <div>
             <h1

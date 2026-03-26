@@ -626,7 +626,7 @@ export default function SurahIndex({ lang = 'ar', onLangChange }) {
                 border: `2px solid ${C.G4}80`, overflow: 'hidden', background: C.CARD,
                 boxShadow: `0 0 16px ${C.G4}30`,
               }}>
-                <img src="/logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
+                <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
               </div>
               <div dir="rtl">
                 <div style={{
@@ -665,7 +665,7 @@ export default function SurahIndex({ lang = 'ar', onLangChange }) {
         overflow: 'hidden', padding: '52px 26px 46px', textAlign: 'center',
         animation: 'fadeSlideDown 0.6s ease',
       }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/bg_islamic.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.22 }}/>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${process.env.PUBLIC_URL}/bg_islamic.jpg)`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.22 }}/>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 70% at 50% 50%, transparent 0%, rgba(15,8,0,0.55) 100%)' }}/>
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}><GeomBg/></div>
 

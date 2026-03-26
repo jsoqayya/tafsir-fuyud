@@ -229,7 +229,7 @@ function Header() {
               boxShadow:`0 0 18px ${C.G4}35`,
               display:'flex',alignItems:'center',justifyContent:'center',
             }}>
-              <img src="/logo.png" alt="Logo"
+              <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="Logo"
                 style={{width:'92%',height:'92%',objectFit:'contain'}}/>
             </div>
             <div dir="rtl">
@@ -297,7 +297,7 @@ function Hero() {
       {/* الصورة الإسلامية */}
       <div style={{
         position:'absolute', inset:0, zIndex:0,
-        backgroundImage:'url(/bg_islamic.jpg)',
+        backgroundImage:`url(${process.env.PUBLIC_URL}/bg_islamic.jpg)`,
         backgroundSize:'cover',
         backgroundPosition:'center center',
         backgroundRepeat:'no-repeat',
@@ -362,7 +362,7 @@ function Hero() {
               boxShadow:`0 0 0 6px ${C.G5}30, 0 0 60px ${C.G5}55, 0 0 120px ${C.G4}25, inset 0 0 40px rgba(0,0,0,.4)`,
               position:'relative',zIndex:1,
             }}>
-              <img src="/logo.png" alt="فيوض التأويل المعاصر"
+              <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="فيوض التأويل المعاصر"
                 style={{width:'100%',height:'100%',objectFit:'contain',padding:12}}/>
             </div>
             {[{t:-10,r:-10},{t:-10,l:-10},{b:-10,r:-10},{b:-10,l:-10}].map((p,i)=>(
@@ -1150,7 +1150,7 @@ function Footer() {
               <div style={{width:94,height:94,borderRadius:'50% 50% 14px 14px',
                 border:`2px solid ${C.G4}70`,overflow:'hidden',background:C.CARD,
                 boxShadow:`0 0 22px ${C.G3}25`}}>
-                <img src="/logo.png" alt="Logo" style={{width:'100%',height:'100%',objectFit:'contain',padding:6}}/>
+                <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="Logo" style={{width:'100%',height:'100%',objectFit:'contain',padding:6}}/>
               </div>
               <div style={{fontFamily:'Amiri,serif',fontSize:'1.15rem',fontWeight:700,
                 background:`linear-gradient(135deg,${C.G2},${C.G4})`,
