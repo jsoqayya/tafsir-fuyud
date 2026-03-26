@@ -8,16 +8,17 @@ import HomePage from './components/HomePage';
 import SurahIndex from './components/SurahIndex';
 import tafsirData from './data/tafsirData.json';
 import tafsirData2 from './data/tafsirData2.json';
+import tafsirData3 from './data/tafsirData3.json';
 
 /* ────────────────────────────────────────────
    Part navigation bar (language-aware)
 ──────────────────────────────────────────── */
 const PART_LABELS = {
-  ar: { p1: 'الجزء الأول', p2: 'الجزء الثاني' },
-  en: { p1: 'Part One',   p2: 'Part Two'   },
-  ur: { p1: 'پہلا حصہ',   p2: 'دوسرا حصہ'  },
-  id: { p1: 'Bagian Satu', p2: 'Bagian Dua' },
-  tr: { p1: 'Birinci Bölüm', p2: 'İkinci Bölüm' },
+  ar: { p1: 'الجزء الأول', p2: 'الجزء الثاني', p3: 'الجزء الثالث' },
+  en: { p1: 'Part One',   p2: 'Part Two',   p3: 'Part Three'  },
+  ur: { p1: 'پہلا حصہ',   p2: 'دوسرا حصہ',  p3: 'تیسرا حصہ'  },
+  id: { p1: 'Bagian Satu', p2: 'Bagian Dua', p3: 'Bagian Tiga' },
+  tr: { p1: 'Birinci Bölüm', p2: 'İkinci Bölüm', p3: 'Üçüncü Bölüm' },
 };
 
 function PartNav({ darkMode, language }) {
@@ -29,6 +30,7 @@ function PartNav({ darkMode, language }) {
   const parts = [
     { to: `${prefix}/part1`, label: labels.p1, range: lang === 'ar' ? '١ – ١٠١' : '1 – 101' },
     { to: `${prefix}/part2`, label: labels.p2, range: lang === 'ar' ? '١٠٢ – ٢٠٠' : '102 – 200' },
+    { to: `${prefix}/part3`, label: labels.p3, range: lang === 'ar' ? '٢٠١ – ٢٨٦' : '201 – 286' },
   ];
 
   return (
@@ -92,9 +94,11 @@ function TafsirHeader({ language, onLanguageChange, darkMode, onToggleDark }) {
     onLanguageChange(code);
     // Navigate to same part in new language
     const currentPath = window.location.pathname;
+    const isPart3 = currentPath.includes('part3');
     const isPart2 = currentPath.includes('part2');
     const prefix = code === 'ar' ? '' : `/${code}`;
-    navigate(`${prefix}/${isPart2 ? 'part2' : 'part1'}`);
+    const part = isPart3 ? 'part3' : isPart2 ? 'part2' : 'part1';
+    navigate(`${prefix}/${part}`);
   };
 
   return (
@@ -324,6 +328,10 @@ export default function App() {
         <TafsirLayout data={tafsirData2} language={language} onLanguageChange={setLanguage}
           darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
+      <Route path="/part3" element={
+        <TafsirLayout data={tafsirData3} language={language} onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
 
       {/* ─── صفحات التفسير — English ─── */}
       <Route path="/en/part1" element={
@@ -332,6 +340,10 @@ export default function App() {
       } />
       <Route path="/en/part2" element={
         <TafsirLayout data={tafsirData2} language="en" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+      <Route path="/en/part3" element={
+        <TafsirLayout data={tafsirData3} language="en" onLanguageChange={setLanguage}
           darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
 
@@ -344,6 +356,10 @@ export default function App() {
         <TafsirLayout data={tafsirData2} language="ur" onLanguageChange={setLanguage}
           darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
+      <Route path="/ur/part3" element={
+        <TafsirLayout data={tafsirData3} language="ur" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
 
       {/* ─── صفحات التفسير — Indonesian ─── */}
       <Route path="/id/part1" element={
@@ -352,6 +368,10 @@ export default function App() {
       } />
       <Route path="/id/part2" element={
         <TafsirLayout data={tafsirData2} language="id" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+      <Route path="/id/part3" element={
+        <TafsirLayout data={tafsirData3} language="id" onLanguageChange={setLanguage}
           darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
 
@@ -364,6 +384,10 @@ export default function App() {
         <TafsirLayout data={tafsirData2} language="tr" onLanguageChange={setLanguage}
           darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
+      <Route path="/tr/part3" element={
+        <TafsirLayout data={tafsirData3} language="tr" onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
 
       {/* ─── Legacy routes ─── */}
       <Route path="/ar/baqarah/1" element={
@@ -372,6 +396,10 @@ export default function App() {
       } />
       <Route path="/ar/baqarah/2" element={
         <TafsirLayout data={tafsirData2} language={language} onLanguageChange={setLanguage}
+          darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
+      } />
+      <Route path="/ar/baqarah/3" element={
+        <TafsirLayout data={tafsirData3} language={language} onLanguageChange={setLanguage}
           darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
     </Routes>
