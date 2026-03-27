@@ -3,3 +3,14 @@ build/
 .env
 .env.local
 .DS_Store
+
+# Translation scripts (contain or may contain API keys)
+translate_fuyud*.py
+add_sahih*.py
+clean_fuyud*.py
+fix_*.py
+
+# Backup data files
+src/data/*_backup.json
+src/data/*_before_clean.json
+src/data/*_pretranslate.json
