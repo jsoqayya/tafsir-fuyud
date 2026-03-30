@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/tafsir-fuyud/static/css/main.fead13ea.css",
+    "main.js": "/tafsir-fuyud/static/js/main.02db4774.js",
+    "index.html": "/tafsir-fuyud/index.html",
+    "main.fead13ea.css.map": "/tafsir-fuyud/static/css/main.fead13ea.css.map",
+    "main.02db4774.js.map": "/tafsir-fuyud/static/js/main.02db4774.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fead13ea.css",
+    "static/js/main.02db4774.js"
+  ]
+}

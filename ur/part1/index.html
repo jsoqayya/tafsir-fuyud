@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سورہ البقرہ - ۱۰۱ آیات مکملة (اردو)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        noto: ['Noto Naskh Arabic', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Noto Naskh Arabic', serif; }
+        .ayah-text { font-size: 1.5rem; line-height: 2.5rem; }
+        .fuyud-box { border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1rem; border: 2px solid; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-sm shadow-sm border-b bg-white/95 dark:bg-gray-900/95 border-gray-100 dark:border-gray-700">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center shadow-md text-white font-bold text-lg">
+                    فیوض
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-gray-800 dark:text-white">فیوض التأویل المعاصر</h1>
+                    <p class="text-xs text-emerald-600 font-medium">سورہ البقرہ - ۱۰۱ آیات مکملة (اردو)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="../../index.html" class="px-3 py-1 rounded-lg text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200">العربية</a>
+                <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-white text-emerald-700 shadow-sm">اردو</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Part Navigation -->
+    <div class="flex justify-center gap-2 py-3 px-4 border-b bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-700">
+        <span class="flex flex-col items-center px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-md">
+            <span class="text-sm">پہلا حصہ</span>
+            <span class="opacity-80 text-[10px] mt-0.5">۱ – ۱۰۱</span>
+        </span>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Surah Header -->
+        <div class="text-center mb-8 py-6">
+            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md mb-3">
+                <span>سورہ البقرہ</span>
+                <span class="opacity-70">•</span>
+                <span>۱۰۱ آیات مکملة</span>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white" style="font-family: 'Noto Naskh Arabic', serif;">
+                ﴿ بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴾
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">آیات القرآن من alquran.cloud API</p>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+            <p class="mt-2 text-gray-600">جاري تحمیل الآیات...</p>
+        </div>
+
+        <!-- Ayahs Container -->
+        <div id="ayahs-container"></div>
+
+        <!-- Footer -->
+        <footer class="text-center py-8 mt-8 border-t border-gray-200 text-gray-500 dark:border-gray-700 dark:text-gray-400">
+            <p class="text-sm">فیوض التاویل المعاصر • ۱۰۱ آیات مکملة</p>
+            <p class="text-xs mt-1">ترجمة Google Translate API | آیات من alquran.cloud</p>
+        </footer>
+    </main>
+
+    <script>
+        // Load and display ayahs
+        fetch('../../src/data/tafsirData_ur_all101.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                
+                const container = document.getElementById('ayahs-container');
+                
+                data.ayahs.forEach((ayah, index) => {
+                    const ayahCard = createAyahCard(ayah, index + 1);
+                    container.appendChild(ayahCard);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('loading').innerHTML = 
+                    '<p class="text-red-500">خطأ في تحميل البيانات</p>';
+            });
+
+        function createAyahCard(ayah, num) {
+            const div = document.createElement('div');
+            div.className = 'rounded-2xl shadow-md overflow-hidden mb-5 bg-white dark:bg-gray-800 border-l-4 border-teal-400 hover:shadow-lg transition-all duration-300';
+            
+            const fuyud = ayah.fuyud || {};
+            const hasFuyud = Object.keys(fuyud).length > 0;
+            
+            let fuyudHTML = '';
+            if (hasFuyud) {
+                const sections = {
+                    'context': { icon: '🌐', name: 'عمومی سیاق', color: 'sky' },
+                    'bayani': { icon: '✒️', name: 'بیانی فیوض', color: 'violet' },
+                    'taweeli': { icon: '📖', name: 'تاویلی فیوض', color: 'yellow' },
+                    'ruhani': { icon: '💫', name: 'روحانی فیوض', color: 'emerald' },
+                    'nafsi': { icon: '🧠', name: 'نفسیاتی فیوض', color: 'rose' },
+                    'tarbawi': { icon: '🌱', name: 'تربیتی فیوض', color: 'orange' },
+                    'muasir': { icon: '🌍', name: 'معاصر فیوض', color: 'cyan' }
+                };
+                
+                let fuyudSections = '';
+                for (const [key, config] of Object.entries(sections)) {
+                    if (fuyud[key]) {
+                        const content = fuyud[key];
+                        const urText = content.ur || '';
+                        if (urText && urText.trim()) {
+                            fuyudSections += `
+                                <div class="fuyud-box bg-${config.color}-100 border-${config.color}-300 dark:bg-${config.color}-900/30 dark:border-${config.color}-400">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xl">${config.icon}</span>
+                                            <h4 class="text-${config.color}-800 dark:text-${config.color}-200 font-bold text-lg">${config.name}</h4>
+                                        </div>
+                                        <button onclick="copyText(this)" class="p-1.5 rounded-lg hover:bg-white/60 text-gray-400 hover:text-gray-600" title="نسخ">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                        </button>
+                                    </div>
+                                    <div class="border-t border-${config.color}-300/50 mb-3"></div>
+                                    <p class="leading-8 text-slate-900 dark:text-slate-100 text-base font-medium">${urText}</p>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+                
+                if (fuyudSections) {
+                    fuyudHTML = `
+                        <div id="fuyud-${num}" class="hidden px-5 pb-5 pt-4 bg-gray-50/60 dark:bg-gray-800/80">
+                            <h3 class="text-sm font-bold mb-4 text-center text-gray-500 dark:text-gray-300">✦ تفسیری فیوض ✦</h3>
+                            ${fuyudSections}
+                        </div>
+                    `;
+                }
+            }
+            
+            const themeLabels = {
+                'general': 'عمومی',
+                'mercy': 'رحمت',
+                'punishment': 'عذاب',
+                'rulings': 'احکام'
+            };
+            const themeLabel = themeLabels[ayah.theme] || ayah.theme;
+            
+            div.innerHTML = `
+                <div class="p-5 flex items-start gap-4">
+                    <div class="flex flex-col items-center gap-2 shrink-0">
+                        <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm shadow bg-gradient-to-br from-emerald-500 to-teal-600">${ayah.id}</div>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-teal-100 text-teal-700">${themeLabel}</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="leading-[3rem] text-xl font-bold text-gray-800 dark:text-gray-100 ayah-text">
+                            ${ayah.ayah_text}
+                        </p>
+                    </div>
+                </div>
+                ${hasFuyud && fuyudHTML ? `
+                <button onclick="toggleFuyud('fuyud-${num}')" class="w-full flex items-center justify-between px-5 py-3 border-t text-sm font-semibold bg-gray-50 border-gray-100 text-gray-500 hover:text-emerald-700 hover:bg-emerald-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 transition-all">
+                    <span class="font-bold">✦ تفسیری فیوض پڑھیں</span>
+                    <span id="icon-${num}">▼</span>
+                </button>
+                ${fuyudHTML}
+                ` : ''}
+            `;
+            
+            return div;
+        }
+
+        function toggleFuyud(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id.split('-')[1]);
+            if (el) {
+                if (el.classList.contains('hidden')) {
+                    el.classList.remove('hidden');
+                    icon.textContent = '▲';
+                } else {
+                    el.classList.add('hidden');
+                    icon.textContent = '▼';
+                }
+            }
+        }
+
+        function copyText(btn) {
+            const box = btn.closest('.fuyud-box');
+            const text = box.querySelector('p').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                setTimeout(() => {
+                    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
