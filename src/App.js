@@ -9,6 +9,7 @@ import SurahIndex from './components/SurahIndex';
 import tafsirData from './data/tafsirData.json';
 import tafsirData2 from './data/tafsirData2.json';
 import tafsirData3 from './data/tafsirData3.json';
+import tafsirDataUR from './data/tafsirData_ur_all101.json';
 
 /* ────────────────────────────────────────────
    Part navigation bar (language-aware)
@@ -349,7 +350,7 @@ export default function App() {
 
       {/* ─── صفحات التفسير — Urdu ─── */}
       <Route path="/ur/part1" element={
-        <TafsirLayout data={tafsirData} language="ur" onLanguageChange={setLanguage}
+        <TafsirLayout data={tafsirDataUR} language="ur" onLanguageChange={setLanguage}
           darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
       } />
       <Route path="/ur/part2" element={
