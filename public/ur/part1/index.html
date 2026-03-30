@@ -85,7 +85,7 @@
 
     <script>
         // Load and display ayahs
-        fetch('../../src/data/tafsirData_ur_all101.json')
+        fetch('/src/data/tafsirData_ur_all101.json')
             .then(response => response.json())
             .then(data => {
                 document.getElementById('loading').style.display = 'none';
